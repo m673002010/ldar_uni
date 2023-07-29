@@ -1,0 +1,45 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/upload/upload",
+    "pages/download/download"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "LDAR管理平台",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "selectedColor": "#3CB371",
+    "list": [
+      {
+        "pagePath": "pages/login/login",
+        "text": "登录页",
+        "iconPath": "static/tab_icons/home.jpg",
+        "selectedIconPath": "static/tab_icons/home.jpg"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/tab_icons/home.jpg",
+        "selectedIconPath": "static/tab_icons/home.jpg"
+      },
+      {
+        "pagePath": "pages/upload/upload",
+        "text": "上传",
+        "iconPath": "static/tab_icons/cate.jpg",
+        "selectedIconPath": "static/tab_icons/cate.jpg"
+      },
+      {
+        "pagePath": "pages/download/download",
+        "text": "下载",
+        "iconPath": "static/tab_icons/collect.jpg",
+        "selectedIconPath": "static/tab_icons/collect.jpg"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

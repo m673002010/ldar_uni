@@ -1,0 +1,1 @@
+<view class="userBox">{{''+userInfo.username+"\n\t"+userInfo.userId+"\n\t"+userInfo.companyNum+''}}<button data-event-opts="{{[['tap',[['logout']]]]}}" bindtap="__e">退出</button></view>
