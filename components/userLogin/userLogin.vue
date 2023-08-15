@@ -55,7 +55,6 @@
 				const result = await uni.$request('post', '/user/login', this.valiFormData)
 				if (+result.code === 0) {
 					this.updateToken(result.data.token)
-					await this.getUserInfo()
 					
 					const companyResult = await uni.$request('get', '/company/companyInfo')
 					if (+companyResult.code === 0) {
@@ -74,12 +73,14 @@
 				const result = await uni.$request('post', '/user/reToken', { companyNum: item.companyNum, shortName: item.shortName })
 				if (+result.code === 0) {
 					this.updateToken(result.data.token)
+					this.updateIsLogin(true)
+					await this.getUserInfo()
 					uni.switchTab({
 						url: '/pages/index/index'
 					})
 				} else {
 					uni.showToast({
-						title: `跳转失败`,
+						title: `选择公司失败`,
 						icon: 'error' 
 					})
 				}
@@ -96,21 +97,9 @@
 					})
 				}
 			},
-			navigateBack () { // 重新跳回来源页面 
-				if (this.redirectInfo && this.redirectInfo.openType === 'switchTab') {
-					uni.switchTab({
-						url: this.redirectInfo.from,
-						// 导航跳转完成后，重置redirectInfo
-						complete: () => {
-							this.updateRedirectInfo(null)
-						}
-					})
-				} 
-			},
-			...mapMutations('mUser', ['updateUserInfo', 'updateToken', 'updateRedirectInfo'])
+			...mapMutations('mUser', ['updateUserInfo', 'updateToken', 'updateIsLogin'])
 		},
 		computed: {
-			...mapState('mUser', ['redirectInfo'])
 		}
 	}
 </script>
@@ -119,12 +108,5 @@
 	.login {
 		padding: 10px;
 		background-color: #fff;
-	}
-
-	.button {
-		display: flex;
-		align-items: center;
-		height: 35px;
-		margin-left: 10px;
 	}
 </style>

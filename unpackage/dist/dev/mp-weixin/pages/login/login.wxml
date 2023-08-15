@@ -1,1 +1,1 @@
-<view class="myContainer"><block wx:if="{{!token}}"><user-login vue-id="35a7246c-1" bind:__l="__l"></user-login></block><block wx:else><user-info vue-id="35a7246c-2" bind:__l="__l"></user-info></block></view>
+<view class="myContainer"><block wx:if="{{!isLogin}}"><user-login vue-id="35a7246c-1" bind:__l="__l"></user-login></block><block wx:else><user-info vue-id="35a7246c-2" bind:__l="__l"></user-info></block></view>

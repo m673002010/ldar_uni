@@ -5,46 +5,14 @@
   height: 100%;
 }
 .userBox .userInfo {
-  height: 200px;
-  background-color: #3CB371;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: black;
+  padding: 10px;
 }
-.userBox .userInfo .avatar {
-  width: 90px;
-  height: 90px;
-  border: 2px solid #FFFFFF;
-  border-radius: 100%;
-  box-shadow: 0 1px 5px black;
-}
-.userBox .userInfo .nickName {
-  font-size: 16px;
-  color: #FFF;
-  margin-top: 10px;
-}
-.userBox .panel-list {
-  padding: 0 10px;
-  position: relative;
-  top: -10px;
-}
-.userBox .panel-list .panel {
-  background-color: white;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-.userBox .panel-list .panel .panel-title {
-  line-height: 45px;
-  padding-left: 10px;
-  font-size: 15px;
-  border-bottom: 1px solid #F4F4F4;
-}
-.userBox .panel-list .panel .panel-body {
-  display: flex;
-  justify-content: space-around;
-}
-.userBox .panel-list .panel .panel-body .item {
+.userBox .item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,16 +20,8 @@
   padding: 10px 0;
   font-size: 13px;
 }
-.userBox .panel-list .panel .panel-body .item .icon {
-  height: 35px;
-  width: 35px;
-}
-.userBox .panel-list .panel .panel-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 15px;
-  padding: 0 10px;
-  line-height: 45px;
+.userBox .button {
+  margin-top: 10px;
+  width: 50%;
 }
 

@@ -5,10 +5,4 @@
   padding: 10px;
   background-color: #fff;
 }
-.button.data-v-3266ba82 {
-  display: flex;
-  align-items: center;
-  height: 35px;
-  margin-left: 10px;
-}
 

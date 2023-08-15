@@ -1,6 +1,6 @@
 <template>
 	<view class="myContainer">
-		<userLogin v-if="!token"></userLogin>
+		<userLogin v-if="!isLogin"></userLogin>
 
 		<userInfo v-else></userInfo>
 	</view>
@@ -17,7 +17,7 @@
 			
 		},
 		computed: {
-			...mapState('mUser', ['token'])
+			...mapState('mUser', ['isLogin'])
 		}
 	}
 </script>

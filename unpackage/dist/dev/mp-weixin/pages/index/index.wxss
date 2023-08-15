@@ -1,14 +1,6 @@
-@charset "UTF-8";
-/* 水平间距 */
-/* 水平间距 */
-.dataPanel.data-v-57280228 {
-  padding: 10px;
-  background-color: #fff;
-}
-.button.data-v-57280228 {
-  display: flex;
-  align-items: center;
-  height: 35px;
-  margin-left: 10px;
+
+.charts.data-v-57280228{
+  width: 750rpx;
+  height: 500rpx;
 }
 

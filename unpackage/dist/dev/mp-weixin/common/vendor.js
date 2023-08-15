@@ -947,7 +947,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -2091,7 +2091,163 @@ uni$1;exports.default = _default;
 
 /***/ }),
 
-/***/ 107:
+/***/ 11:
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
+  \**********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode, /* vue-cli only */
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // fixed by xxxxxx auto components
+  if (components) {
+    if (!options.components) {
+      options.components = {}
+    }
+    var hasOwn = Object.prototype.hasOwnProperty
+    for (var name in components) {
+      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
+        options.components[name] = components[name]
+      }
+    }
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
+  }
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+
+/***/ 12:
+/*!*******************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/store/store.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 3));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 13));
+
+var _user = _interopRequireDefault(__webpack_require__(/*! ./user.js */ 14));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} // 导入vue和vuex
+// 导入购物车的vuex模块
+_vue.default.use(_vuex.default);
+
+// 创建Store的实例对象
+var store = new _vuex.default.Store({
+  modules: {
+    mUser: _user.default } });var _default =
+
+
+
+store;exports.default = _default;
+
+/***/ }),
+
+/***/ 126:
 /*!********************************************************************************************************!*\
   !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \********************************************************************************************************/
@@ -3268,1228 +3424,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 11:
-/*!**********************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \**********************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode, /* vue-cli only */
-  components, // fixed by xxxxxx auto components
-  renderjs // fixed by xxxxxx renderjs
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // fixed by xxxxxx auto components
-  if (components) {
-    if (!options.components) {
-      options.components = {}
-    }
-    var hasOwn = Object.prototype.hasOwnProperty
-    for (var name in components) {
-      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
-        options.components[name] = components[name]
-      }
-    }
-  }
-  // fixed by xxxxxx renderjs
-  if (renderjs) {
-    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
-      this[renderjs.__module] = this
-    });
-    (options.mixins || (options.mixins = [])).push(renderjs)
-  }
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-
-/***/ 115:
-/*!****************************************************************************************************************************!*\
-  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
-  \****************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.createAnimation = createAnimation;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} // const defaultOption = {
-// 	duration: 300,
-// 	timingFunction: 'linear',
-// 	delay: 0,
-// 	transformOrigin: '50% 50% 0'
-// }
-var
-
-
-MPAnimation = /*#__PURE__*/function () {
-  function MPAnimation(options, _this) {_classCallCheck(this, MPAnimation);
-    this.options = options;
-    // 在iOS10+QQ小程序平台下，传给原生的对象一定是个普通对象而不是Proxy对象，否则会报parameter should be Object instead of ProxyObject的错误
-    this.animation = uni.createAnimation(_objectSpread({},
-    options));
-
-    this.currentStepAnimates = {};
-    this.next = 0;
-    this.$ = _this;
-
-  }_createClass(MPAnimation, [{ key: "_nvuePushAnimates", value: function _nvuePushAnimates(
-
-    type, args) {
-      var aniObj = this.currentStepAnimates[this.next];
-      var styles = {};
-      if (!aniObj) {
-        styles = {
-          styles: {},
-          config: {} };
-
-      } else {
-        styles = aniObj;
-      }
-      if (animateTypes1.includes(type)) {
-        if (!styles.styles.transform) {
-          styles.styles.transform = '';
-        }
-        var unit = '';
-        if (type === 'rotate') {
-          unit = 'deg';
-        }
-        styles.styles.transform += "".concat(type, "(").concat(args + unit, ") ");
-      } else {
-        styles.styles[type] = "".concat(args);
-      }
-      this.currentStepAnimates[this.next] = styles;
-    } }, { key: "_animateRun", value: function _animateRun()
-    {var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var ref = this.$.$refs['ani'].ref;
-      if (!ref) return;
-      return new Promise(function (resolve, reject) {
-        nvueAnimation.transition(ref, _objectSpread({
-          styles: styles },
-        config),
-        function (res) {
-          resolve();
-        });
-      });
-    } }, { key: "_nvueNextAnimate", value: function _nvueNextAnimate(
-
-    animates) {var _this2 = this;var step = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;var fn = arguments.length > 2 ? arguments[2] : undefined;
-      var obj = animates[step];
-      if (obj) {var
-
-        styles =
-
-        obj.styles,config = obj.config;
-        this._animateRun(styles, config).then(function () {
-          step += 1;
-          _this2._nvueNextAnimate(animates, step, fn);
-        });
-      } else {
-        this.currentStepAnimates = {};
-        typeof fn === 'function' && fn();
-        this.isEnd = true;
-      }
-    } }, { key: "step", value: function step()
-
-    {var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-      this.animation.step(config);
-
-
-
-
-
-
-      return this;
-    } }, { key: "run", value: function run(
-
-    fn) {
-
-      this.$.animationData = this.animation.export();
-      this.$.timer = setTimeout(function () {
-        typeof fn === 'function' && fn();
-      }, this.$.durationTime);
-
-
-
-
-
-
-
-
-    } }]);return MPAnimation;}();
-
-
-
-var animateTypes1 = ['matrix', 'matrix3d', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scale3d',
-'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate', 'translate3d', 'translateX', 'translateY',
-'translateZ'];
-
-var animateTypes2 = ['opacity', 'backgroundColor'];
-var animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
-animateTypes1.concat(animateTypes2, animateTypes3).forEach(function (type) {
-  MPAnimation.prototype[type] = function () {var _this$animation;
-
-    (_this$animation = this.animation)[type].apply(_this$animation, arguments);
-
-
-
-
-    return this;
-  };
-});
-
-function createAnimation(option, _this) {
-  if (!_this) return;
-  clearTimeout(_this.timer);
-  return new MPAnimation(option, _this);
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 12:
-/*!******************************************************************************!*\
-  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/components/interceptor.js ***!
-  \******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {// 页面白名单，不受拦截
-var whiteList = [
-  // '/pages/index/index',
-];
-
-function hasPermission(url) {
-  var islogin = uni.getStorageSync('isLogin'); // 在这可以使用token,isLogin是登录成功后在本地存储登录标识
-  islogin = Boolean(Number(islogin)); // 返回布尔值
-  // 在白名单中或有登录判断条件可以直接跳转
-  if (whiteList.indexOf(url) !== -1 || islogin) {
-    console.log('跳转');
-    return true;
-  }
-  console.log('无权限跳转');
-  return false;
-}
-
-uni.addInterceptor('navigateTo', {
-  // 页面跳转前进行拦截, invoke根据返回值进行判断是否继续执行跳转
-  invoke: function invoke(e) {
-    var token = uni.getStorageSync('token');
-    if (!token && !hasPermission(e.url)) {
-      uni.reLaunch({
-        url: '/pages/login/login' });
-
-      return false;
-    }
-    return true;
-  },
-  success: function success(e) {
-
-  } });
-
-
-uni.addInterceptor('switchTab', {
-  // tabbar页面跳转前进行拦截
-  invoke: function invoke(e) {
-    var token = uni.getStorageSync('token');
-    if (!token && !hasPermission(e.url)) {
-      uni.reLaunch({
-        url: '/pages/login/login' });
-
-      return false;
-    }
-    return true;
-  },
-  success: function success(e) {
-
-  } });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
 /***/ 13:
-/*!**************************************************************************!*\
-  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/components/request.js ***!
-  \**************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.request = request;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var requestConfig = {
-  baseUrl: 'http://175.178.8.213:3002',
-  timeout: 5 * 1000,
-  headers: {
-    'Accept-Language': 'zh-CN' } };
-
-
-
-function request(method, path) {var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};var config = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};var _requestConfig$config = _objectSpread(_objectSpread({},
-
-
-
-
-  requestConfig), config),_requestConfig$config2 = _requestConfig$config.baseUrl,baseUrl = _requestConfig$config2 === void 0 ? '' : _requestConfig$config2,_requestConfig$config3 = _requestConfig$config.timeout,timeout = _requestConfig$config3 === void 0 ? 0 : _requestConfig$config3,_requestConfig$config4 = _requestConfig$config.headers,headers = _requestConfig$config4 === void 0 ? {} : _requestConfig$config4;
-
-  uni.addInterceptor('request', {
-    invoke: function invoke(_invoke) {
-      //请求前拦截并处理
-      _invoke.header['Authorization'] = uni.getStorageSync('token');
-    } });
-
-
-  return new Promise(function (resolve, reject) {
-    uni.request({
-      method: method,
-      url: "".concat(baseUrl).concat(path),
-      data: data,
-      header: _objectSpread(_objectSpread({},
-      headers), {}, {
-        'content-type': 'application/json;charset=utf-8'
-        // 'Authorization': uni.getStorageSync('token')
-      }),
-      timeout: timeout,
-      success: function success(res) {
-        if (res.statusCode === 200) {
-          resolve(res.data);
-        } else {
-          reject(new Error(res.statusCode));
-        }
-      },
-      fail: function fail(err) {
-        var errorMessage = '';
-
-        if (err.errMsg.includes('timeout')) {
-          errorMessage = '请求超时，请稍后重试！';
-        } else if (err.errMsg.includes('abort')) {
-          errorMessage = '请求数据错误，请重试！';
-        } else {
-          errorMessage = '网络请求错误，请检查网络连接！';
-        }
-        reject(new Error(errorMessage));
-      } });
-
-  });
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 2:
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-
-/***/ 20:
-/*!**********************************************************!*\
-  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! regenerator-runtime */ 21);
-
-/***/ }),
-
-/***/ 21:
-/*!************************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() {
-  return this || (typeof self === "object" && self);
-})() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = __webpack_require__(/*! ./runtime */ 22);
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
-  }
-}
-
-
-/***/ }),
-
-/***/ 22:
-/*!*****************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() {
-    return this || (typeof self === "object" && self);
-  })() || Function("return this")()
-);
-
-
-/***/ }),
-
-/***/ 23:
 /*!**************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vuex3/dist/vuex.common.js ***!
   \**************************************************************************************/
@@ -5743,6 +4678,396 @@ var index_cjs = {
 module.exports = index_cjs;
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 2)))
+
+/***/ }),
+
+/***/ 14:
+/*!******************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/store/user.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  // 为当前模块开启命名空间
+  namespaced: true,
+
+  // 模块的state数据
+  state: function state() {return {
+      // 登录成功后获取token
+      token: uni.getStorageSync('token'),
+      // 用户基本信息
+      userInfo: uni.getStorageSync('userInfo'),
+      // 是否登录
+      isLogin: false,
+      // 重定向的object对象 { openType, from }
+      redirectInfo: null };},
+
+
+  // 模块的mutations方法
+  mutations: {
+    // 更新用户信息
+    updateUserInfo: function updateUserInfo(state, userInfo) {
+      state.userInfo = userInfo;
+      this.commit('mUser/saveUserInfoToStorage');
+    },
+    // 持久化存储用户信息
+    saveUserInfoToStorage: function saveUserInfoToStorage(state) {
+      uni.setStorageSync('userInfo', state.userInfo);
+    },
+    // 更新token
+    updateToken: function updateToken(state, token) {
+      state.token = token;
+      this.commit('mUser/saveTokenToStorage');
+    },
+    // 持久化存储token
+    saveTokenToStorage: function saveTokenToStorage(state) {
+      uni.setStorageSync('token', state.token);
+    },
+    // 更新登录状态
+    updateIsLogin: function updateIsLogin(state, isLogin) {
+      state.isLogin = isLogin;
+    },
+    // 更新重定向对象
+    updateRedirectInfo: function updateRedirectInfo(state, info) {
+      state.redirectInfo = info;
+    } },
+
+
+  // 模块的getters属性
+  getters: {} };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 15:
+/*!******************************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/components/interceptor.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {// 页面白名单，不受拦截
+var whiteList = [
+  // '/pages/index/index',
+];
+
+function hasPermission(url) {
+  var islogin = uni.getStorageSync('isLogin'); // 在这可以使用token,isLogin是登录成功后在本地存储登录标识
+  islogin = Boolean(Number(islogin)); // 返回布尔值
+  // 在白名单中或有登录判断条件可以直接跳转
+  if (whiteList.indexOf(url) !== -1 || islogin) {
+    console.log('跳转');
+    return true;
+  }
+  console.log('无权限跳转');
+  return false;
+}
+
+uni.addInterceptor('navigateTo', {
+  // 页面跳转前进行拦截, invoke根据返回值进行判断是否继续执行跳转
+  invoke: function invoke(e) {
+    var token = uni.getStorageSync('token');
+    if (!token && !hasPermission(e.url)) {
+      uni.reLaunch({
+        url: '/pages/login/login' });
+
+      return false;
+    }
+    return true;
+  },
+  success: function success(e) {
+
+  } });
+
+
+uni.addInterceptor('switchTab', {
+  // tabbar页面跳转前进行拦截
+  invoke: function invoke(e) {
+    var token = uni.getStorageSync('token');
+    if (!token && !hasPermission(e.url)) {
+      uni.reLaunch({
+        url: '/pages/login/login' });
+
+      return false;
+    }
+    return true;
+  },
+  success: function success(e) {
+
+  } });
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 155:
+/*!****************************************************************************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
+  \****************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.createAnimation = createAnimation;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} // const defaultOption = {
+// 	duration: 300,
+// 	timingFunction: 'linear',
+// 	delay: 0,
+// 	transformOrigin: '50% 50% 0'
+// }
+var
+
+
+MPAnimation = /*#__PURE__*/function () {
+  function MPAnimation(options, _this) {_classCallCheck(this, MPAnimation);
+    this.options = options;
+    // 在iOS10+QQ小程序平台下，传给原生的对象一定是个普通对象而不是Proxy对象，否则会报parameter should be Object instead of ProxyObject的错误
+    this.animation = uni.createAnimation(_objectSpread({},
+    options));
+
+    this.currentStepAnimates = {};
+    this.next = 0;
+    this.$ = _this;
+
+  }_createClass(MPAnimation, [{ key: "_nvuePushAnimates", value: function _nvuePushAnimates(
+
+    type, args) {
+      var aniObj = this.currentStepAnimates[this.next];
+      var styles = {};
+      if (!aniObj) {
+        styles = {
+          styles: {},
+          config: {} };
+
+      } else {
+        styles = aniObj;
+      }
+      if (animateTypes1.includes(type)) {
+        if (!styles.styles.transform) {
+          styles.styles.transform = '';
+        }
+        var unit = '';
+        if (type === 'rotate') {
+          unit = 'deg';
+        }
+        styles.styles.transform += "".concat(type, "(").concat(args + unit, ") ");
+      } else {
+        styles.styles[type] = "".concat(args);
+      }
+      this.currentStepAnimates[this.next] = styles;
+    } }, { key: "_animateRun", value: function _animateRun()
+    {var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var ref = this.$.$refs['ani'].ref;
+      if (!ref) return;
+      return new Promise(function (resolve, reject) {
+        nvueAnimation.transition(ref, _objectSpread({
+          styles: styles },
+        config),
+        function (res) {
+          resolve();
+        });
+      });
+    } }, { key: "_nvueNextAnimate", value: function _nvueNextAnimate(
+
+    animates) {var _this2 = this;var step = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;var fn = arguments.length > 2 ? arguments[2] : undefined;
+      var obj = animates[step];
+      if (obj) {var
+
+        styles =
+
+        obj.styles,config = obj.config;
+        this._animateRun(styles, config).then(function () {
+          step += 1;
+          _this2._nvueNextAnimate(animates, step, fn);
+        });
+      } else {
+        this.currentStepAnimates = {};
+        typeof fn === 'function' && fn();
+        this.isEnd = true;
+      }
+    } }, { key: "step", value: function step()
+
+    {var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this.animation.step(config);
+
+
+
+
+
+
+      return this;
+    } }, { key: "run", value: function run(
+
+    fn) {
+
+      this.$.animationData = this.animation.export();
+      this.$.timer = setTimeout(function () {
+        typeof fn === 'function' && fn();
+      }, this.$.durationTime);
+
+
+
+
+
+
+
+
+    } }]);return MPAnimation;}();
+
+
+
+var animateTypes1 = ['matrix', 'matrix3d', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scale3d',
+'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate', 'translate3d', 'translateX', 'translateY',
+'translateZ'];
+
+var animateTypes2 = ['opacity', 'backgroundColor'];
+var animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
+animateTypes1.concat(animateTypes2, animateTypes3).forEach(function (type) {
+  MPAnimation.prototype[type] = function () {var _this$animation;
+
+    (_this$animation = this.animation)[type].apply(_this$animation, arguments);
+
+
+
+
+    return this;
+  };
+});
+
+function createAnimation(option, _this) {
+  if (!_this) return;
+  clearTimeout(_this.timer);
+  return new MPAnimation(option, _this);
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 16:
+/*!**************************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/components/request.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.request = request;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var requestConfig = {
+  baseUrl: 'https://175.178.8.213:3001',
+  timeout: 5 * 1000,
+  headers: {
+    'Accept-Language': 'zh-CN' } };
+
+
+
+function request(method, path) {var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};var config = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};var _requestConfig$config = _objectSpread(_objectSpread({},
+
+
+
+
+  requestConfig), config),_requestConfig$config2 = _requestConfig$config.baseUrl,baseUrl = _requestConfig$config2 === void 0 ? '' : _requestConfig$config2,_requestConfig$config3 = _requestConfig$config.timeout,timeout = _requestConfig$config3 === void 0 ? 0 : _requestConfig$config3,_requestConfig$config4 = _requestConfig$config.headers,headers = _requestConfig$config4 === void 0 ? {} : _requestConfig$config4;
+
+  uni.addInterceptor('request', {
+    invoke: function invoke(_invoke) {
+      //请求前拦截并处理
+      _invoke.header['Authorization'] = uni.getStorageSync('token');
+    } });
+
+
+  return new Promise(function (resolve, reject) {
+    uni.request({
+      method: method,
+      url: "".concat(baseUrl).concat(path),
+      data: data,
+      header: _objectSpread(_objectSpread({},
+      headers), {}, {
+        'content-type': 'application/json;charset=utf-8'
+        // 'Authorization': uni.getStorageSync('token')
+      }),
+      timeout: timeout,
+      success: function success(res) {
+        if (res.statusCode === 200) {
+          resolve(res.data);
+        } else {
+          reject(new Error(res.statusCode));
+        }
+      },
+      fail: function fail(err) {
+        var errorMessage = '';
+
+        if (err.errMsg.includes('timeout')) {
+          errorMessage = '请求超时，请稍后重试！';
+        } else if (err.errMsg.includes('abort')) {
+          errorMessage = '请求数据错误，请重试！';
+        } else {
+          errorMessage = '网络请求错误，请检查网络连接！';
+        }
+        reject(new Error(errorMessage));
+      } });
+
+  });
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 194:
+/*!*******************************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/components/u-charts.min.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
+ * uCharts (R)
+ * 高性能跨平台图表库，支持H5、APP、小程序（微信/支付宝/百度/头条/QQ/360/快手）、Vue、Taro等支持canvas的框架平台
+ * Copyright (C) 2021 QIUN (R) 秋云 https://www.ucharts.cn All rights reserved.
+ * Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+ * 复制使用请保留本段注释，感谢支持开源！
+ * 
+ * uCharts (R) 官方网站
+ * https://www.uCharts.cn
+ * 
+ * 开源地址:
+ * https://gitee.com/uCharts/uCharts
+ * 
+ * uni-app插件市场地址：
+ * http://ext.dcloud.net.cn/plugin?id=271
+ * 
+ */
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function _slicedToArray(arr, i) {return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();}function _nonIterableRest() {throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _unsupportedIterableToArray(o, minLen) {if (!o) return;if (typeof o === "string") return _arrayLikeToArray(o, minLen);var n = Object.prototype.toString.call(o).slice(8, -1);if (n === "Object" && o.constructor) n = o.constructor.name;if (n === "Map" || n === "Set") return Array.from(o);if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);}function _arrayLikeToArray(arr, len) {if (len == null || len > arr.length) len = arr.length;for (var i = 0, arr2 = new Array(len); i < len; i++) {arr2[i] = arr[i];}return arr2;}function _iterableToArrayLimit(arr, i) {if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;var _arr = [];var _n = true;var _d = false;var _e = undefined;try {for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {_arr.push(_s.value);if (i && _arr.length === i) break;}} catch (err) {_d = true;_e = err;} finally {try {if (!_n && _i["return"] != null) _i["return"]();} finally {if (_d) throw _e;}}return _arr;}function _arrayWithHoles(arr) {if (Array.isArray(arr)) return arr;}var config = { version: "v2.5.0-20230101", yAxisWidth: 15, xAxisHeight: 22, padding: [10, 10, 10, 10], rotate: false, fontSize: 13, fontColor: "#666666", dataPointShape: ["circle", "circle", "circle", "circle"], color: ["#1890FF", "#91CB74", "#FAC858", "#EE6666", "#73C0DE", "#3CA272", "#FC8452", "#9A60B4", "#ea7ccc"], linearColor: ["#0EE2F8", "#2BDCA8", "#FA7D8D", "#EB88E2", "#2AE3A0", "#0EE2F8", "#EB88E2", "#6773E3", "#F78A85"], pieChartLinePadding: 15, pieChartTextPadding: 5, titleFontSize: 20, subtitleFontSize: 15, radarLabelTextMargin: 13 };var assign = function assign(e) {for (var _len = arguments.length, t = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {t[_key - 1] = arguments[_key];}if (e == null) {throw new TypeError("[uCharts] Cannot convert undefined or null to object");}if (!t || t.length <= 0) {return e;}function i(e, a) {for (var _t in a) {e[_t] = e[_t] && e[_t].toString() === "[object Object]" ? i(e[_t], a[_t]) : e[_t] = a[_t];}return e;}t.forEach(function (t) {e = i(e, t);});return e;};var util = { toFixed: function t(e, a) {a = a || 2;if (this.isFloat(e)) {e = e.toFixed(a);}return e;}, isFloat: function t(e) {return e % 1 !== 0;}, approximatelyEqual: function t(e, a) {return Math.abs(e - a) < 1e-10;}, isSameSign: function t(e, a) {return Math.abs(e) === e && Math.abs(a) === a || Math.abs(e) !== e && Math.abs(a) !== a;}, isSameXCoordinateArea: function t(e, a) {return this.isSameSign(e.x, a.x);}, isCollision: function t(e, a) {e.end = {};e.end.x = e.start.x + e.width;e.end.y = e.start.y - e.height;a.end = {};a.end.x = a.start.x + a.width;a.end.y = a.start.y - a.height;var i = a.start.x > e.end.x || a.end.x < e.start.x || a.end.y > e.start.y || a.start.y < e.end.y;return !i;} };function getH5Offset(t) {t.mp = { changedTouches: [] };t.mp.changedTouches.push({ x: t.offsetX, y: t.offsetY });return t;}function hexToRgb(t, e) {var a = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;var i = t.replace(a, function (t, e, a, i) {return e + e + a + a + i + i;});var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(i);var o = parseInt(r[1], 16);var n = parseInt(r[2], 16);var l = parseInt(r[3], 16);return "rgba(" + o + "," + n + "," + l + "," + e + ")";}function findRange(t, e, a) {if (isNaN(t)) {throw new Error("[uCharts] series数据需为Number格式");}a = a || 10;e = e ? e : "upper";var i = 1;while (a < 1) {a *= 10;i *= 10;}if (e === "upper") {t = Math.ceil(t * i);} else {t = Math.floor(t * i);}while (t % a !== 0) {if (e === "upper") {if (t == t + 1) {break;}t++;} else {t--;}}return t / i;}function calCandleMA(o, t, e, n) {var a = [];for (var r = 0; r < o.length; r++) {var i = { data: [], name: t[r], color: e[r] };for (var _a = 0, _t2 = n.length; _a < _t2; _a++) {if (_a < o[r]) {i.data.push(null);continue;}var _e = 0;for (var _t3 = 0; _t3 < o[r]; _t3++) {_e += n[_a - _t3][1];}i.data.push(+(_e / o[r]).toFixed(3));}a.push(i);}return a;}function calValidDistance(t, e, a, i, r) {var o = r.width - r.area[1] - r.area[3];var n = a.eachSpacing * (r.chartData.xAxisData.xAxisPoints.length - 1);if (r.type == "mount" && r.extra && r.extra.mount && r.extra.mount.widthRatio && r.extra.mount.widthRatio > 1) {if (r.extra.mount.widthRatio > 2) r.extra.mount.widthRatio = 2;n += (r.extra.mount.widthRatio - 1) * a.eachSpacing;}var l = e;if (e >= 0) {l = 0;t.uevent.trigger("scrollLeft");t.scrollOption.position = "left";r.xAxis.scrollPosition = "left";} else if (Math.abs(e) >= n - o) {l = o - n;t.uevent.trigger("scrollRight");t.scrollOption.position = "right";r.xAxis.scrollPosition = "right";} else {t.scrollOption.position = e;r.xAxis.scrollPosition = e;}return l;}function isInAngleRange(t, e, a) {function i(t) {while (t < 0) {t += 2 * Math.PI;}while (t > 2 * Math.PI) {t -= 2 * Math.PI;}return t;}t = i(t);e = i(e);a = i(a);if (e > a) {a += 2 * Math.PI;if (t < e) {t += 2 * Math.PI;}}return t >= e && t <= a;}function createCurveControlPoints(t, e) {function a(t, e) {if (t[e - 1] && t[e + 1]) {return t[e].y >= Math.max(t[e - 1].y, t[e + 1].y) || t[e].y <= Math.min(t[e - 1].y, t[e + 1].y);} else {return false;}}function c(t, e) {if (t[e - 1] && t[e + 1]) {return t[e].x >= Math.max(t[e - 1].x, t[e + 1].x) || t[e].x <= Math.min(t[e - 1].x, t[e + 1].x);} else {return false;}}var i = .2;var r = .2;var o = null;var n = null;var l = null;var s = null;if (e < 1) {o = t[0].x + (t[1].x - t[0].x) * i;n = t[0].y + (t[1].y - t[0].y) * i;} else {o = t[e].x + (t[e + 1].x - t[e - 1].x) * i;n = t[e].y + (t[e + 1].y - t[e - 1].y) * i;}if (e > t.length - 3) {var h = t.length - 1;l = t[h].x - (t[h].x - t[h - 1].x) * r;s = t[h].y - (t[h].y - t[h - 1].y) * r;} else {l = t[e + 1].x - (t[e + 2].x - t[e].x) * r;s = t[e + 1].y - (t[e + 2].y - t[e].y) * r;}if (a(t, e + 1)) {s = t[e + 1].y;}if (a(t, e)) {n = t[e].y;}if (c(t, e + 1)) {l = t[e + 1].x;}if (c(t, e)) {o = t[e].x;}if (n >= Math.max(t[e].y, t[e + 1].y) || n <= Math.min(t[e].y, t[e + 1].y)) {n = t[e].y;}if (s >= Math.max(t[e].y, t[e + 1].y) || s <= Math.min(t[e].y, t[e + 1].y)) {s = t[e + 1].y;}if (o >= Math.max(t[e].x, t[e + 1].x) || o <= Math.min(t[e].x, t[e + 1].x)) {o = t[e].x;}if (l >= Math.max(t[e].x, t[e + 1].x) || l <= Math.min(t[e].x, t[e + 1].x)) {l = t[e + 1].x;}return { ctrA: { x: o, y: n }, ctrB: { x: l, y: s } };}function convertCoordinateOrigin(t, e, a) {return { x: a.x + t, y: a.y - e };}function avoidCollision(t, e) {if (e) {while (util.isCollision(t, e)) {if (t.start.x > 0) {t.start.y--;} else if (t.start.x < 0) {t.start.y++;} else {if (t.start.y > 0) {t.start.y++;} else {t.start.y--;}}}}return t;}function fixPieSeries(e, a, t) {var i = [];if (e.length > 0 && e[0].data.constructor.toString().indexOf("Array") > -1) {a._pieSeries_ = e;var _t4 = e[0].data;for (var r = 0; r < _t4.length; r++) {_t4[r].formatter = e[0].formatter;_t4[r].data = _t4[r].value;i.push(_t4[r]);}a.series = i;} else {i = e;}return i;}function fillSeries(e, a, i) {var r = 0;for (var o = 0; o < e.length; o++) {var t = e[o];if (!t.color) {t.color = i.color[r];r = (r + 1) % i.color.length;}if (!t.linearIndex) {t.linearIndex = o;}if (!t.index) {t.index = 0;}if (!t.type) {t.type = a.type;}if (typeof t.show == "undefined") {t.show = true;}if (!t.type) {t.type = a.type;}if (!t.pointShape) {t.pointShape = "circle";}if (!t.legendShape) {switch (t.type) {case "line":t.legendShape = "line";break;case "column":case "bar":t.legendShape = "rect";break;case "area":case "mount":t.legendShape = "triangle";break;default:t.legendShape = "circle";}}}return e;}function fillCustomColor(t, e, a, i) {var r = e || [];if (t == "custom" && r.length == 0) {r = i.linearColor;}if (t == "custom" && r.length < a.length) {var _t5 = a.length - r.length;for (var o = 0; o < _t5; o++) {r.push(i.linearColor[(o + 1) % i.linearColor.length]);}}return r;}function getDataRange(t, e) {var a = 0;var i = e - t;if (i >= 1e4) {a = 1e3;} else if (i >= 1e3) {a = 100;} else if (i >= 100) {a = 10;} else if (i >= 10) {a = 5;} else if (i >= 1) {a = 1;} else if (i >= .1) {a = .1;} else if (i >= .01) {a = .01;} else if (i >= .001) {a = .001;} else if (i >= 1e-4) {a = 1e-4;} else if (i >= 1e-5) {a = 1e-5;} else {a = 1e-6;}return { minRange: findRange(t, "lower", a), maxRange: findRange(e, "upper", a) };}function measureText(a, t, e) {var i = 0;a = String(a);e = false;if (e !== false && e !== undefined && e.setFontSize && e.measureText) {e.setFontSize(t);return e.measureText(a).width;} else {var a = a.split("");for (var _e2 = 0; _e2 < a.length; _e2++) {var _t6 = a[_e2];if (/[a-zA-Z]/.test(_t6)) {i += 7;} else if (/[0-9]/.test(_t6)) {i += 5.5;} else if (/\./.test(_t6)) {i += 2.7;} else if (/-/.test(_t6)) {i += 3.25;} else if (/:/.test(_t6)) {i += 2.5;} else if (/[\u4e00-\u9fa5]/.test(_t6)) {i += 10;} else if (/\(|\)/.test(_t6)) {i += 3.73;} else if (/\s/.test(_t6)) {i += 2.5;} else if (/%/.test(_t6)) {i += 8;} else {i += 10;}}return i * t / 10;}}function dataCombine(t) {return t.reduce(function (t, e) {return (t.data ? t.data : t).concat(e.data);}, []);}function dataCombineStack(t, e) {var a = new Array(e);for (var i = 0; i < a.length; i++) {a[i] = 0;}for (var r = 0; r < t.length; r++) {for (var i = 0; i < a.length; i++) {a[i] += t[r].data[i];}}return t.reduce(function (t, e) {return (t.data ? t.data : t).concat(e.data).concat(a);}, []);}function getTouches(t, e, a) {var i, r;if (t.clientX) {if (e.rotate) {r = e.height - t.clientX * e.pix;i = (t.pageY - a.currentTarget.offsetTop - e.height / e.pix / 2 * (e.pix - 1)) * e.pix;} else {i = t.clientX * e.pix;r = (t.pageY - a.currentTarget.offsetTop - e.height / e.pix / 2 * (e.pix - 1)) * e.pix;}} else {if (e.rotate) {r = e.height - t.x * e.pix;i = t.y * e.pix;} else {i = t.x * e.pix;r = t.y * e.pix;}}return { x: i, y: r };}function getSeriesDataItem(e, i, a) {var r = [];var o = [];var n = i.constructor.toString().indexOf("Array") > -1;if (n) {var t = filterSeries(e);for (var l = 0; l < a.length; l++) {o.push(t[a[l]]);}} else {o = e;}for (var _t7 = 0; _t7 < o.length; _t7++) {var _e3 = o[_t7];var _a2 = -1;if (n) {_a2 = i[_t7];} else {_a2 = i;}if (_e3.data[_a2] !== null && typeof _e3.data[_a2] !== "undefined" && _e3.show) {var _t8 = {};_t8.color = _e3.color;_t8.type = _e3.type;_t8.style = _e3.style;_t8.pointShape = _e3.pointShape;_t8.disableLegend = _e3.disableLegend;_t8.legendShape = _e3.legendShape;_t8.name = _e3.name;_t8.show = _e3.show;_t8.data = _e3.formatter ? _e3.formatter(_e3.data[_a2]) : _e3.data[_a2];r.push(_t8);}}return r;}function getMaxTextListLength(t, e, a) {var i = t.map(function (t) {return measureText(t, e, a);});return Math.max.apply(null, i);}function getRadarCoordinateSeries(t) {var e = 2 * Math.PI / t;var a = [];for (var i = 0; i < t; i++) {a.push(e * i);}return a.map(function (t) {return -1 * t + Math.PI / 2;});}function getToolTipData(t, a, i, r, o) {var n = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};var l = a.chartData.calPoints ? a.chartData.calPoints : [];var s = {};if (r.length > 0) {var _e4 = [];for (var _t9 = 0; _t9 < r.length; _t9++) {_e4.push(l[r[_t9]]);}s = _e4[0][i[0]];} else {for (var _t10 = 0; _t10 < l.length; _t10++) {if (l[_t10][i]) {s = l[_t10][i];break;}}}var e = t.map(function (t) {var e = null;if (a.categories && a.categories.length > 0) {e = o[i];}return { text: n.formatter ? n.formatter(t, e, i, a) : t.name + ": " + t.data, color: t.color, legendShape: a.extra.tooltip.legendShape == "auto" ? t.legendShape : a.extra.tooltip.legendShape };});var h = { x: Math.round(s.x), y: Math.round(s.y) };return { textList: e, offset: h };}function getMixToolTipData(t, e, a, i) {var r = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};var o = e.chartData.xAxisPoints[a] + e.chartData.eachSpacing / 2;var n = t.map(function (t) {return { text: r.formatter ? r.formatter(t, i[a], a, e) : t.name + ": " + t.data, color: t.color, disableLegend: t.disableLegend ? true : false, legendShape: e.extra.tooltip.legendShape == "auto" ? t.legendShape : e.extra.tooltip.legendShape };});n = n.filter(function (t) {if (t.disableLegend !== true) {return t;}});var l = { x: Math.round(o), y: 0 };return { textList: n, offset: l };}function getCandleToolTipData(o, e, n, l, i, t) {var r = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : {};var a = n.chartData.calPoints;var s = t.color.upFill;var h = t.color.downFill;var c = [s, s, h, s];var d = [];e.map(function (t) {if (l == 0) {if (t.data[1] - t.data[0] < 0) {c[1] = h;} else {c[1] = s;}} else {if (t.data[0] < o[l - 1][1]) {c[0] = h;}if (t.data[1] < t.data[0]) {c[1] = h;}if (t.data[2] > o[l - 1][1]) {c[2] = s;}if (t.data[3] < o[l - 1][1]) {c[3] = h;}}var e = { text: "开盘：" + t.data[0], color: c[0], legendShape: n.extra.tooltip.legendShape == "auto" ? t.legendShape : n.extra.tooltip.legendShape };var a = { text: "收盘：" + t.data[1], color: c[1], legendShape: n.extra.tooltip.legendShape == "auto" ? t.legendShape : n.extra.tooltip.legendShape };var i = { text: "最低：" + t.data[2], color: c[2], legendShape: n.extra.tooltip.legendShape == "auto" ? t.legendShape : n.extra.tooltip.legendShape };var r = { text: "最高：" + t.data[3], color: c[3], legendShape: n.extra.tooltip.legendShape == "auto" ? t.legendShape : n.extra.tooltip.legendShape };d.push(e, a, i, r);});var x = [];var f = { x: 0, y: 0 };for (var _e5 = 0; _e5 < a.length; _e5++) {var _t11 = a[_e5];if (typeof _t11[l] !== "undefined" && _t11[l] !== null) {x.push(_t11[l]);}}f.x = Math.round(x[0][0].x);return { textList: d, offset: f };}function filterSeries(e) {var a = [];for (var t = 0; t < e.length; t++) {if (e[t].show == true) {a.push(e[t]);}}return a;}function findCurrentIndex(o, n, e, t) {var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;var l = { index: -1, group: [] };var i = e.chartData.eachSpacing / 2;var r = [];if (n && n.length > 0) {if (!e.categories) {i = 0;} else {for (var _t12 = 1; _t12 < e.chartData.xAxisPoints.length; _t12++) {r.push(e.chartData.xAxisPoints[_t12] - i);}if ((e.type == "line" || e.type == "area") && e.xAxis.boundaryGap == "justify") {r = e.chartData.xAxisPoints;}}if (isInExactChartArea(o, e, t)) {if (!e.categories) {var _a3 = Array(n.length);for (var _e7 = 0; _e7 < n.length; _e7++) {_a3[_e7] = Array(n[_e7].length);for (var _t13 = 0; _t13 < n[_e7].length; _t13++) {_a3[_e7][_t13] = Math.abs(n[_e7][_t13].x - o.x);}}var _e6 = Array(_a3.length);var _i = Array(_a3.length);for (var _t14 = 0; _t14 < _a3.length; _t14++) {_e6[_t14] = Math.min.apply(null, _a3[_t14]);_i[_t14] = _a3[_t14].indexOf(_e6[_t14]);}var _r = Math.min.apply(null, _e6);l.index = [];for (var _t15 = 0; _t15 < _e6.length; _t15++) {if (_e6[_t15] == _r) {l.group.push(_t15);l.index.push(_i[_t15]);}}} else {r.forEach(function (t, e) {if (o.x + a + i > t) {l.index = e;}});}}}return l;}function findBarChartCurrentIndex(a, t, e, i) {var r = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;var o = { index: -1, group: [] };var n = e.chartData.eachSpacing / 2;var l = e.chartData.yAxisPoints;if (t && t.length > 0) {if (isInExactChartArea(a, e, i)) {l.forEach(function (t, e) {if (a.y + r + n > t) {o.index = e;}});}}return o;}function findLegendIndex(o, t, e) {var n = -1;var l = 0;if (isInExactLegendArea(o, t.area)) {var i = t.points;var r = -1;for (var _t16 = 0, _e8 = i.length; _t16 < _e8; _t16++) {var a = i[_t16];for (var _e9 = 0; _e9 < a.length; _e9++) {r += 1;var _t17 = a[_e9]["area"];if (_t17 && o.x > _t17[0] - l && o.x < _t17[2] + l && o.y > _t17[1] - l && o.y < _t17[3] + l) {n = r;break;}}}return n;}return n;}function isInExactLegendArea(t, e) {return t.x > e.start.x && t.x < e.end.x && t.y > e.start.y && t.y < e.end.y;}function isInExactChartArea(t, e, a) {return t.x <= e.width - e.area[1] + 10 && t.x >= e.area[3] - 10 && t.y >= e.area[0] && t.y <= e.height - e.area[2];}function findRadarChartCurrentIndex(t, e, a) {var r = 2 * Math.PI / a;var o = -1;if (isInExactPieChartArea(t, e.center, e.radius)) {var n = function t(e) {if (e < 0) {e += 2 * Math.PI;}if (e > 2 * Math.PI) {e -= 2 * Math.PI;}return e;};var l = Math.atan2(e.center.y - t.y, t.x - e.center.x);l = -1 * l;if (l < 0) {l += 2 * Math.PI;}var i = e.angleList.map(function (t) {t = n(-1 * t);return t;});i.forEach(function (t, e) {var a = n(t - r / 2);var i = n(t + r / 2);if (i < a) {i += 2 * Math.PI;}if (l >= a && l <= i || l + 2 * Math.PI >= a && l + 2 * Math.PI <= i) {o = e;}});}return o;}function findFunnelChartCurrentIndex(t, e) {var a = -1;for (var i = 0, r = e.series.length; i < r; i++) {var o = e.series[i];if (t.x > o.funnelArea[0] && t.x < o.funnelArea[2] && t.y > o.funnelArea[1] && t.y < o.funnelArea[3]) {a = i;break;}}return a;}function findWordChartCurrentIndex(t, e) {var a = -1;for (var i = 0, r = e.length; i < r; i++) {var o = e[i];if (t.x > o.area[0] && t.x < o.area[2] && t.y > o.area[1] && t.y < o.area[3]) {a = i;break;}}return a;}function findMapChartCurrentIndex(t, e) {var a = -1;var i = e.chartData.mapData;var r = e.series;var o = pointToCoordinate(t.y, t.x, i.bounds, i.scale, i.xoffset, i.yoffset);var n = [o.x, o.y];for (var l = 0, s = r.length; l < s; l++) {var h = r[l].geometry.coordinates;if (isPoiWithinPoly(n, h, e.chartData.mapData.mercator)) {a = l;break;}}return a;}function findRoseChartCurrentIndex(t, e, a) {var i = -1;var r = getRoseDataPoints(a._series_, a.extra.rose.type, e.radius, e.radius);if (e && e.center && isInExactPieChartArea(t, e.center, e.radius)) {var o = Math.atan2(e.center.y - t.y, t.x - e.center.x);o = -o;if (a.extra.rose && a.extra.rose.offsetAngle) {o = o - a.extra.rose.offsetAngle * Math.PI / 180;}for (var n = 0, l = r.length; n < l; n++) {if (isInAngleRange(o, r[n]._start_, r[n]._start_ + r[n]._rose_proportion_ * 2 * Math.PI)) {i = n;break;}}}return i;}function findPieChartCurrentIndex(t, e, a) {var i = -1;var r = getPieDataPoints(e.series);if (e && e.center && isInExactPieChartArea(t, e.center, e.radius)) {var o = Math.atan2(e.center.y - t.y, t.x - e.center.x);o = -o;if (a.extra.pie && a.extra.pie.offsetAngle) {o = o - a.extra.pie.offsetAngle * Math.PI / 180;}if (a.extra.ring && a.extra.ring.offsetAngle) {o = o - a.extra.ring.offsetAngle * Math.PI / 180;}for (var n = 0, l = r.length; n < l; n++) {if (isInAngleRange(o, r[n]._start_, r[n]._start_ + r[n]._proportion_ * 2 * Math.PI)) {i = n;break;}}}return i;}function isInExactPieChartArea(t, e, a) {return Math.pow(t.x - e.x, 2) + Math.pow(t.y - e.y, 2) <= Math.pow(a, 2);}function splitPoints(t, a) {var i = [];var r = [];t.forEach(function (t, e) {if (a.connectNulls) {if (t !== null) {r.push(t);}} else {if (t !== null) {r.push(t);} else {if (r.length) {i.push(r);}r = [];}}});if (r.length) {i.push(r);}return i;}function calLegendData(l, s, e, t, h) {var c = { area: { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, width: 0, height: 0, wholeWidth: 0, wholeHeight: 0 }, points: [], widthArr: [], heightArr: [] };if (s.legend.show === false) {t.legendData = c;return c;}var d = s.legend.padding * s.pix;var x = s.legend.margin * s.pix;var f = s.legend.fontSize ? s.legend.fontSize * s.pix : e.fontSize;var p = 15 * s.pix;var g = 5 * s.pix;var u = Math.max(s.legend.lineHeight * s.pix, f);if (s.legend.position == "top" || s.legend.position == "bottom") {var i = [];var r = 0;var o = [];var n = [];for (var a = 0; a < l.length; a++) {var _t18 = l[a];var y = _t18.legendText ? _t18.legendText : _t18.name;var _e10 = p + g + measureText(y || "undefined", f, h) + s.legend.itemGap * s.pix;if (r + _e10 > s.width - s.area[1] - s.area[3]) {i.push(n);o.push(r - s.legend.itemGap * s.pix);r = _e10;n = [_t18];} else {r += _e10;n.push(_t18);}}if (n.length) {i.push(n);o.push(r - s.legend.itemGap * s.pix);c.widthArr = o;var _t19 = Math.max.apply(null, o);switch (s.legend.float) {case "left":c.area.start.x = s.area[3];c.area.end.x = s.area[3] + _t19 + 2 * d;break;case "right":c.area.start.x = s.width - s.area[1] - _t19 - 2 * d;c.area.end.x = s.width - s.area[1];break;default:c.area.start.x = (s.width - _t19) / 2 - d;c.area.end.x = (s.width + _t19) / 2 + d;}c.area.width = _t19 + 2 * d;c.area.wholeWidth = _t19 + 2 * d;c.area.height = i.length * u + 2 * d;c.area.wholeHeight = i.length * u + 2 * d + 2 * x;c.points = i;}} else {var _t20 = l.length;var _e11 = s.height - s.area[0] - s.area[2] - 2 * x - 2 * d;var _a4 = Math.min(Math.floor(_e11 / u), _t20);c.area.height = _a4 * u + d * 2;c.area.wholeHeight = _a4 * u + d * 2;switch (s.legend.float) {case "top":c.area.start.y = s.area[0] + x;c.area.end.y = s.area[0] + x + c.area.height;break;case "bottom":c.area.start.y = s.height - s.area[2] - x - c.area.height;c.area.end.y = s.height - s.area[2] - x;break;default:c.area.start.y = (s.height - c.area.height) / 2;c.area.end.y = (s.height + c.area.height) / 2;}var _i2 = _t20 % _a4 === 0 ? _t20 / _a4 : Math.floor(_t20 / _a4 + 1);var _r2 = [];for (var _e12 = 0; _e12 < _i2; _e12++) {var _t21 = l.slice(_e12 * _a4, _e12 * _a4 + _a4);_r2.push(_t21);}c.points = _r2;if (_r2.length) {for (var _t22 = 0; _t22 < _r2.length; _t22++) {var _a5 = _r2[_t22];var _i3 = 0;for (var _e14 = 0; _e14 < _a5.length; _e14++) {var _t23 = p + g + measureText(_a5[_e14].name || "undefined", f, h) + s.legend.itemGap * s.pix;if (_t23 > _i3) {_i3 = _t23;}}c.widthArr.push(_i3);c.heightArr.push(_a5.length * u + d * 2);}var _e13 = 0;for (var _t24 = 0; _t24 < c.widthArr.length; _t24++) {_e13 += c.widthArr[_t24];}c.area.width = _e13 - s.legend.itemGap * s.pix + 2 * d;c.area.wholeWidth = c.area.width + d;}}switch (s.legend.position) {case "top":c.area.start.y = s.area[0] + x;c.area.end.y = s.area[0] + x + c.area.height;break;case "bottom":c.area.start.y = s.height - s.area[2] - c.area.height - x;c.area.end.y = s.height - s.area[2] - x;break;case "left":c.area.start.x = s.area[3];c.area.end.x = s.area[3] + c.area.width;break;case "right":c.area.start.x = s.width - s.area[1] - c.area.width;c.area.end.x = s.width - s.area[1];break;}t.legendData = c;return c;}function calCategoriesData(t, i, e, a, r) {var o = { angle: 0, xAxisHeight: i.xAxis.lineHeight * i.pix + i.xAxis.marginTop * i.pix };var n = i.xAxis.fontSize * i.pix;var l = t.map(function (t, e) {var a = i.xAxis.formatter ? i.xAxis.formatter(t, e, i) : t;return measureText(String(a), n, r);});var s = Math.max.apply(this, l);if (i.xAxis.rotateLabel == true) {o.angle = i.xAxis.rotateAngle * Math.PI / 180;var _t25 = i.xAxis.marginTop * i.pix * 2 + Math.abs(s * Math.sin(o.angle));_t25 = _t25 < n + i.xAxis.marginTop * i.pix * 2 ? _t25 + i.xAxis.marginTop * i.pix * 2 : _t25;o.xAxisHeight = _t25;}if (i.enableScroll && i.xAxis.scrollShow) {o.xAxisHeight += 6 * i.pix;}if (i.xAxis.disabled) {o.xAxisHeight = 0;}return o;}function getXAxisTextList(t, e, h, c) {var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : -1;var i;if (c == "stack") {i = dataCombineStack(t, e.categories.length);} else {i = dataCombine(t);}var r = [];i = i.filter(function (t) {if (typeof t === "object" && t !== null) {if (t.constructor.toString().indexOf("Array") > -1) {return t !== null;} else {return t.value !== null;}} else {return t !== null;}});i.map(function (t) {if (typeof t === "object") {if (t.constructor.toString().indexOf("Array") > -1) {if (e.type == "candle") {t.map(function (t) {r.push(t);});} else {r.push(t[0]);}} else {r.push(t.value);}} else {r.push(t);}});var o = 0;var n = 0;if (r.length > 0) {o = Math.min.apply(this, r);n = Math.max.apply(this, r);}if (a > -1) {if (typeof e.xAxis.data[a].min === "number") {o = Math.min(e.xAxis.data[a].min, o);}if (typeof e.xAxis.data[a].max === "number") {n = Math.max(e.xAxis.data[a].max, n);}} else {if (typeof e.xAxis.min === "number") {o = Math.min(e.xAxis.min, o);}if (typeof e.xAxis.max === "number") {n = Math.max(e.xAxis.max, n);}}if (o === n) {var d = n || 10;n += d;}var l = o;var x = n;var f = [];var p = (x - l) / e.xAxis.splitNumber;for (var s = 0; s <= e.xAxis.splitNumber; s++) {f.push(l + p * s);}return f;}function calXAxisData(t, e, a, i) {var r = assign({}, { type: "" }, e.extra.bar);var o = { angle: 0, xAxisHeight: e.xAxis.lineHeight * e.pix + e.xAxis.marginTop * e.pix };o.ranges = getXAxisTextList(t, e, a, r.type);o.rangesFormat = o.ranges.map(function (t) {t = util.toFixed(t, 2);return t;});var n = o.ranges.map(function (t) {t = util.toFixed(t, 2);return t;});o = Object.assign(o, getXAxisPoints(n, e, a));var l = o.eachSpacing;var s = n.map(function (t) {return measureText(t, e.xAxis.fontSize * e.pix, i);});if (e.xAxis.disabled === true) {o.xAxisHeight = 0;}return o;}function getRadarDataPoints(r, o, n, a, t) {var l = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;var e = t.extra.radar || {};e.max = e.max || 0;var s = Math.max(e.max, Math.max.apply(null, dataCombine(a)));var h = [];var _loop = function _loop(_e15) {var t = a[_e15];var i = {};i.color = t.color;i.legendShape = t.legendShape;i.pointShape = t.pointShape;i.data = [];t.data.forEach(function (t, e) {var a = {};a.angle = r[e];a.proportion = t / s;a.value = t;a.position = convertCoordinateOrigin(n * a.proportion * l * Math.cos(a.angle), n * a.proportion * l * Math.sin(a.angle), o);i.data.push(a);});h.push(i);};for (var _e15 = 0; _e15 < a.length; _e15++) {_loop(_e15);}return h;}function getPieDataPoints(a, i) {var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;var o = 0;var n = 0;for (var e = 0; e < a.length; e++) {var t = a[e];t.data = t.data === null ? 0 : t.data;o += t.data;}for (var _e16 = 0; _e16 < a.length; _e16++) {var _t26 = a[_e16];_t26.data = _t26.data === null ? 0 : _t26.data;if (o === 0) {_t26._proportion_ = 1 / a.length * r;} else {_t26._proportion_ = _t26.data / o * r;}_t26._radius_ = i;}for (var _e17 = 0; _e17 < a.length; _e17++) {var _t27 = a[_e17];_t27._start_ = n;n += 2 * _t27._proportion_ * Math.PI;}return a;}function getFunnelDataPoints(e, a, i, r) {var o = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;for (var t = 0; t < e.length; t++) {if (i.type == "funnel") {e[t].radius = e[t].data / e[0].data * a * o;} else {e[t].radius = r * (e.length - t) / (r * e.length) * a * o;}e[t]._proportion_ = e[t].data / e[0].data;}return e;}function getRoseDataPoints(a, i, r, o) {var n = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var l = 0;var s = 0;var h = [];for (var e = 0; e < a.length; e++) {var t = a[e];t.data = t.data === null ? 0 : t.data;l += t.data;h.push(t.data);}var c = Math.min.apply(null, h);var d = Math.max.apply(null, h);var x = o - r;for (var _e18 = 0; _e18 < a.length; _e18++) {var _t28 = a[_e18];_t28.data = _t28.data === null ? 0 : _t28.data;if (l === 0) {_t28._proportion_ = 1 / a.length * n;_t28._rose_proportion_ = 1 / a.length * n;} else {_t28._proportion_ = _t28.data / l * n;if (i == "area") {_t28._rose_proportion_ = 1 / a.length * n;} else {_t28._rose_proportion_ = _t28.data / l * n;}}_t28._radius_ = r + x * ((_t28.data - c) / (d - c)) || o;}for (var _e19 = 0; _e19 < a.length; _e19++) {var _t29 = a[_e19];_t29._start_ = s;s += 2 * _t29._rose_proportion_ * Math.PI;}return a;}function getArcbarDataPoints(i, r) {var o = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;if (o == 1) {o = .999999;}for (var a = 0; a < i.length; a++) {var t = i[a];t.data = t.data === null ? 0 : t.data;var e = void 0;if (r.type == "circle") {e = 2;} else {if (r.direction == "ccw") {if (r.startAngle < r.endAngle) {e = 2 + r.startAngle - r.endAngle;} else {e = r.startAngle - r.endAngle;}} else {if (r.endAngle < r.startAngle) {e = 2 + r.endAngle - r.startAngle;} else {e = r.startAngle - r.endAngle;}}}t._proportion_ = e * t.data * o + r.startAngle;if (r.direction == "ccw") {t._proportion_ = r.startAngle - e * t.data * o;}if (t._proportion_ >= 2) {t._proportion_ = t._proportion_ % 2;}}return i;}function getGaugeArcbarDataPoints(i, r) {var o = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;if (o == 1) {o = .999999;}for (var a = 0; a < i.length; a++) {var t = i[a];t.data = t.data === null ? 0 : t.data;var e = void 0;if (r.type == "circle") {e = 2;} else {if (r.endAngle < r.startAngle) {e = 2 + r.endAngle - r.startAngle;} else {e = r.startAngle - r.endAngle;}}t._proportion_ = e * t.data * o + r.startAngle;if (t._proportion_ >= 2) {t._proportion_ = t._proportion_ % 2;}}return i;}function getGaugeAxisPoints(e, a, t) {var i;if (t < a) {i = 2 + t - a;} else {i = a - t;}var r = a;for (var _t30 = 0; _t30 < e.length; _t30++) {e[_t30].value = e[_t30].value === null ? 0 : e[_t30].value;e[_t30]._startAngle_ = r;e[_t30]._endAngle_ = i * e[_t30].value + a;if (e[_t30]._endAngle_ >= 2) {e[_t30]._endAngle_ = e[_t30]._endAngle_ % 2;}r = e[_t30]._endAngle_;}return e;}function getGaugeDataPoints(i, r, o) {var n = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;for (var a = 0; a < i.length; a++) {var e = i[a];e.data = e.data === null ? 0 : e.data;if (o.pointer.color == "auto") {for (var _t31 = 0; _t31 < r.length; _t31++) {if (e.data <= r[_t31].value) {e.color = r[_t31].color;break;}}} else {e.color = o.pointer.color;}var t = void 0;if (o.endAngle < o.startAngle) {t = 2 + o.endAngle - o.startAngle;} else {t = o.startAngle - o.endAngle;}e._endAngle_ = t * e.data + o.startAngle;e._oldAngle_ = o.oldAngle;if (o.oldAngle < o.endAngle) {e._oldAngle_ += 2;}if (e.data >= o.oldData) {e._proportion_ = (e._endAngle_ - e._oldAngle_) * n + o.oldAngle;} else {e._proportion_ = e._oldAngle_ - (e._oldAngle_ - e._endAngle_) * n;}if (e._proportion_ >= 2) {e._proportion_ = e._proportion_ % 2;}}return i;}function getPieTextMaxLength(i, r, o, n) {i = getPieDataPoints(i);var l = 0;for (var a = 0; a < i.length; a++) {var t = i[a];var e = t.formatter ? t.formatter(+t._proportion_.toFixed(2)) : util.toFixed(t._proportion_ * 100) + "%";l = Math.max(l, measureText(e, t.textSize * n.pix || r.fontSize, o));}return l;}function fixColumeData(t, i, r, o, e, n) {return t.map(function (t) {if (t === null) {return null;}var e = 0;var a = 0;if (n.type == "mix") {e = n.extra.mix.column.seriesGap * n.pix || 0;a = n.extra.mix.column.categoryGap * n.pix || 0;} else {e = n.extra.column.seriesGap * n.pix || 0;a = n.extra.column.categoryGap * n.pix || 0;}e = Math.min(e, i / r);a = Math.min(a, i / r);t.width = Math.ceil((i - 2 * a - e * (r - 1)) / r);if (n.extra.mix && n.extra.mix.column.width && +n.extra.mix.column.width > 0) {t.width = Math.min(t.width, +n.extra.mix.column.width * n.pix);}if (n.extra.column && n.extra.column.width && +n.extra.column.width > 0) {t.width = Math.min(t.width, +n.extra.column.width * n.pix);}if (t.width <= 0) {t.width = 1;}t.x += (o + .5 - r / 2) * (t.width + e);return t;});}function fixBarData(t, i, r, o, e, n) {return t.map(function (t) {if (t === null) {return null;}var e = 0;var a = 0;e = n.extra.bar.seriesGap * n.pix || 0;a = n.extra.bar.categoryGap * n.pix || 0;e = Math.min(e, i / r);a = Math.min(a, i / r);t.width = Math.ceil((i - 2 * a - e * (r - 1)) / r);if (n.extra.bar && n.extra.bar.width && +n.extra.bar.width > 0) {t.width = Math.min(t.width, +n.extra.bar.width * n.pix);}if (t.width <= 0) {t.width = 1;}t.y += (o + .5 - r / 2) * (t.width + e);return t;});}function fixColumeMeterData(t, e, a, i, r, o, n) {var l = o.extra.column.categoryGap * o.pix || 0;return t.map(function (t) {if (t === null) {return null;}t.width = e - 2 * l;if (o.extra.column && o.extra.column.width && +o.extra.column.width > 0) {t.width = Math.min(t.width, +o.extra.column.width * o.pix);}if (i > 0) {t.width -= n;}return t;});}function fixColumeStackData(t, a, e, i, r, o, n) {var l = o.extra.column.categoryGap * o.pix || 0;return t.map(function (t, e) {if (t === null) {return null;}t.width = Math.ceil(a - 2 * l);if (o.extra.column && o.extra.column.width && +o.extra.column.width > 0) {t.width = Math.min(t.width, +o.extra.column.width * o.pix);}if (t.width <= 0) {t.width = 1;}return t;});}function fixBarStackData(t, a, e, i, r, o, n) {var l = o.extra.bar.categoryGap * o.pix || 0;return t.map(function (t, e) {if (t === null) {return null;}t.width = Math.ceil(a - 2 * l);if (o.extra.bar && o.extra.bar.width && +o.extra.bar.width > 0) {t.width = Math.min(t.width, +o.extra.bar.width * o.pix);}if (t.width <= 0) {t.width = 1;}return t;});}function getXAxisPoints(t, e, h) {var a = e.width - e.area[1] - e.area[3];var i = e.enableScroll ? Math.min(e.xAxis.itemCount, t.length) : t.length;if ((e.type == "line" || e.type == "area" || e.type == "scatter" || e.type == "bubble" || e.type == "bar") && i > 1 && e.xAxis.boundaryGap == "justify") {i -= 1;}var r = 0;if (e.type == "mount" && e.extra && e.extra.mount && e.extra.mount.widthRatio && e.extra.mount.widthRatio > 1) {if (e.extra.mount.widthRatio > 2) e.extra.mount.widthRatio = 2;r = e.extra.mount.widthRatio - 1;i += r;}var o = a / i;var n = [];var l = e.area[3];var s = e.width - e.area[1];t.forEach(function (t, e) {n.push(l + r / 2 * o + e * o);});if (e.xAxis.boundaryGap !== "justify") {if (e.enableScroll === true) {n.push(l + r * o + t.length * o);} else {n.push(s);}}return { xAxisPoints: n, startX: l, endX: s, eachSpacing: o };}function getCandleDataPoints(t, l, s, h, c, d, a) {var x = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;var e = [];var f = d.height - d.area[0] - d.area[2];t.forEach(function (t, o) {if (t === null) {e.push(null);} else {var n = [];t.forEach(function (t, e) {var a = {};a.x = h[o] + Math.round(c / 2);var i = t.value || t;var r = f * (i - l) / (s - l);r *= x;a.y = d.height - Math.round(r) - d.area[2];n.push(a);});e.push(n);}});return e;}function getDataPoints(t, a, n, l, s, h, e) {var c = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;var d = "center";if (h.type == "line" || h.type == "area" || h.type == "scatter" || h.type == "bubble") {d = h.xAxis.boundaryGap;}var x = [];var f = h.height - h.area[0] - h.area[2];var p = h.width - h.area[1] - h.area[3];t.forEach(function (i, t) {if (i === null) {x.push(null);} else {var r = {};r.color = i.color;r.x = l[t];var o = i;if (typeof i === "object" && i !== null) {if (i.constructor.toString().indexOf("Array") > -1) {var _t32, _e20, _a6;_t32 = [].concat(h.chartData.xAxisData.ranges);_e20 = _t32.shift();_a6 = _t32.pop();o = i[1];r.x = h.area[3] + p * (i[0] - _e20) / (_a6 - _e20);if (h.type == "bubble") {r.r = i[2];r.t = i[3];}} else {o = i.value;}}if (d == "center") {r.x += s / 2;}var e = f * (o - a) / (n - a);e *= c;r.y = h.height - e - h.area[2];x.push(r);}});return x;}function getLineDataPoints(t, a, n, l, s, h, e, p, c) {var c = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : 1;var d = h.xAxis.boundaryGap;var x = [];var f = h.height - h.area[0] - h.area[2];var u = h.width - h.area[1] - h.area[3];t.forEach(function (i, t) {if (i === null) {x.push(null);} else {var r = {};r.color = i.color;if (p.animation == "vertical") {r.x = l[t];var o = i;if (typeof i === "object" && i !== null) {if (i.constructor.toString().indexOf("Array") > -1) {var _t33, _e21, _a7;_t33 = [].concat(h.chartData.xAxisData.ranges);_e21 = _t33.shift();_a7 = _t33.pop();o = i[1];r.x = h.area[3] + u * (i[0] - _e21) / (_a7 - _e21);} else {o = i.value;}}if (d == "center") {r.x += s / 2;}var e = f * (o - a) / (n - a);e *= c;r.y = h.height - e - h.area[2];x.push(r);} else {r.x = l[0] + s * t * c;var o = i;if (d == "center") {r.x += s / 2;}var e = f * (o - a) / (n - a);r.y = h.height - e - h.area[2];x.push(r);}}});return x;}function getColumnDataPoints(t, a, n, l, s, h, e, i, c) {var c = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : 1;var d = [];var x = h.height - h.area[0] - h.area[2];var f = h.width - h.area[1] - h.area[3];t.forEach(function (i, t) {if (i === null) {d.push(null);} else {var r = {};r.color = i.color;r.x = l[t];var o = i;if (typeof i === "object" && i !== null) {if (i.constructor.toString().indexOf("Array") > -1) {var _t34, _e22, _a8;_t34 = [].concat(h.chartData.xAxisData.ranges);_e22 = _t34.shift();_a8 = _t34.pop();o = i[1];r.x = h.area[3] + f * (i[0] - _e22) / (_a8 - _e22);} else {o = i.value;}}r.x += s / 2;var e = x * (o * c - a) / (n - a);r.y = h.height - e - h.area[2];d.push(r);}});return d;}function getMountDataPoints(t, o, n, l, s, h, e, a) {var c = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : 1;var d = [];var x = h.height - h.area[0] - h.area[2];var i = h.width - h.area[1] - h.area[3];var f = s * e.widthRatio;t.forEach(function (t, e) {if (t === null) {d.push(null);} else {var a = {};a.color = t.color;a.x = l[e];a.x += s / 2;var i = t.data;var r = x * (i * c - o) / (n - o);a.y = h.height - r - h.area[2];a.value = i;a.width = f;d.push(a);}});return d;}function getBarDataPoints(t, o, n, l, e, s, a) {var h = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;var c = [];var i = s.height - s.area[0] - s.area[2];var d = s.width - s.area[1] - s.area[3];t.forEach(function (t, e) {if (t === null) {c.push(null);} else {var a = {};a.color = t.color;a.y = l[e];var i = t;if (typeof t === "object" && t !== null) {i = t.value;}var r = d * (i - o) / (n - o);r *= h;a.height = r;a.value = i;a.x = r + s.area[3];c.push(a);}});return c;}function getStackDataPoints(t, s, h, c, g, d, e, x, y) {var f = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 1;var p = [];var u = d.height - d.area[0] - d.area[2];t.forEach(function (t, e) {if (t === null) {p.push(null);} else {var a = {};a.color = t.color;a.x = c[e] + Math.round(g / 2);if (x > 0) {var i = 0;for (var _t35 = 0; _t35 <= x; _t35++) {i += y[_t35].data[e];}var r = i - t;var o = u * (i - s) / (h - s);var n = u * (r - s) / (h - s);} else {var i = t;if (typeof t === "object" && t !== null) {i = t.value;}var o = u * (i - s) / (h - s);var n = 0;}var l = n;o *= f;l *= f;a.y = d.height - Math.round(o) - d.area[2];a.y0 = d.height - Math.round(l) - d.area[2];p.push(a);}});return p;}function getBarStackDataPoints(t, s, h, c, e, d, a, x, g) {var f = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 1;var p = [];var u = d.width - d.area[1] - d.area[3];t.forEach(function (t, e) {if (t === null) {p.push(null);} else {var a = {};a.color = t.color;a.y = c[e];if (x > 0) {var i = 0;for (var _t36 = 0; _t36 <= x; _t36++) {i += g[_t36].data[e];}var r = i - t;var o = u * (i - s) / (h - s);var n = u * (r - s) / (h - s);} else {var i = t;if (typeof t === "object" && t !== null) {i = t.value;}var o = u * (i - s) / (h - s);var n = 0;}var l = n;o *= f;l *= f;a.height = o - l;a.x = d.area[3] + o;a.x0 = d.area[3] + l;p.push(a);}});return p;}function getYAxisTextList(t, e, h, c, a) {var d = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : -1;var i;if (c == "stack") {i = dataCombineStack(t, e.categories.length);} else {i = dataCombine(t);}var r = [];i = i.filter(function (t) {if (typeof t === "object" && t !== null) {if (t.constructor.toString().indexOf("Array") > -1) {return t !== null;} else {return t.value !== null;}} else {return t !== null;}});i.map(function (t) {if (typeof t === "object") {if (t.constructor.toString().indexOf("Array") > -1) {if (e.type == "candle") {t.map(function (t) {r.push(t);});} else {r.push(t[1]);}} else {r.push(t.value);}} else {r.push(t);}});var o = a.min || 0;var n = a.max || 0;if (r.length > 0) {o = Math.min.apply(this, r);n = Math.max.apply(this, r);}if (o === n) {if (n == 0) {n = 10;} else {o = 0;}}var l = getDataRange(o, n);var x = a.min === undefined || a.min === null ? l.minRange : a.min;var f = a.max === undefined || a.max === null ? l.maxRange : a.max;var p = (f - x) / e.yAxis.splitNumber;var u = [];for (var s = 0; s <= e.yAxis.splitNumber; s++) {u.push(x + p * s);}return u.reverse();}function calYAxisData(a, o, e, n) {var l = assign({}, { type: "" }, o.extra.column);var t = o.yAxis.data.length;var s = new Array(t);if (t > 0) {for (var _e23 = 0; _e23 < t; _e23++) {s[_e23] = [];for (var _t37 = 0; _t37 < a.length; _t37++) {if (a[_t37].index == _e23) {s[_e23].push(a[_t37]);}}}var h = new Array(t);var c = new Array(t);var d = new Array(t);var _loop2 = function _loop2(r) {var i = o.yAxis.data[r];if (o.yAxis.disabled == true) {i.disabled = true;}if (i.type === "categories") {if (!i.formatter) {i.formatter = function (t, e, a) {return t + (i.unit || "");};}i.categories = i.categories || o.categories;h[r] = i.categories;} else {if (!i.formatter) {i.formatter = function (t, e, a) {return util.toFixed(t, i.tofix || 0) + (i.unit || "");};}h[r] = getYAxisTextList(s[r], o, e, l.type, i, r);}var a = i.fontSize * o.pix || e.fontSize;d[r] = { position: i.position ? i.position : "left", width: 0 };c[r] = h[r].map(function (t, e) {t = i.formatter(t, e, o);d[r].width = Math.max(d[r].width, measureText(t, a, n) + 5);return t;});var t = i.calibration ? 4 * o.pix : 0;d[r].width += t + 3 * o.pix;if (i.disabled === true) {d[r].width = 0;}};for (var r = 0; r < t; r++) {_loop2(r);}} else {var h = new Array(1);var c = new Array(1);var d = new Array(1);if (o.type === "bar") {h[0] = o.categories;if (!o.yAxis.formatter) {o.yAxis.formatter = function (t, e, a) {return t + (a.yAxis.unit || "");};}} else {if (!o.yAxis.formatter) {o.yAxis.formatter = function (t, e, a) {return t.toFixed(a.yAxis.tofix) + (a.yAxis.unit || "");};}h[0] = getYAxisTextList(a, o, e, l.type, {});}d[0] = { position: "left", width: 0 };var i = o.yAxis.fontSize * o.pix || e.fontSize;c[0] = h[0].map(function (t, e) {t = o.yAxis.formatter(t, e, o);d[0].width = Math.max(d[0].width, measureText(t, i, n) + 5);return t;});d[0].width += 3 * o.pix;if (o.yAxis.disabled === true) {d[0] = { position: "left", width: 0 };o.yAxis.data[0] = { disabled: true };} else {o.yAxis.data[0] = { disabled: false, position: "left", max: o.yAxis.max, min: o.yAxis.min, formatter: o.yAxis.formatter };if (o.type === "bar") {o.yAxis.data[0].categories = o.categories;o.yAxis.data[0].type = "categories";}}}return { rangesFormat: c, ranges: h, yAxisWidth: d };}function calTooltipYAxisData(r, t, o, e, a) {var n = [].concat(o.chartData.yAxisData.ranges);var l = o.height - o.area[0] - o.area[2];var s = o.area[0];var h = [];for (var i = 0; i < n.length; i++) {var _t38 = Math.max.apply(this, n[i]);var _e24 = Math.min.apply(this, n[i]);var _a9 = _t38 - (_t38 - _e24) * (r - s) / l;_a9 = o.yAxis.data && o.yAxis.data[i].formatter ? o.yAxis.data[i].formatter(_a9, i, o) : _a9.toFixed(0);h.push(String(_a9));}return h;}function calMarkLineData(i, r) {var o, n;var l = r.height - r.area[0] - r.area[2];for (var a = 0; a < i.length; a++) {i[a].yAxisIndex = i[a].yAxisIndex ? i[a].yAxisIndex : 0;var t = [].concat(r.chartData.yAxisData.ranges[i[a].yAxisIndex]);o = t.pop();n = t.shift();var e = l * (i[a].value - o) / (n - o);i[a].y = r.height - Math.round(e) - r.area[2];}return i;}function contextRotate(t, e) {if (e.rotateLock !== true) {t.translate(e.height, 0);t.rotate(90 * Math.PI / 180);} else if (e._rotate_ !== true) {t.translate(e.height, 0);t.rotate(90 * Math.PI / 180);e._rotate_ = true;}}function drawPointShape(t, e, a, i, r) {i.beginPath();if (r.dataPointShapeType == "hollow") {i.setStrokeStyle(e);i.setFillStyle(r.background);i.setLineWidth(2 * r.pix);} else {i.setStrokeStyle("#ffffff");i.setFillStyle(e);i.setLineWidth(1 * r.pix);}if (a === "diamond") {t.forEach(function (t, e) {if (t !== null) {i.moveTo(t.x, t.y - 4.5);i.lineTo(t.x - 4.5, t.y);i.lineTo(t.x, t.y + 4.5);i.lineTo(t.x + 4.5, t.y);i.lineTo(t.x, t.y - 4.5);}});} else if (a === "circle") {t.forEach(function (t, e) {if (t !== null) {i.moveTo(t.x + 2.5 * r.pix, t.y);i.arc(t.x, t.y, 3 * r.pix, 0, 2 * Math.PI, false);}});} else if (a === "square") {t.forEach(function (t, e) {if (t !== null) {i.moveTo(t.x - 3.5, t.y - 3.5);i.rect(t.x - 3.5, t.y - 3.5, 7, 7);}});} else if (a === "triangle") {t.forEach(function (t, e) {if (t !== null) {i.moveTo(t.x, t.y - 4.5);i.lineTo(t.x - 4.5, t.y + 4.5);i.lineTo(t.x + 4.5, t.y + 4.5);i.lineTo(t.x, t.y - 4.5);}});} else if (a === "none") {return;}i.closePath();i.fill();i.stroke();}function drawActivePoint(t, e, a, i, r, o, n) {if (!r.tooltip) {return;}if (r.tooltip.group.length > 0 && r.tooltip.group.includes(n) == false) {return;}var l = typeof r.tooltip.index === "number" ? r.tooltip.index : r.tooltip.index[r.tooltip.group.indexOf(n)];i.beginPath();if (o.activeType == "hollow") {i.setStrokeStyle(e);i.setFillStyle(r.background);i.setLineWidth(2 * r.pix);} else {i.setStrokeStyle("#ffffff");i.setFillStyle(e);i.setLineWidth(1 * r.pix);}if (a === "diamond") {t.forEach(function (t, e) {if (t !== null && l == e) {i.moveTo(t.x, t.y - 4.5);i.lineTo(t.x - 4.5, t.y);i.lineTo(t.x, t.y + 4.5);i.lineTo(t.x + 4.5, t.y);i.lineTo(t.x, t.y - 4.5);}});} else if (a === "circle") {t.forEach(function (t, e) {if (t !== null && l == e) {i.moveTo(t.x + 2.5 * r.pix, t.y);i.arc(t.x, t.y, 3 * r.pix, 0, 2 * Math.PI, false);}});} else if (a === "square") {t.forEach(function (t, e) {if (t !== null && l == e) {i.moveTo(t.x - 3.5, t.y - 3.5);i.rect(t.x - 3.5, t.y - 3.5, 7, 7);}});} else if (a === "triangle") {t.forEach(function (t, e) {if (t !== null && l == e) {i.moveTo(t.x, t.y - 4.5);i.lineTo(t.x - 4.5, t.y + 4.5);i.lineTo(t.x + 4.5, t.y + 4.5);i.lineTo(t.x, t.y - 4.5);}});} else if (a === "none") {return;}i.closePath();i.fill();i.stroke();}function drawRingTitle(t, e, a, i) {var r = t.title.fontSize || e.titleFontSize;var o = t.subtitle.fontSize || e.subtitleFontSize;var n = t.title.name || "";var l = t.subtitle.name || "";var c = t.title.color || t.fontColor;var d = t.subtitle.color || t.fontColor;var x = n ? r : 0;var f = l ? o : 0;var s = 5;if (l) {var p = measureText(l, o * t.pix, a);var u = i.x - p / 2 + (t.subtitle.offsetX || 0) * t.pix;var h = i.y + o * t.pix / 2 + (t.subtitle.offsetY || 0) * t.pix;if (n) {h += (x * t.pix + s) / 2;}a.beginPath();a.setFontSize(o * t.pix);a.setFillStyle(d);a.fillText(l, u, h);a.closePath();a.stroke();}if (n) {var g = measureText(n, r * t.pix, a);var y = i.x - g / 2 + (t.title.offsetX || 0);var v = i.y + r * t.pix / 2 + (t.title.offsetY || 0) * t.pix;if (l) {v -= (f * t.pix + s) / 2;}a.beginPath();a.setFontSize(r * t.pix);a.setFillStyle(c);a.fillText(n, y, v);a.closePath();a.stroke();}}function drawPointText(t, o, n, l, s) {var h = o.data;var c = o.textOffset ? o.textOffset : 0;t.forEach(function (t, e) {if (t !== null) {l.beginPath();var a = o.textSize ? o.textSize * s.pix : n.fontSize;l.setFontSize(a);l.setFillStyle(o.textColor || s.fontColor);var i = h[e];if (typeof h[e] === "object" && h[e] !== null) {if (h[e].constructor.toString().indexOf("Array") > -1) {i = h[e][1];} else {i = h[e].value;}}var r = o.formatter ? o.formatter(i, e, o, s) : i;l.setTextAlign("center");l.fillText(String(r), t.x, t.y - 4 + c * s.pix);l.closePath();l.stroke();l.setTextAlign("left");}});}function drawColumePointText(t, n, l, s, h) {var c = n.data;var d = n.textOffset ? n.textOffset : 0;var x = h.extra.column.labelPosition;t.forEach(function (t, e) {if (t !== null) {s.beginPath();var a = n.textSize ? n.textSize * h.pix : l.fontSize;s.setFontSize(a);s.setFillStyle(n.textColor || h.fontColor);var i = c[e];if (typeof c[e] === "object" && c[e] !== null) {if (c[e].constructor.toString().indexOf("Array") > -1) {i = c[e][1];} else {i = c[e].value;}}var r = n.formatter ? n.formatter(i, e, n, h) : i;s.setTextAlign("center");var o = t.y - 4 * h.pix + d * h.pix;if (t.y > n.zeroPoints) {o = t.y + d * h.pix + a;}if (x == "insideTop") {o = t.y + a + d * h.pix;if (t.y > n.zeroPoints) {o = t.y - d * h.pix - 4 * h.pix;}}if (x == "center") {o = t.y + d * h.pix + (h.height - h.area[2] - t.y + a) / 2;if (n.zeroPoints < h.height - h.area[2]) {o = t.y + d * h.pix + (n.zeroPoints - t.y + a) / 2;}if (t.y > n.zeroPoints) {o = t.y - d * h.pix - (t.y - n.zeroPoints - a) / 2;}if (h.extra.column.type == "stack") {o = t.y + d * h.pix + (t.y0 - t.y + a) / 2;}}if (x == "bottom") {o = h.height - h.area[2] + d * h.pix - 4 * h.pix;if (n.zeroPoints < h.height - h.area[2]) {o = n.zeroPoints + d * h.pix - 4 * h.pix;}if (t.y > n.zeroPoints) {o = n.zeroPoints - d * h.pix + a + 2 * h.pix;}if (h.extra.column.type == "stack") {o = t.y0 + d * h.pix - 4 * h.pix;}}s.fillText(String(r), t.x, o);s.closePath();s.stroke();s.setTextAlign("left");}});}function drawMountPointText(t, n, l, s, h, c) {var e = n.data;var d = n.textOffset ? n.textOffset : 0;var a = h.extra.mount.labelPosition;t.forEach(function (t, e) {if (t !== null) {s.beginPath();var a = n[e].textSize ? n[e].textSize * h.pix : l.fontSize;s.setFontSize(a);s.setFillStyle(n[e].textColor || h.fontColor);var i = t.value;var r = n[e].formatter ? n[e].formatter(i, e, n, h) : i;s.setTextAlign("center");var o = t.y - 4 * h.pix + d * h.pix;if (t.y > c) {o = t.y + d * h.pix + a;}s.fillText(String(r), t.x, o);s.closePath();s.stroke();s.setTextAlign("left");}});}function drawBarPointText(t, o, n, l, s) {var h = o.data;var e = o.textOffset ? o.textOffset : 0;t.forEach(function (t, e) {if (t !== null) {l.beginPath();var a = o.textSize ? o.textSize * s.pix : n.fontSize;l.setFontSize(a);l.setFillStyle(o.textColor || s.fontColor);var i = h[e];if (typeof h[e] === "object" && h[e] !== null) {i = h[e].value;}var r = o.formatter ? o.formatter(i, e, o, s) : i;l.setTextAlign("left");l.fillText(String(r), t.x + 4 * s.pix, t.y + a / 2 - 3);l.closePath();l.stroke();}});}function drawGaugeLabel(e, a, i, r, o, n) {a -= e.width / 2 + e.labelOffset * r.pix;a = a < 10 ? 10 : a;var t;if (e.endAngle < e.startAngle) {t = 2 + e.endAngle - e.startAngle;} else {t = e.startAngle - e.endAngle;}var c = t / e.splitLine.splitNumber;var d = e.endNumber - e.startNumber;var x = d / e.splitLine.splitNumber;var l = e.startAngle;var s = e.startNumber;for (var _t39 = 0; _t39 < e.splitLine.splitNumber + 1; _t39++) {var h = { x: a * Math.cos(l * Math.PI), y: a * Math.sin(l * Math.PI) };var f = e.formatter ? e.formatter(s, _t39, r) : s;h.x += i.x - measureText(f, o.fontSize, n) / 2;h.y += i.y;var p = h.x;var u = h.y;n.beginPath();n.setFontSize(o.fontSize);n.setFillStyle(e.labelColor || r.fontColor);n.fillText(f, p, u + o.fontSize / 2);n.closePath();n.stroke();l += c;if (l >= 2) {l = l % 2;}s += x;}}function drawRadarLabel(t, s, h, c, d, x) {var f = c.extra.radar || {};t.forEach(function (t, e) {if (f.labelPointShow === true && c.categories[e] !== "") {var a = { x: s * Math.cos(t), y: s * Math.sin(t) };var i = convertCoordinateOrigin(a.x, a.y, h);x.setFillStyle(f.labelPointColor);x.beginPath();x.arc(i.x, i.y, f.labelPointRadius * c.pix, 0, 2 * Math.PI, false);x.closePath();x.fill();}if (f.labelShow === true) {var r = { x: (s + d.radarLabelTextMargin * c.pix) * Math.cos(t), y: (s + d.radarLabelTextMargin * c.pix) * Math.sin(t) };var o = convertCoordinateOrigin(r.x, r.y, h);var n = o.x;var l = o.y;if (util.approximatelyEqual(r.x, 0)) {n -= measureText(c.categories[e] || "", d.fontSize, x) / 2;} else if (r.x < 0) {n -= measureText(c.categories[e] || "", d.fontSize, x);}x.beginPath();x.setFontSize(d.fontSize);x.setFillStyle(f.labelColor || c.fontColor);x.fillText(c.categories[e] || "", n, l + d.fontSize / 2);x.closePath();x.stroke();}});}function drawPieText(n, d, x, f, t, l) {var p = x.pieChartLinePadding;var u = [];var g = null;var y = n.map(function (t, e) {var a = t.formatter ? t.formatter(t, e, n, d) : util.toFixed(t._proportion_.toFixed(4) * 100) + "%";a = t.labelText ? t.labelText : a;var i = 2 * Math.PI - (t._start_ + 2 * Math.PI * t._proportion_ / 2);if (t._rose_proportion_) {i = 2 * Math.PI - (t._start_ + 2 * Math.PI * t._rose_proportion_ / 2);}var r = t.color;var o = t._radius_;return { arc: i, text: a, color: r, radius: o, textColor: t.textColor, textSize: t.textSize, labelShow: t.labelShow };});for (var c = 0; c < y.length; c++) {var _t40 = y[c];var e = Math.cos(_t40.arc) * (_t40.radius + p);var a = Math.sin(_t40.arc) * (_t40.radius + p);var i = Math.cos(_t40.arc) * _t40.radius;var r = Math.sin(_t40.arc) * _t40.radius;var o = e >= 0 ? e + x.pieChartTextPadding : e - x.pieChartTextPadding;var _n = a;var _l = measureText(_t40.text, _t40.textSize * d.pix || x.fontSize, f);var s = _n;if (g && util.isSameXCoordinateArea(g.start, { x: o })) {if (o > 0) {s = Math.min(_n, g.start.y);} else if (e < 0) {s = Math.max(_n, g.start.y);} else {if (_n > 0) {s = Math.max(_n, g.start.y);} else {s = Math.min(_n, g.start.y);}}}if (o < 0) {o -= _l;}var h = { lineStart: { x: i, y: r }, lineEnd: { x: e, y: a }, start: { x: o, y: s }, width: _l, height: x.fontSize, text: _t40.text, color: _t40.color, textColor: _t40.textColor, textSize: _t40.textSize };g = avoidCollision(h, g);u.push(g);}for (var _n2 = 0; _n2 < u.length; _n2++) {if (y[_n2].labelShow === false) {continue;}var _t41 = u[_n2];var _e25 = convertCoordinateOrigin(_t41.lineStart.x, _t41.lineStart.y, l);var _a10 = convertCoordinateOrigin(_t41.lineEnd.x, _t41.lineEnd.y, l);var _i4 = convertCoordinateOrigin(_t41.start.x, _t41.start.y, l);f.setLineWidth(1 * d.pix);f.setFontSize(_t41.textSize * d.pix || x.fontSize);f.beginPath();f.setStrokeStyle(_t41.color);f.setFillStyle(_t41.color);f.moveTo(_e25.x, _e25.y);var _r3 = _t41.start.x < 0 ? _i4.x + _t41.width : _i4.x;var _o = _t41.start.x < 0 ? _i4.x - 5 : _i4.x + 5;f.quadraticCurveTo(_a10.x, _a10.y, _r3, _i4.y);f.moveTo(_e25.x, _e25.y);f.stroke();f.closePath();f.beginPath();f.moveTo(_i4.x + _t41.width, _i4.y);f.arc(_r3, _i4.y, 2 * d.pix, 0, 2 * Math.PI);f.closePath();f.fill();f.beginPath();f.setFontSize(_t41.textSize * d.pix || x.fontSize);f.setFillStyle(_t41.textColor || d.fontColor);f.fillText(_t41.text, _o, _i4.y + 3);f.closePath();f.stroke();f.closePath();}}function drawToolTipSplitLine(r, o, n, l) {var s = o.extra.tooltip || {};s.gridType = s.gridType == undefined ? "solid" : s.gridType;s.dashLength = s.dashLength == undefined ? 4 : s.dashLength;var t = o.area[0];var h = o.height - o.area[2];if (s.gridType == "dash") {l.setLineDash([s.dashLength, s.dashLength]);}l.setStrokeStyle(s.gridColor || "#cccccc");l.setLineWidth(1 * o.pix);l.beginPath();l.moveTo(r, t);l.lineTo(r, h);l.stroke();l.setLineDash([]);if (s.xAxisLabel) {var _t42 = o.categories[o.tooltip.index];l.setFontSize(n.fontSize);var e = measureText(_t42, n.fontSize, l);var a = r - .5 * e;var i = h + 2 * o.pix;l.beginPath();l.setFillStyle(hexToRgb(s.labelBgColor || n.toolTipBackground, s.labelBgOpacity || n.toolTipOpacity));l.setStrokeStyle(s.labelBgColor || n.toolTipBackground);l.setLineWidth(1 * o.pix);l.rect(a - s.boxPadding * o.pix, i, e + 2 * s.boxPadding * o.pix, n.fontSize + 2 * s.boxPadding * o.pix);l.closePath();l.stroke();l.fill();l.beginPath();l.setFontSize(n.fontSize);l.setFillStyle(s.labelFontColor || o.fontColor);l.fillText(String(_t42), a, i + s.boxPadding * o.pix + n.fontSize);l.closePath();l.stroke();}}function drawMarkLine(h, t, c) {var e = assign({}, { type: "solid", dashLength: 4, data: [] }, h.extra.markLine);var a = h.area[3];var i = h.width - h.area[1];var r = calMarkLineData(e.data, h);for (var _t43 = 0; _t43 < r.length; _t43++) {var s = assign({}, { lineColor: "#DE4A42", showLabel: false, labelFontSize: 13, labelPadding: 6, labelFontColor: "#666666", labelBgColor: "#DFE8FF", labelBgOpacity: .8, labelAlign: "left", labelOffsetX: 0, labelOffsetY: 0 }, r[_t43]);if (e.type == "dash") {c.setLineDash([e.dashLength, e.dashLength]);}c.setStrokeStyle(s.lineColor);c.setLineWidth(1 * h.pix);c.beginPath();c.moveTo(a, s.y);c.lineTo(i, s.y);c.stroke();c.setLineDash([]);if (s.showLabel) {var _t44 = s.labelFontSize * h.pix;var _e26 = s.labelText ? s.labelText : s.value;c.setFontSize(_t44);var _a11 = measureText(_e26, _t44, c);var _i5 = _a11 + s.labelPadding * h.pix * 2;var _r4 = s.labelAlign == "left" ? h.area[3] - _i5 : h.width - h.area[1];_r4 += s.labelOffsetX;var o = s.y - .5 * _t44 - s.labelPadding * h.pix;o += s.labelOffsetY;var n = _r4 + s.labelPadding * h.pix;var l = s.y;c.setFillStyle(hexToRgb(s.labelBgColor, s.labelBgOpacity));c.setStrokeStyle(s.labelBgColor);c.setLineWidth(1 * h.pix);c.beginPath();c.rect(_r4, o, _i5, _t44 + 2 * s.labelPadding * h.pix);c.closePath();c.stroke();c.fill();c.setFontSize(_t44);c.setTextAlign("left");c.setFillStyle(s.labelFontColor);c.fillText(String(_e26), n, o + _t44 + s.labelPadding * h.pix / 2);c.stroke();c.setTextAlign("left");}}}function drawToolTipHorizentalLine(x, f, p, t, e) {var u = assign({}, { gridType: "solid", dashLength: 4 }, x.extra.tooltip);var a = x.area[3];var i = x.width - x.area[1];if (u.gridType == "dash") {p.setLineDash([u.dashLength, u.dashLength]);}p.setStrokeStyle(u.gridColor || "#cccccc");p.setLineWidth(1 * x.pix);p.beginPath();p.moveTo(a, x.tooltip.offset.y);p.lineTo(i, x.tooltip.offset.y);p.stroke();p.setLineDash([]);if (u.yAxisLabel) {var l = u.boxPadding * x.pix;var s = calTooltipYAxisData(x.tooltip.offset.y, x.series, x, f, t);var h = x.chartData.yAxisData.yAxisWidth;var c = x.area[3];var d = x.width - x.area[1];for (var n = 0; n < s.length; n++) {p.setFontSize(u.fontSize * x.pix);var _t45 = measureText(s[n], u.fontSize * x.pix, p);var _e27 = void 0,_a12 = void 0,_i6 = void 0;if (h[n].position == "left") {_e27 = c - (_t45 + l * 2) - 2 * x.pix;_a12 = Math.max(_e27, _e27 + _t45 + l * 2);} else {_e27 = d + 2 * x.pix;_a12 = Math.max(_e27 + h[n].width, _e27 + _t45 + l * 2);}_i6 = _a12 - _e27;var r = _e27 + (_i6 - _t45) / 2;var o = x.tooltip.offset.y;p.beginPath();p.setFillStyle(hexToRgb(u.labelBgColor || f.toolTipBackground, u.labelBgOpacity || f.toolTipOpacity));p.setStrokeStyle(u.labelBgColor || f.toolTipBackground);p.setLineWidth(1 * x.pix);p.rect(_e27, o - .5 * f.fontSize - l, _i6, f.fontSize + 2 * l);p.closePath();p.stroke();p.fill();p.beginPath();p.setFontSize(f.fontSize);p.setFillStyle(u.labelFontColor || x.fontColor);p.fillText(s[n], r, o + .5 * f.fontSize);p.closePath();p.stroke();if (h[n].position == "left") {c -= h[n].width + x.yAxis.padding * x.pix;} else {d += h[n].width + x.yAxis.padding * x.pix;}}}}function drawToolTipSplitArea(t, e, a, i, r) {var o = assign({}, { activeBgColor: "#000000", activeBgOpacity: .08, activeWidth: r }, e.extra.column);o.activeWidth = o.activeWidth > r ? r : o.activeWidth;var n = e.area[0];var l = e.height - e.area[2];i.beginPath();i.setFillStyle(hexToRgb(o.activeBgColor, o.activeBgOpacity));i.rect(t - o.activeWidth / 2, n, o.activeWidth, l - n);i.closePath();i.fill();i.setFillStyle("#FFFFFF");}function drawBarToolTipSplitArea(t, e, a, i, r) {var o = assign({}, { activeBgColor: "#000000", activeBgOpacity: .08 }, e.extra.bar);var n = e.area[3];var l = e.width - e.area[1];i.beginPath();i.setFillStyle(hexToRgb(o.activeBgColor, o.activeBgOpacity));i.rect(n, t - r / 2, l - n, r);i.closePath();i.fill();i.setFillStyle("#FFFFFF");}function drawToolTip(e, r, o, a, n, i, f) {var l = assign({}, { showBox: true, showArrow: true, showCategory: false, bgColor: "#000000", bgOpacity: .7, borderColor: "#000000", borderWidth: 0, borderRadius: 0, borderOpacity: .7, boxPadding: 3, fontColor: "#FFFFFF", fontSize: 13, lineHeight: 20, legendShow: true, legendShape: "auto", splitLine: true }, o.extra.tooltip);if (l.showCategory == true && o.categories) {e.unshift({ text: o.categories[o.tooltip.index], color: null });}var s = l.fontSize * o.pix;var p = l.lineHeight * o.pix;var h = l.boxPadding * o.pix;var c = s;var u = 5 * o.pix;if (l.legendShow == false) {c = 0;u = 0;}var d = l.showArrow ? 8 * o.pix : 0;var g = false;if (o.type == "line" || o.type == "mount" || o.type == "area" || o.type == "candle" || o.type == "mix") {if (l.splitLine == true) {drawToolTipSplitLine(o.tooltip.offset.x, o, a, n);}}r = assign({ x: 0, y: 0 }, r);r.y -= 8 * o.pix;var y = e.map(function (t) {return measureText(t.text, s, n);});var x = c + u + 4 * h + Math.max.apply(null, y);var v = 2 * h + e.length * p;if (l.showBox == false) {return;}if (r.x - Math.abs(o._scrollDistance_ || 0) + d + x > o.width) {g = true;}if (v + r.y > o.height) {r.y = o.height - v;}n.beginPath();n.setFillStyle(hexToRgb(l.bgColor, l.bgOpacity));n.setLineWidth(l.borderWidth * o.pix);n.setStrokeStyle(hexToRgb(l.borderColor, l.borderOpacity));var t = l.borderRadius;if (g) {if (x + d > o.width) {r.x = o.width + Math.abs(o._scrollDistance_ || 0) + d + (x - o.width);}if (x > r.x) {r.x = o.width + Math.abs(o._scrollDistance_ || 0) + d + (x - o.width);}if (l.showArrow) {n.moveTo(r.x, r.y + 10 * o.pix);n.lineTo(r.x - d, r.y + 10 * o.pix + 5 * o.pix);}n.arc(r.x - d - t, r.y + v - t, t, 0, Math.PI / 2, false);n.arc(r.x - d - Math.round(x) + t, r.y + v - t, t, Math.PI / 2, Math.PI, false);n.arc(r.x - d - Math.round(x) + t, r.y + t, t, -Math.PI, -Math.PI / 2, false);n.arc(r.x - d - t, r.y + t, t, -Math.PI / 2, 0, false);if (l.showArrow) {n.lineTo(r.x - d, r.y + 10 * o.pix - 5 * o.pix);n.lineTo(r.x, r.y + 10 * o.pix);}} else {if (l.showArrow) {n.moveTo(r.x, r.y + 10 * o.pix);n.lineTo(r.x + d, r.y + 10 * o.pix - 5 * o.pix);}n.arc(r.x + d + t, r.y + t, t, -Math.PI, -Math.PI / 2, false);n.arc(r.x + d + Math.round(x) - t, r.y + t, t, -Math.PI / 2, 0, false);n.arc(r.x + d + Math.round(x) - t, r.y + v - t, t, 0, Math.PI / 2, false);n.arc(r.x + d + t, r.y + v - t, t, Math.PI / 2, Math.PI, false);if (l.showArrow) {n.lineTo(r.x + d, r.y + 10 * o.pix + 5 * o.pix);n.lineTo(r.x, r.y + 10 * o.pix);}}n.closePath();n.fill();if (l.borderWidth > 0) {n.stroke();}if (l.legendShow) {e.forEach(function (t, e) {if (t.color !== null) {n.beginPath();n.setFillStyle(t.color);var a = r.x + d + 2 * h;var i = r.y + (p - s) / 2 + p * e + h + 1;if (g) {a = r.x - x - d + 2 * h;}switch (t.legendShape) {case "line":n.moveTo(a, i + .5 * c - 2 * o.pix);n.fillRect(a, i + .5 * c - 2 * o.pix, c, 4 * o.pix);break;case "triangle":n.moveTo(a + 7.5 * o.pix, i + .5 * c - 5 * o.pix);n.lineTo(a + 2.5 * o.pix, i + .5 * c + 5 * o.pix);n.lineTo(a + 12.5 * o.pix, i + .5 * c + 5 * o.pix);n.lineTo(a + 7.5 * o.pix, i + .5 * c - 5 * o.pix);break;case "diamond":n.moveTo(a + 7.5 * o.pix, i + .5 * c - 5 * o.pix);n.lineTo(a + 2.5 * o.pix, i + .5 * c);n.lineTo(a + 7.5 * o.pix, i + .5 * c + 5 * o.pix);n.lineTo(a + 12.5 * o.pix, i + .5 * c);n.lineTo(a + 7.5 * o.pix, i + .5 * c - 5 * o.pix);break;case "circle":n.moveTo(a + 7.5 * o.pix, i + .5 * c);n.arc(a + 7.5 * o.pix, i + .5 * c, 5 * o.pix, 0, 2 * Math.PI);break;case "rect":n.moveTo(a, i + .5 * c - 5 * o.pix);n.fillRect(a, i + .5 * c - 5 * o.pix, 15 * o.pix, 10 * o.pix);break;case "square":n.moveTo(a + 2 * o.pix, i + .5 * c - 5 * o.pix);n.fillRect(a + 2 * o.pix, i + .5 * c - 5 * o.pix, 10 * o.pix, 10 * o.pix);break;default:n.moveTo(a, i + .5 * c - 5 * o.pix);n.fillRect(a, i + .5 * c - 5 * o.pix, 15 * o.pix, 10 * o.pix);}n.closePath();n.fill();}});}e.forEach(function (t, e) {var a = r.x + d + 2 * h + c + u;if (g) {a = r.x - x - d + 2 * h + c + u;}var i = r.y + p * e + (p - s) / 2 - 1 + h + s;n.beginPath();n.setFontSize(s);n.setTextBaseline("normal");n.setFillStyle(l.fontColor);n.fillText(t.text, a, i);n.closePath();n.stroke();});}function drawColumnDataPoints(T, b, S, w) {var A = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var t = b.chartData.xAxisData,P = t.xAxisPoints,C = t.eachSpacing;var D = assign({}, { type: "group", width: C / 2, meterBorder: 4, meterFillColor: "#FFFFFF", barBorderCircle: false, barBorderRadius: [], seriesGap: 2, linearType: "none", linearOpacity: 1, customColor: [], colorStop: 0, labelPosition: "outside" }, b.extra.column);var M = [];w.save();var L = -2;var F = P.length + 2;if (b._scrollDistance_ && b._scrollDistance_ !== 0 && b.enableScroll === true) {w.translate(b._scrollDistance_, 0);L = Math.floor(-b._scrollDistance_ / C) - 2;F = L + b.xAxis.itemCount + 4;}if (b.tooltip && b.tooltip.textList && b.tooltip.textList.length && A === 1) {drawToolTipSplitArea(b.tooltip.offset.x, b, S, w, C);}D.customColor = fillCustomColor(D.linearType, D.customColor, T, S);T.forEach(function (a, i) {var e, t, o;e = [].concat(b.chartData.yAxisData.ranges[a.index]);t = e.pop();o = e.shift();var x = b.height - b.area[0] - b.area[2];var f = x * (0 - t) / (o - t);var n = b.height - Math.round(f) - b.area[2];a.zeroPoints = n;var p = a.data;switch (D.type) {case "group":var r = getColumnDataPoints(p, t, o, P, C, b, S, n, A);var u = getStackDataPoints(p, t, o, P, C, b, S, i, T, A);M.push(u);r = fixColumeData(r, C, T.length, i, S, b);for (var _t46 = 0; _t46 < r.length; _t46++) {var _o2 = r[_t46];if (_o2 !== null && _t46 > L && _t46 < F) {var l = _o2.x - _o2.width / 2;var s = b.height - _o2.y - b.area[2];w.beginPath();var g = _o2.color || a.color;var y = _o2.color || a.color;if (D.linearType !== "none") {var v = w.createLinearGradient(l, _o2.y, l, n);if (D.linearType == "opacity") {v.addColorStop(0, hexToRgb(g, D.linearOpacity));v.addColorStop(1, hexToRgb(g, 1));} else {v.addColorStop(0, hexToRgb(D.customColor[a.linearIndex], D.linearOpacity));v.addColorStop(D.colorStop, hexToRgb(D.customColor[a.linearIndex], D.linearOpacity));v.addColorStop(1, hexToRgb(g, 1));}g = v;}if (D.barBorderRadius && D.barBorderRadius.length === 4 || D.barBorderCircle === true) {var h = l;var c = _o2.y > n ? n : _o2.y;var d = _o2.width;var _s = Math.abs(n - _o2.y);if (D.barBorderCircle) {D.barBorderRadius = [d / 2, d / 2, 0, 0];}if (_o2.y > n) {D.barBorderRadius = [0, 0, d / 2, d / 2];}var _D$barBorderRadius = _slicedToArray(D.barBorderRadius, 4),_t47 = _D$barBorderRadius[0],_e28 = _D$barBorderRadius[1],_a13 = _D$barBorderRadius[2],_i7 = _D$barBorderRadius[3];var _r5 = Math.min(d / 2, _s / 2);_t47 = _t47 > _r5 ? _r5 : _t47;_e28 = _e28 > _r5 ? _r5 : _e28;_a13 = _a13 > _r5 ? _r5 : _a13;_i7 = _i7 > _r5 ? _r5 : _i7;_t47 = _t47 < 0 ? 0 : _t47;_e28 = _e28 < 0 ? 0 : _e28;_a13 = _a13 < 0 ? 0 : _a13;_i7 = _i7 < 0 ? 0 : _i7;w.arc(h + _t47, c + _t47, _t47, -Math.PI, -Math.PI / 2);w.arc(h + d - _e28, c + _e28, _e28, -Math.PI / 2, 0);w.arc(h + d - _a13, c + _s - _a13, _a13, 0, Math.PI / 2);w.arc(h + _i7, c + _s - _i7, _i7, Math.PI / 2, Math.PI);} else {w.moveTo(l, _o2.y);w.lineTo(l + _o2.width, _o2.y);w.lineTo(l + _o2.width, n);w.lineTo(l, n);w.lineTo(l, _o2.y);w.setLineWidth(1);w.setStrokeStyle(y);}w.setFillStyle(g);w.closePath();w.fill();}};break;case "stack":var r = getStackDataPoints(p, t, o, P, C, b, S, i, T, A);M.push(r);r = fixColumeStackData(r, C, T.length, i, S, b, T);for (var _e29 = 0; _e29 < r.length; _e29++) {var _t48 = r[_e29];if (_t48 !== null && _e29 > L && _e29 < F) {w.beginPath();var g = _t48.color || a.color;var l = _t48.x - _t48.width / 2 + 1;var s = b.height - _t48.y - b.area[2];var m = b.height - _t48.y0 - b.area[2];if (i > 0) {s -= m;}w.setFillStyle(g);w.moveTo(l, _t48.y);w.fillRect(l, _t48.y, _t48.width, s);w.closePath();w.fill();}};break;case "meter":var r = getDataPoints(p, t, o, P, C, b, S, A);M.push(r);r = fixColumeMeterData(r, C, T.length, i, S, b, D.meterBorder);for (var _t49 = 0; _t49 < r.length; _t49++) {var _o3 = r[_t49];if (_o3 !== null && _t49 > L && _t49 < F) {w.beginPath();if (i == 0 && D.meterBorder > 0) {w.setStrokeStyle(a.color);w.setLineWidth(D.meterBorder * b.pix);}if (i == 0) {w.setFillStyle(D.meterFillColor);} else {w.setFillStyle(_o3.color || a.color);}var l = _o3.x - _o3.width / 2;var s = b.height - _o3.y - b.area[2];if (D.barBorderRadius && D.barBorderRadius.length === 4 || D.barBorderCircle === true) {var _h = l;var _c = _o3.y;var _d2 = _o3.width;var _s2 = n - _o3.y;if (D.barBorderCircle) {D.barBorderRadius = [_d2 / 2, _d2 / 2, 0, 0];}var _D$barBorderRadius2 = _slicedToArray(D.barBorderRadius, 4),_t50 = _D$barBorderRadius2[0],_e30 = _D$barBorderRadius2[1],_a14 = _D$barBorderRadius2[2],_i8 = _D$barBorderRadius2[3];var _r6 = Math.min(_d2 / 2, _s2 / 2);_t50 = _t50 > _r6 ? _r6 : _t50;_e30 = _e30 > _r6 ? _r6 : _e30;_a14 = _a14 > _r6 ? _r6 : _a14;_i8 = _i8 > _r6 ? _r6 : _i8;_t50 = _t50 < 0 ? 0 : _t50;_e30 = _e30 < 0 ? 0 : _e30;_a14 = _a14 < 0 ? 0 : _a14;_i8 = _i8 < 0 ? 0 : _i8;w.arc(_h + _t50, _c + _t50, _t50, -Math.PI, -Math.PI / 2);w.arc(_h + _d2 - _e30, _c + _e30, _e30, -Math.PI / 2, 0);w.arc(_h + _d2 - _a14, _c + _s2 - _a14, _a14, 0, Math.PI / 2);w.arc(_h + _i8, _c + _s2 - _i8, _i8, Math.PI / 2, Math.PI);w.fill();} else {w.moveTo(l, _o3.y);w.lineTo(l + _o3.width, _o3.y);w.lineTo(l + _o3.width, n);w.lineTo(l, n);w.lineTo(l, _o3.y);w.fill();}if (i == 0 && D.meterBorder > 0) {w.closePath();w.stroke();}}}break;}});if (b.dataLabel !== false && A === 1) {T.forEach(function (t, e) {var a, i, r;a = [].concat(b.chartData.yAxisData.ranges[t.index]);i = a.pop();r = a.shift();var o = t.data;switch (D.type) {case "group":var n = getColumnDataPoints(o, i, r, P, C, b, S, A);n = fixColumeData(n, C, T.length, e, S, b);drawColumePointText(n, t, S, w, b);break;case "stack":var n = getStackDataPoints(o, i, r, P, C, b, S, e, T, A);drawColumePointText(n, t, S, w, b);break;case "meter":var n = getDataPoints(o, i, r, P, C, b, S, A);drawColumePointText(n, t, S, w, b);break;}});}w.restore();return { xAxisPoints: P, calPoints: M, eachSpacing: C };}function drawMountDataPoints(i, r, o, n) {var f = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var t = r.chartData.xAxisData,p = t.xAxisPoints,l = t.eachSpacing;var s = assign({}, { type: "mount", widthRatio: 1, borderWidth: 1, barBorderCircle: false, barBorderRadius: [], linearType: "none", linearOpacity: 1, customColor: [], colorStop: 0 }, r.extra.mount);s.widthRatio = s.widthRatio <= 0 ? 0 : s.widthRatio;s.widthRatio = s.widthRatio >= 2 ? 2 : s.widthRatio;var e = [];n.save();var u = -2;var g = p.length + 2;if (r._scrollDistance_ && r._scrollDistance_ !== 0 && r.enableScroll === true) {n.translate(r._scrollDistance_, 0);u = Math.floor(-r._scrollDistance_ / l) - 2;g = u + r.xAxis.itemCount + 4;}s.customColor = fillCustomColor(s.linearType, s.customColor, i, o);var y, v, m;y = [].concat(r.chartData.yAxisData.ranges[0]);v = y.pop();m = y.shift();var T = r.height - r.area[0] - r.area[2];var b = T * (0 - v) / (m - v);var h = r.height - Math.round(b) - r.area[2];var c = getMountDataPoints(i, v, m, p, l, r, s, h, f);switch (s.type) {case "bar":for (var _t51 = 0; _t51 < c.length; _t51++) {var _o4 = c[_t51];if (_o4 !== null && _t51 > u && _t51 < g) {var d = _o4.x - l * s.widthRatio / 2;var S = r.height - _o4.y - r.area[2];n.beginPath();var a = _o4.color || i[_t51].color;var w = _o4.color || i[_t51].color;if (s.linearType !== "none") {var x = n.createLinearGradient(d, _o4.y, d, h);if (s.linearType == "opacity") {x.addColorStop(0, hexToRgb(a, s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));} else {x.addColorStop(0, hexToRgb(s.customColor[i[_t51].linearIndex], s.linearOpacity));x.addColorStop(s.colorStop, hexToRgb(s.customColor[i[_t51].linearIndex], s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));}a = x;}if (s.barBorderRadius && s.barBorderRadius.length === 4 || s.barBorderCircle === true) {var A = d;var P = _o4.y > h ? h : _o4.y;var C = _o4.width;var _S = Math.abs(h - _o4.y);if (s.barBorderCircle) {s.barBorderRadius = [C / 2, C / 2, 0, 0];}if (_o4.y > h) {s.barBorderRadius = [0, 0, C / 2, C / 2];}var _s$barBorderRadius = _slicedToArray(s.barBorderRadius, 4),_t52 = _s$barBorderRadius[0],_e31 = _s$barBorderRadius[1],_a15 = _s$barBorderRadius[2],_i9 = _s$barBorderRadius[3];var _r7 = Math.min(C / 2, _S / 2);_t52 = _t52 > _r7 ? _r7 : _t52;_e31 = _e31 > _r7 ? _r7 : _e31;_a15 = _a15 > _r7 ? _r7 : _a15;_i9 = _i9 > _r7 ? _r7 : _i9;_t52 = _t52 < 0 ? 0 : _t52;_e31 = _e31 < 0 ? 0 : _e31;_a15 = _a15 < 0 ? 0 : _a15;_i9 = _i9 < 0 ? 0 : _i9;n.arc(A + _t52, P + _t52, _t52, -Math.PI, -Math.PI / 2);n.arc(A + C - _e31, P + _e31, _e31, -Math.PI / 2, 0);n.arc(A + C - _a15, P + _S - _a15, _a15, 0, Math.PI / 2);n.arc(A + _i9, P + _S - _i9, _i9, Math.PI / 2, Math.PI);} else {n.moveTo(d, _o4.y);n.lineTo(d + _o4.width, _o4.y);n.lineTo(d + _o4.width, h);n.lineTo(d, h);n.lineTo(d, _o4.y);}n.setStrokeStyle(w);n.setFillStyle(a);if (s.borderWidth > 0) {n.setLineWidth(s.borderWidth * r.pix);n.closePath();n.stroke();}n.fill();}};break;case "triangle":for (var _e32 = 0; _e32 < c.length; _e32++) {var _t53 = c[_e32];if (_t53 !== null && _e32 > u && _e32 < g) {var d = _t53.x - l * s.widthRatio / 2;var S = r.height - _t53.y - r.area[2];n.beginPath();var a = _t53.color || i[_e32].color;var w = _t53.color || i[_e32].color;if (s.linearType !== "none") {var x = n.createLinearGradient(d, _t53.y, d, h);if (s.linearType == "opacity") {x.addColorStop(0, hexToRgb(a, s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));} else {x.addColorStop(0, hexToRgb(s.customColor[i[_e32].linearIndex], s.linearOpacity));x.addColorStop(s.colorStop, hexToRgb(s.customColor[i[_e32].linearIndex], s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));}a = x;}n.moveTo(d, h);n.lineTo(_t53.x, _t53.y);n.lineTo(d + _t53.width, h);n.setStrokeStyle(w);n.setFillStyle(a);if (s.borderWidth > 0) {n.setLineWidth(s.borderWidth * r.pix);n.stroke();}n.fill();}};break;case "mount":for (var _e33 = 0; _e33 < c.length; _e33++) {var _t54 = c[_e33];if (_t54 !== null && _e33 > u && _e33 < g) {var d = _t54.x - l * s.widthRatio / 2;var S = r.height - _t54.y - r.area[2];n.beginPath();var a = _t54.color || i[_e33].color;var w = _t54.color || i[_e33].color;if (s.linearType !== "none") {var x = n.createLinearGradient(d, _t54.y, d, h);if (s.linearType == "opacity") {x.addColorStop(0, hexToRgb(a, s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));} else {x.addColorStop(0, hexToRgb(s.customColor[i[_e33].linearIndex], s.linearOpacity));x.addColorStop(s.colorStop, hexToRgb(s.customColor[i[_e33].linearIndex], s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));}a = x;}n.moveTo(d, h);n.bezierCurveTo(_t54.x - _t54.width / 4, h, _t54.x - _t54.width / 4, _t54.y, _t54.x, _t54.y);n.bezierCurveTo(_t54.x + _t54.width / 4, _t54.y, _t54.x + _t54.width / 4, h, d + _t54.width, h);n.setStrokeStyle(w);n.setFillStyle(a);if (s.borderWidth > 0) {n.setLineWidth(s.borderWidth * r.pix);n.stroke();}n.fill();}};break;case "sharp":for (var _e34 = 0; _e34 < c.length; _e34++) {var _t55 = c[_e34];if (_t55 !== null && _e34 > u && _e34 < g) {var d = _t55.x - l * s.widthRatio / 2;var S = r.height - _t55.y - r.area[2];n.beginPath();var a = _t55.color || i[_e34].color;var w = _t55.color || i[_e34].color;if (s.linearType !== "none") {var x = n.createLinearGradient(d, _t55.y, d, h);if (s.linearType == "opacity") {x.addColorStop(0, hexToRgb(a, s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));} else {x.addColorStop(0, hexToRgb(s.customColor[i[_e34].linearIndex], s.linearOpacity));x.addColorStop(s.colorStop, hexToRgb(s.customColor[i[_e34].linearIndex], s.linearOpacity));x.addColorStop(1, hexToRgb(a, 1));}a = x;}n.moveTo(d, h);n.quadraticCurveTo(_t55.x - 0, h - S / 4, _t55.x, _t55.y);n.quadraticCurveTo(_t55.x + 0, h - S / 4, d + _t55.width, h);n.setStrokeStyle(w);n.setFillStyle(a);if (s.borderWidth > 0) {n.setLineWidth(s.borderWidth * r.pix);n.stroke();}n.fill();}};break;}if (r.dataLabel !== false && f === 1) {var _t56, _e35, _a16;_t56 = [].concat(r.chartData.yAxisData.ranges[0]);_e35 = _t56.pop();_a16 = _t56.shift();var c = getMountDataPoints(i, _e35, _a16, p, l, r, s, h, f);drawMountPointText(c, i, o, n, r, h);}n.restore();return { xAxisPoints: p, calPoints: c, eachSpacing: l };}function drawBarDataPoints(y, v, m, T) {var b = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var S = [];var w = (v.height - v.area[0] - v.area[2]) / v.categories.length;for (var t = 0; t < v.categories.length; t++) {S.push(v.area[0] + w / 2 + w * t);}var A = assign({}, { type: "group", width: w / 2, meterBorder: 4, meterFillColor: "#FFFFFF", barBorderCircle: false, barBorderRadius: [], seriesGap: 2, linearType: "none", linearOpacity: 1, customColor: [], colorStop: 0 }, v.extra.bar);var P = [];T.save();var C = -2;var D = S.length + 2;if (v.tooltip && v.tooltip.textList && v.tooltip.textList.length && b === 1) {drawBarToolTipSplitArea(v.tooltip.offset.y, v, m, T, w);}A.customColor = fillCustomColor(A.linearType, A.customColor, y, m);y.forEach(function (a, t) {var o, e, d;o = [].concat(v.chartData.xAxisData.ranges);d = o.pop();e = o.shift();var x = a.data;switch (A.type) {case "group":var i = getBarDataPoints(x, e, d, S, w, v, m, b);var f = getBarStackDataPoints(x, e, d, S, w, v, m, t, y, b);P.push(f);i = fixBarData(i, w, y.length, t, m, v);for (var _t57 = 0; _t57 < i.length; _t57++) {var _o5 = i[_t57];if (_o5 !== null && _t57 > C && _t57 < D) {var n = v.area[3];var r = _o5.y - _o5.width / 2;var p = _o5.height;T.beginPath();var l = _o5.color || a.color;var u = _o5.color || a.color;if (A.linearType !== "none") {var s = T.createLinearGradient(n, _o5.y, _o5.x, _o5.y);if (A.linearType == "opacity") {s.addColorStop(0, hexToRgb(l, A.linearOpacity));s.addColorStop(1, hexToRgb(l, 1));} else {s.addColorStop(0, hexToRgb(A.customColor[a.linearIndex], A.linearOpacity));s.addColorStop(A.colorStop, hexToRgb(A.customColor[a.linearIndex], A.linearOpacity));s.addColorStop(1, hexToRgb(l, 1));}l = s;}if (A.barBorderRadius && A.barBorderRadius.length === 4 || A.barBorderCircle === true) {var g = n;var h = _o5.width;var c = _o5.y - _o5.width / 2;var _p = _o5.height;if (A.barBorderCircle) {A.barBorderRadius = [h / 2, h / 2, 0, 0];}var _A$barBorderRadius = _slicedToArray(A.barBorderRadius, 4),_t58 = _A$barBorderRadius[0],_e36 = _A$barBorderRadius[1],_a17 = _A$barBorderRadius[2],_i10 = _A$barBorderRadius[3];var _r8 = Math.min(h / 2, _p / 2);_t58 = _t58 > _r8 ? _r8 : _t58;_e36 = _e36 > _r8 ? _r8 : _e36;_a17 = _a17 > _r8 ? _r8 : _a17;_i10 = _i10 > _r8 ? _r8 : _i10;_t58 = _t58 < 0 ? 0 : _t58;_e36 = _e36 < 0 ? 0 : _e36;_a17 = _a17 < 0 ? 0 : _a17;_i10 = _i10 < 0 ? 0 : _i10;T.arc(g + _i10, c + _i10, _i10, -Math.PI, -Math.PI / 2);T.arc(_o5.x - _t58, c + _t58, _t58, -Math.PI / 2, 0);T.arc(_o5.x - _e36, c + h - _e36, _e36, 0, Math.PI / 2);T.arc(g + _a17, c + h - _a17, _a17, Math.PI / 2, Math.PI);} else {T.moveTo(n, r);T.lineTo(_o5.x, r);T.lineTo(_o5.x, r + _o5.width);T.lineTo(n, r + _o5.width);T.lineTo(n, r);T.setLineWidth(1);T.setStrokeStyle(u);}T.setFillStyle(l);T.closePath();T.fill();}};break;case "stack":var i = getBarStackDataPoints(x, e, d, S, w, v, m, t, y, b);P.push(i);i = fixBarStackData(i, w, y.length, t, m, v, y);for (var _e37 = 0; _e37 < i.length; _e37++) {var _t59 = i[_e37];if (_t59 !== null && _e37 > C && _e37 < D) {T.beginPath();var l = _t59.color || a.color;var n = _t59.x0;T.setFillStyle(l);T.moveTo(n, _t59.y - _t59.width / 2);T.fillRect(n, _t59.y - _t59.width / 2, _t59.height, _t59.width);T.closePath();T.fill();}};break;}});if (v.dataLabel !== false && b === 1) {y.forEach(function (t, e) {var a, i, r;a = [].concat(v.chartData.xAxisData.ranges);r = a.pop();i = a.shift();var o = t.data;switch (A.type) {case "group":var n = getBarDataPoints(o, i, r, S, w, v, m, b);n = fixBarData(n, w, y.length, e, m, v);drawBarPointText(n, t, m, T, v);break;case "stack":var n = getBarStackDataPoints(o, i, r, S, w, v, m, e, y, b);drawBarPointText(n, t, m, T, v);break;}});}return { yAxisPoints: S, calPoints: P, eachSpacing: w };}function drawCandleDataPoints(e, t, h, c, d) {var g = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;var s = assign({}, { color: {}, average: {} }, h.extra.candle);s.color = assign({}, { upLine: "#f04864", upFill: "#f04864", downLine: "#2fc25b", downFill: "#2fc25b" }, s.color);s.average = assign({}, { show: false, name: [], day: [], color: c.color }, s.average);h.extra.candle = s;var a = h.chartData.xAxisData,x = a.xAxisPoints,f = a.eachSpacing;var y = [];d.save();var p = -2;var v = x.length + 2;var u = 0;var m = h.width + f;if (h._scrollDistance_ && h._scrollDistance_ !== 0 && h.enableScroll === true) {d.translate(h._scrollDistance_, 0);p = Math.floor(-h._scrollDistance_ / f) - 2;v = p + h.xAxis.itemCount + 4;u = -h._scrollDistance_ - f * 2 + h.area[3];m = u + (h.xAxis.itemCount + 4) * f;}if (s.average.show || t) {t.forEach(function (e, t) {var a, i, r;a = [].concat(h.chartData.yAxisData.ranges[e.index]);i = a.pop();r = a.shift();var o = e.data;var n = getDataPoints(o, i, r, x, f, h, c, g);var l = splitPoints(n, e);for (var _t60 = 0; _t60 < l.length; _t60++) {var _i11 = l[_t60];d.beginPath();d.setStrokeStyle(e.color);d.setLineWidth(1);if (_i11.length === 1) {d.moveTo(_i11[0].x, _i11[0].y);d.arc(_i11[0].x, _i11[0].y, 1, 0, 2 * Math.PI);} else {d.moveTo(_i11[0].x, _i11[0].y);var _a18 = 0;for (var _e38 = 0; _e38 < _i11.length; _e38++) {var _t61 = _i11[_e38];if (_a18 == 0 && _t61.x > u) {d.moveTo(_t61.x, _t61.y);_a18 = 1;}if (_e38 > 0 && _t61.x > u && _t61.x < m) {var s = createCurveControlPoints(_i11, _e38 - 1);d.bezierCurveTo(s.ctrA.x, s.ctrA.y, s.ctrB.x, s.ctrB.y, _t61.x, _t61.y);}}d.moveTo(_i11[0].x, _i11[0].y);}d.closePath();d.stroke();}});}e.forEach(function (t, e) {var a, i, r;a = [].concat(h.chartData.yAxisData.ranges[t.index]);i = a.pop();r = a.shift();var o = t.data;var n = getCandleDataPoints(o, i, r, x, f, h, c, g);y.push(n);var l = splitPoints(n, t);for (var _e39 = 0; _e39 < l[0].length; _e39++) {if (_e39 > p && _e39 < v) {var _t62 = l[0][_e39];d.beginPath();if (o[_e39][1] - o[_e39][0] > 0) {d.setStrokeStyle(s.color.upLine);d.setFillStyle(s.color.upFill);d.setLineWidth(1 * h.pix);d.moveTo(_t62[3].x, _t62[3].y);d.lineTo(_t62[1].x, _t62[1].y);d.lineTo(_t62[1].x - f / 4, _t62[1].y);d.lineTo(_t62[0].x - f / 4, _t62[0].y);d.lineTo(_t62[0].x, _t62[0].y);d.lineTo(_t62[2].x, _t62[2].y);d.lineTo(_t62[0].x, _t62[0].y);d.lineTo(_t62[0].x + f / 4, _t62[0].y);d.lineTo(_t62[1].x + f / 4, _t62[1].y);d.lineTo(_t62[1].x, _t62[1].y);d.moveTo(_t62[3].x, _t62[3].y);} else {d.setStrokeStyle(s.color.downLine);d.setFillStyle(s.color.downFill);d.setLineWidth(1 * h.pix);d.moveTo(_t62[3].x, _t62[3].y);d.lineTo(_t62[0].x, _t62[0].y);d.lineTo(_t62[0].x - f / 4, _t62[0].y);d.lineTo(_t62[1].x - f / 4, _t62[1].y);d.lineTo(_t62[1].x, _t62[1].y);d.lineTo(_t62[2].x, _t62[2].y);d.lineTo(_t62[1].x, _t62[1].y);d.lineTo(_t62[1].x + f / 4, _t62[1].y);d.lineTo(_t62[0].x + f / 4, _t62[0].y);d.lineTo(_t62[0].x, _t62[0].y);d.moveTo(_t62[3].x, _t62[3].y);}d.closePath();d.fill();d.stroke();}}});d.restore();return { xAxisPoints: x, calPoints: y, eachSpacing: f };}function drawAreaDataPoints(t, s, h, c) {var d = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var x = assign({}, { type: "straight", opacity: .2, addLine: false, width: 2, gradient: false, activeType: "none" }, s.extra.area);var e = s.chartData.xAxisData,f = e.xAxisPoints,p = e.eachSpacing;var y = s.height - s.area[2];var v = [];c.save();var u = 0;var g = s.width + p;if (s._scrollDistance_ && s._scrollDistance_ !== 0 && s.enableScroll === true) {c.translate(s._scrollDistance_, 0);u = -s._scrollDistance_ - p * 2 + s.area[3];g = u + (s.xAxis.itemCount + 4) * p;}t.forEach(function (e, t) {var a, i, r;a = [].concat(s.chartData.yAxisData.ranges[e.index]);i = a.pop();r = a.shift();var o = e.data;var n = getDataPoints(o, i, r, f, p, s, h, d);v.push(n);var l = splitPoints(n, e);for (var _t63 = 0; _t63 < l.length; _t63++) {var _r9 = l[_t63];c.beginPath();c.setStrokeStyle(hexToRgb(e.color, x.opacity));if (x.gradient) {var _t64 = c.createLinearGradient(0, s.area[0], 0, s.height - s.area[2]);_t64.addColorStop("0", hexToRgb(e.color, x.opacity));_t64.addColorStop("1.0", hexToRgb("#FFFFFF", .1));c.setFillStyle(_t64);} else {c.setFillStyle(hexToRgb(e.color, x.opacity));}c.setLineWidth(x.width * s.pix);if (_r9.length > 1) {var _t65 = _r9[0];var _e40 = _r9[_r9.length - 1];c.moveTo(_t65.x, _t65.y);var _i12 = 0;if (x.type === "curve") {for (var _a19 = 0; _a19 < _r9.length; _a19++) {var _e41 = _r9[_a19];if (_i12 == 0 && _e41.x > u) {c.moveTo(_e41.x, _e41.y);_i12 = 1;}if (_a19 > 0 && _e41.x > u && _e41.x < g) {var _t66 = createCurveControlPoints(_r9, _a19 - 1);c.bezierCurveTo(_t66.ctrA.x, _t66.ctrA.y, _t66.ctrB.x, _t66.ctrB.y, _e41.x, _e41.y);}}}if (x.type === "straight") {for (var _e42 = 0; _e42 < _r9.length; _e42++) {var _t67 = _r9[_e42];if (_i12 == 0 && _t67.x > u) {c.moveTo(_t67.x, _t67.y);_i12 = 1;}if (_e42 > 0 && _t67.x > u && _t67.x < g) {c.lineTo(_t67.x, _t67.y);}}}if (x.type === "step") {for (var _e43 = 0; _e43 < _r9.length; _e43++) {var _t68 = _r9[_e43];if (_i12 == 0 && _t68.x > u) {c.moveTo(_t68.x, _t68.y);_i12 = 1;}if (_e43 > 0 && _t68.x > u && _t68.x < g) {c.lineTo(_t68.x, _r9[_e43 - 1].y);c.lineTo(_t68.x, _t68.y);}}}c.lineTo(_e40.x, y);c.lineTo(_t65.x, y);c.lineTo(_t65.x, _t65.y);} else {var _t69 = _r9[0];c.moveTo(_t69.x - p / 2, _t69.y);}c.closePath();c.fill();if (x.addLine) {if (e.lineType == "dash") {var _t70 = e.dashLength ? e.dashLength : 8;_t70 *= s.pix;c.setLineDash([_t70, _t70]);}c.beginPath();c.setStrokeStyle(e.color);c.setLineWidth(x.width * s.pix);if (_r9.length === 1) {c.moveTo(_r9[0].x, _r9[0].y);} else {c.moveTo(_r9[0].x, _r9[0].y);var _i13 = 0;if (x.type === "curve") {for (var _a20 = 0; _a20 < _r9.length; _a20++) {var _e44 = _r9[_a20];if (_i13 == 0 && _e44.x > u) {c.moveTo(_e44.x, _e44.y);_i13 = 1;}if (_a20 > 0 && _e44.x > u && _e44.x < g) {var _t71 = createCurveControlPoints(_r9, _a20 - 1);c.bezierCurveTo(_t71.ctrA.x, _t71.ctrA.y, _t71.ctrB.x, _t71.ctrB.y, _e44.x, _e44.y);}}}if (x.type === "straight") {for (var _e45 = 0; _e45 < _r9.length; _e45++) {var _t72 = _r9[_e45];if (_i13 == 0 && _t72.x > u) {c.moveTo(_t72.x, _t72.y);_i13 = 1;}if (_e45 > 0 && _t72.x > u && _t72.x < g) {c.lineTo(_t72.x, _t72.y);}}}if (x.type === "step") {for (var _e46 = 0; _e46 < _r9.length; _e46++) {var _t73 = _r9[_e46];if (_i13 == 0 && _t73.x > u) {c.moveTo(_t73.x, _t73.y);_i13 = 1;}if (_e46 > 0 && _t73.x > u && _t73.x < g) {c.lineTo(_t73.x, _r9[_e46 - 1].y);c.lineTo(_t73.x, _t73.y);}}}c.moveTo(_r9[0].x, _r9[0].y);}c.stroke();c.setLineDash([]);}}if (s.dataPointShape !== false) {drawPointShape(n, e.color, e.pointShape, c, s);}drawActivePoint(n, e.color, e.pointShape, c, s, x, t);});if (s.dataLabel !== false && d === 1) {t.forEach(function (t, e) {var a, i, r;a = [].concat(s.chartData.yAxisData.ranges[t.index]);i = a.pop();r = a.shift();var o = t.data;var n = getDataPoints(o, i, r, f, p, s, h, d);drawPointText(n, t, h, c, s);});}c.restore();return { xAxisPoints: f, calPoints: v, eachSpacing: p };}function drawScatterDataPoints(t, s, h, c) {var d = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var i = assign({}, { type: "circle" }, s.extra.scatter);var e = s.chartData.xAxisData,x = e.xAxisPoints,f = e.eachSpacing;var r = [];c.save();var a = 0;var o = s.width + f;if (s._scrollDistance_ && s._scrollDistance_ !== 0 && s.enableScroll === true) {c.translate(s._scrollDistance_, 0);a = -s._scrollDistance_ - f * 2 + s.area[3];o = a + (s.xAxis.itemCount + 4) * f;}t.forEach(function (t, e) {var a, i, r;a = [].concat(s.chartData.yAxisData.ranges[t.index]);i = a.pop();r = a.shift();var o = t.data;var n = getDataPoints(o, i, r, x, f, s, h, d);c.beginPath();c.setStrokeStyle(t.color);c.setFillStyle(t.color);c.setLineWidth(1 * s.pix);var l = t.pointShape;if (l === "diamond") {n.forEach(function (t, e) {if (t !== null) {c.moveTo(t.x, t.y - 4.5);c.lineTo(t.x - 4.5, t.y);c.lineTo(t.x, t.y + 4.5);c.lineTo(t.x + 4.5, t.y);c.lineTo(t.x, t.y - 4.5);}});} else if (l === "circle") {n.forEach(function (t, e) {if (t !== null) {c.moveTo(t.x + 2.5 * s.pix, t.y);c.arc(t.x, t.y, 3 * s.pix, 0, 2 * Math.PI, false);}});} else if (l === "square") {n.forEach(function (t, e) {if (t !== null) {c.moveTo(t.x - 3.5, t.y - 3.5);c.rect(t.x - 3.5, t.y - 3.5, 7, 7);}});} else if (l === "triangle") {n.forEach(function (t, e) {if (t !== null) {c.moveTo(t.x, t.y - 4.5);c.lineTo(t.x - 4.5, t.y + 4.5);c.lineTo(t.x + 4.5, t.y + 4.5);c.lineTo(t.x, t.y - 4.5);}});} else if (l === "triangle") {return;}c.closePath();c.fill();c.stroke();});if (s.dataLabel !== false && d === 1) {t.forEach(function (t, e) {var a, i, r;a = [].concat(s.chartData.yAxisData.ranges[t.index]);i = a.pop();r = a.shift();var o = t.data;var n = getDataPoints(o, i, r, x, f, s, h, d);drawPointText(n, t, h, c, s);});}c.restore();return { xAxisPoints: x, calPoints: r, eachSpacing: f };}function drawBubbleDataPoints(a, l, s, h) {var c = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var d = assign({}, { opacity: 1, border: 2 }, l.extra.bubble);var t = l.chartData.xAxisData,x = t.xAxisPoints,f = t.eachSpacing;var i = [];h.save();var e = 0;var r = l.width + f;if (l._scrollDistance_ && l._scrollDistance_ !== 0 && l.enableScroll === true) {h.translate(l._scrollDistance_, 0);e = -l._scrollDistance_ - f * 2 + l.area[3];r = e + (l.xAxis.itemCount + 4) * f;}a.forEach(function (i, t) {var e, a, r;e = [].concat(l.chartData.yAxisData.ranges[i.index]);a = e.pop();r = e.shift();var o = i.data;var n = getDataPoints(o, a, r, x, f, l, s, c);h.beginPath();h.setStrokeStyle(i.color);h.setLineWidth(d.border * l.pix);h.setFillStyle(hexToRgb(i.color, d.opacity));n.forEach(function (t, e) {h.moveTo(t.x + t.r, t.y);h.arc(t.x, t.y, t.r * l.pix, 0, 2 * Math.PI, false);});h.closePath();h.fill();h.stroke();if (l.dataLabel !== false && c === 1) {n.forEach(function (t, e) {h.beginPath();var a = i.textSize * l.pix || s.fontSize;h.setFontSize(a);h.setFillStyle(i.textColor || "#FFFFFF");h.setTextAlign("center");h.fillText(String(t.t), t.x, t.y + a / 2);h.closePath();h.stroke();h.setTextAlign("left");});}});h.restore();return { xAxisPoints: x, calPoints: i, eachSpacing: f };}function drawLineDataPoints(t, d, x, f) {var p = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var u = assign({}, { type: "straight", width: 2, activeType: "none", linearType: "none", onShadow: false, animation: "vertical" }, d.extra.line);u.width *= d.pix;var e = d.chartData.xAxisData,g = e.xAxisPoints,y = e.eachSpacing;var T = [];f.save();var v = 0;var m = d.width + y;if (d._scrollDistance_ && d._scrollDistance_ !== 0 && d.enableScroll === true) {f.translate(d._scrollDistance_, 0);v = -d._scrollDistance_ - y * 2 + d.area[3];m = v + (d.xAxis.itemCount + 4) * y;}t.forEach(function (e, c) {f.beginPath();f.setStrokeStyle(e.color);f.moveTo(-1e4, -1e4);f.lineTo(-10001, -10001);f.stroke();var t, a, i;t = [].concat(d.chartData.yAxisData.ranges[e.index]);a = t.pop();i = t.shift();var r = e.data;var o = getLineDataPoints(r, a, i, g, y, d, x, u, p);T.push(o);var n = splitPoints(o, e);if (e.lineType == "dash") {var _t74 = e.dashLength ? e.dashLength : 8;_t74 *= d.pix;f.setLineDash([_t74, _t74]);}f.beginPath();var l = e.color;if (u.linearType !== "none" && e.linearColor && e.linearColor.length > 0) {var s = f.createLinearGradient(d.chartData.xAxisData.startX, d.height / 2, d.chartData.xAxisData.endX, d.height / 2);for (var h = 0; h < e.linearColor.length; h++) {s.addColorStop(e.linearColor[h][0], hexToRgb(e.linearColor[h][1], 1));}l = s;}f.setStrokeStyle(l);if (u.onShadow == true && e.setShadow && e.setShadow.length > 0) {f.setShadow(e.setShadow[0], e.setShadow[1], e.setShadow[2], e.setShadow[3]);} else {f.setShadow(0, 0, 0, "rgba(0,0,0,0)");}f.setLineWidth(u.width);n.forEach(function (i, t) {if (i.length === 1) {f.moveTo(i[0].x, i[0].y);} else {f.moveTo(i[0].x, i[0].y);var _a21 = 0;if (u.type === "curve") {for (var _e47 = 0; _e47 < i.length; _e47++) {var _t75 = i[_e47];if (_a21 == 0 && _t75.x > v) {f.moveTo(_t75.x, _t75.y);_a21 = 1;}if (_e47 > 0 && _t75.x > v && _t75.x < m) {var r = createCurveControlPoints(i, _e47 - 1);f.bezierCurveTo(r.ctrA.x, r.ctrA.y, r.ctrB.x, r.ctrB.y, _t75.x, _t75.y);}}}if (u.type === "straight") {for (var _e48 = 0; _e48 < i.length; _e48++) {var _t76 = i[_e48];if (_a21 == 0 && _t76.x > v) {f.moveTo(_t76.x, _t76.y);_a21 = 1;}if (_e48 > 0 && _t76.x > v && _t76.x < m) {f.lineTo(_t76.x, _t76.y);}}}if (u.type === "step") {for (var _e49 = 0; _e49 < i.length; _e49++) {var _t77 = i[_e49];if (_a21 == 0 && _t77.x > v) {f.moveTo(_t77.x, _t77.y);_a21 = 1;}if (_e49 > 0 && _t77.x > v && _t77.x < m) {f.lineTo(_t77.x, i[_e49 - 1].y);f.lineTo(_t77.x, _t77.y);}}}f.moveTo(i[0].x, i[0].y);}});f.stroke();f.setLineDash([]);if (d.dataPointShape !== false) {drawPointShape(o, e.color, e.pointShape, f, d);}drawActivePoint(o, e.color, e.pointShape, f, d, u);});if (d.dataLabel !== false && p === 1) {t.forEach(function (t, e) {var a, i, r;a = [].concat(d.chartData.yAxisData.ranges[t.index]);i = a.pop();r = a.shift();var o = t.data;var n = getDataPoints(o, i, r, g, y, d, x, p);drawPointText(n, t, x, f, d);});}f.restore();return { xAxisPoints: g, calPoints: T, eachSpacing: y };}function drawMixDataPoints(t, v, m, T) {var D = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var e = v.chartData.xAxisData,b = e.xAxisPoints,S = e.eachSpacing;var w = assign({}, { width: S / 2, barBorderCircle: false, barBorderRadius: [], seriesGap: 2, linearType: "none", linearOpacity: 1, customColor: [], colorStop: 0 }, v.extra.mix.column);var A = assign({}, { opacity: .2, gradient: false }, v.extra.mix.area);var M = assign({}, { width: 2 }, v.extra.mix.line);var L = v.height - v.area[2];var F = [];var _ = 0;var k = 0;t.forEach(function (t, e) {if (t.type == "column") {k += 1;}});T.save();var R = -2;var I = b.length + 2;var P = 0;var C = v.width + S;if (v._scrollDistance_ && v._scrollDistance_ !== 0 && v.enableScroll === true) {T.translate(v._scrollDistance_, 0);R = Math.floor(-v._scrollDistance_ / S) - 2;I = R + v.xAxis.itemCount + 4;P = -v._scrollDistance_ - S * 2 + v.area[3];C = P + (v.xAxis.itemCount + 4) * S;}w.customColor = fillCustomColor(w.linearType, w.customColor, t, m);t.forEach(function (n, t) {var o, x, f;o = [].concat(v.chartData.yAxisData.ranges[n.index]);x = o.pop();f = o.shift();var p = n.data;var a = getDataPoints(p, x, f, b, S, v, m, D);F.push(a);if (n.type == "column") {a = fixColumeData(a, S, k, _, m, v);for (var _t78 = 0; _t78 < a.length; _t78++) {var _o6 = a[_t78];if (_o6 !== null && _t78 > R && _t78 < I) {var l = _o6.x - _o6.width / 2;var s = v.height - _o6.y - v.area[2];T.beginPath();var e = _o6.color || n.color;var u = _o6.color || n.color;if (w.linearType !== "none") {var i = T.createLinearGradient(l, _o6.y, l, v.height - v.area[2]);if (w.linearType == "opacity") {i.addColorStop(0, hexToRgb(e, w.linearOpacity));i.addColorStop(1, hexToRgb(e, 1));} else {i.addColorStop(0, hexToRgb(w.customColor[n.linearIndex], w.linearOpacity));i.addColorStop(w.colorStop, hexToRgb(w.customColor[n.linearIndex], w.linearOpacity));i.addColorStop(1, hexToRgb(e, 1));}e = i;}if (w.barBorderRadius && w.barBorderRadius.length === 4 || w.barBorderCircle) {var h = l;var c = _o6.y;var d = _o6.width;var _s3 = v.height - v.area[2] - _o6.y;if (w.barBorderCircle) {w.barBorderRadius = [d / 2, d / 2, 0, 0];}var _w$barBorderRadius = _slicedToArray(w.barBorderRadius, 4),_t79 = _w$barBorderRadius[0],_e50 = _w$barBorderRadius[1],_a22 = _w$barBorderRadius[2],_i14 = _w$barBorderRadius[3];var _r10 = Math.min(d / 2, _s3 / 2);_t79 = _t79 > _r10 ? _r10 : _t79;_e50 = _e50 > _r10 ? _r10 : _e50;_a22 = _a22 > _r10 ? _r10 : _a22;_i14 = _i14 > _r10 ? _r10 : _i14;_t79 = _t79 < 0 ? 0 : _t79;_e50 = _e50 < 0 ? 0 : _e50;_a22 = _a22 < 0 ? 0 : _a22;_i14 = _i14 < 0 ? 0 : _i14;T.arc(h + _t79, c + _t79, _t79, -Math.PI, -Math.PI / 2);T.arc(h + d - _e50, c + _e50, _e50, -Math.PI / 2, 0);T.arc(h + d - _a22, c + _s3 - _a22, _a22, 0, Math.PI / 2);T.arc(h + _i14, c + _s3 - _i14, _i14, Math.PI / 2, Math.PI);} else {T.moveTo(l, _o6.y);T.lineTo(l + _o6.width, _o6.y);T.lineTo(l + _o6.width, v.height - v.area[2]);T.lineTo(l, v.height - v.area[2]);T.lineTo(l, _o6.y);T.setLineWidth(1);T.setStrokeStyle(u);}T.setFillStyle(e);T.closePath();T.fill();}}_ += 1;}if (n.type == "area") {var _e51 = splitPoints(a, n);for (var _t80 = 0; _t80 < _e51.length; _t80++) {var _i15 = _e51[_t80];T.beginPath();T.setStrokeStyle(n.color);T.setStrokeStyle(hexToRgb(n.color, A.opacity));if (A.gradient) {var _t81 = T.createLinearGradient(0, v.area[0], 0, v.height - v.area[2]);_t81.addColorStop("0", hexToRgb(n.color, A.opacity));_t81.addColorStop("1.0", hexToRgb("#FFFFFF", .1));T.setFillStyle(_t81);} else {T.setFillStyle(hexToRgb(n.color, A.opacity));}T.setLineWidth(2 * v.pix);if (_i15.length > 1) {var r = _i15[0];var _t82 = _i15[_i15.length - 1];T.moveTo(r.x, r.y);var _a23 = 0;if (n.style === "curve") {for (var _e52 = 0; _e52 < _i15.length; _e52++) {var _t83 = _i15[_e52];if (_a23 == 0 && _t83.x > P) {T.moveTo(_t83.x, _t83.y);_a23 = 1;}if (_e52 > 0 && _t83.x > P && _t83.x < C) {var g = createCurveControlPoints(_i15, _e52 - 1);T.bezierCurveTo(g.ctrA.x, g.ctrA.y, g.ctrB.x, g.ctrB.y, _t83.x, _t83.y);}}} else {for (var _e53 = 0; _e53 < _i15.length; _e53++) {var _t84 = _i15[_e53];if (_a23 == 0 && _t84.x > P) {T.moveTo(_t84.x, _t84.y);_a23 = 1;}if (_e53 > 0 && _t84.x > P && _t84.x < C) {T.lineTo(_t84.x, _t84.y);}}}T.lineTo(_t82.x, L);T.lineTo(r.x, L);T.lineTo(r.x, r.y);} else {var _t85 = _i15[0];T.moveTo(_t85.x - S / 2, _t85.y);}T.closePath();T.fill();}}if (n.type == "line") {var y = splitPoints(a, n);y.forEach(function (i, t) {if (n.lineType == "dash") {var _t86 = n.dashLength ? n.dashLength : 8;_t86 *= v.pix;T.setLineDash([_t86, _t86]);}T.beginPath();T.setStrokeStyle(n.color);T.setLineWidth(M.width * v.pix);if (i.length === 1) {T.moveTo(i[0].x, i[0].y);} else {T.moveTo(i[0].x, i[0].y);var _a24 = 0;if (n.style == "curve") {for (var _e54 = 0; _e54 < i.length; _e54++) {var _t87 = i[_e54];if (_a24 == 0 && _t87.x > P) {T.moveTo(_t87.x, _t87.y);_a24 = 1;}if (_e54 > 0 && _t87.x > P && _t87.x < C) {var r = createCurveControlPoints(i, _e54 - 1);T.bezierCurveTo(r.ctrA.x, r.ctrA.y, r.ctrB.x, r.ctrB.y, _t87.x, _t87.y);}}} else {for (var _e55 = 0; _e55 < i.length; _e55++) {var _t88 = i[_e55];if (_a24 == 0 && _t88.x > P) {T.moveTo(_t88.x, _t88.y);_a24 = 1;}if (_e55 > 0 && _t88.x > P && _t88.x < C) {T.lineTo(_t88.x, _t88.y);}}}T.moveTo(i[0].x, i[0].y);}T.stroke();T.setLineDash([]);});}if (n.type == "point") {n.addPoint = true;}if (n.addPoint == true && n.type !== "column") {drawPointShape(a, n.color, n.pointShape, T, v);}});if (v.dataLabel !== false && D === 1) {var _ = 0;t.forEach(function (t, e) {var a, i, r;a = [].concat(v.chartData.yAxisData.ranges[t.index]);i = a.pop();r = a.shift();var o = t.data;var n = getDataPoints(o, i, r, b, S, v, m, D);if (t.type !== "column") {drawPointText(n, t, m, T, v);} else {n = fixColumeData(n, S, k, _, m, v);drawPointText(n, t, m, T, v);_ += 1;}});}T.restore();return { xAxisPoints: b, calPoints: F, eachSpacing: S };}function drawToolTipBridge(t, e, a, i, r, o) {var n = t.extra.tooltip || {};if (n.horizentalLine && t.tooltip && i === 1 && (t.type == "line" || t.type == "area" || t.type == "column" || t.type == "mount" || t.type == "candle" || t.type == "mix")) {drawToolTipHorizentalLine(t, e, a, r, o);}a.save();if (t._scrollDistance_ && t._scrollDistance_ !== 0 && t.enableScroll === true) {a.translate(t._scrollDistance_, 0);}if (t.tooltip && t.tooltip.textList && t.tooltip.textList.length && i === 1) {drawToolTip(t.tooltip.textList, t.tooltip.offset, t, e, a, r, o);}a.restore();}function drawXAxis(r, h, c, d) {var e = h.chartData.xAxisData,x = e.xAxisPoints,t = e.startX,a = e.endX,f = e.eachSpacing;var p = "center";if (h.type == "bar" || h.type == "line" || h.type == "area" || h.type == "scatter" || h.type == "bubble") {p = h.xAxis.boundaryGap;}var u = h.height - h.area[2];var i = h.area[0];if (h.enableScroll && h.xAxis.scrollShow) {var o = h.height - h.area[2] + c.xAxisHeight;var n = a - t;var l = f * (x.length - 1);if (h.type == "mount" && h.extra && h.extra.mount && h.extra.mount.widthRatio && h.extra.mount.widthRatio > 1) {if (h.extra.mount.widthRatio > 2) h.extra.mount.widthRatio = 2;l += (h.extra.mount.widthRatio - 1) * f;}var s = n * n / l;var y = 0;if (h._scrollDistance_) {y = -h._scrollDistance_ * n / l;}d.beginPath();d.setLineCap("round");d.setLineWidth(6 * h.pix);d.setStrokeStyle(h.xAxis.scrollBackgroundColor || "#EFEBEF");d.moveTo(t, o);d.lineTo(a, o);d.stroke();d.closePath();d.beginPath();d.setLineCap("round");d.setLineWidth(6 * h.pix);d.setStrokeStyle(h.xAxis.scrollColor || "#A6A6A6");d.moveTo(t + y, o);d.lineTo(t + y + s, o);d.stroke();d.closePath();d.setLineCap("butt");}d.save();if (h._scrollDistance_ && h._scrollDistance_ !== 0) {d.translate(h._scrollDistance_, 0);}if (h.xAxis.calibration === true) {d.setStrokeStyle(h.xAxis.gridColor || "#cccccc");d.setLineCap("butt");d.setLineWidth(1 * h.pix);x.forEach(function (t, e) {if (e > 0) {d.beginPath();d.moveTo(t - f / 2, u);d.lineTo(t - f / 2, u + 3 * h.pix);d.closePath();d.stroke();}});}if (h.xAxis.disableGrid !== true) {d.setStrokeStyle(h.xAxis.gridColor || "#cccccc");d.setLineCap("butt");d.setLineWidth(1 * h.pix);if (h.xAxis.gridType == "dash") {d.setLineDash([h.xAxis.dashLength * h.pix, h.xAxis.dashLength * h.pix]);}h.xAxis.gridEval = h.xAxis.gridEval || 1;x.forEach(function (t, e) {if (e % h.xAxis.gridEval == 0) {d.beginPath();d.moveTo(t, u);d.lineTo(t, i);d.stroke();}});d.setLineDash([]);}if (h.xAxis.disabled !== true) {var _t89 = r.length;if (h.xAxis.labelCount) {if (h.xAxis.itemCount) {_t89 = Math.ceil(r.length / h.xAxis.itemCount * h.xAxis.labelCount);} else {_t89 = h.xAxis.labelCount;}_t89 -= 1;}var _e56 = Math.ceil(r.length / _t89);var _a25 = [];var _i16 = r.length;for (var _t90 = 0; _t90 < _i16; _t90++) {if (_t90 % _e56 !== 0) {_a25.push("");} else {_a25.push(r[_t90]);}}_a25[_i16 - 1] = r[_i16 - 1];var g = h.xAxis.fontSize * h.pix || c.fontSize;if (c._xAxisTextAngle_ === 0) {_a25.forEach(function (t, e) {var a = h.xAxis.formatter ? h.xAxis.formatter(t, e, h) : t;var i = -measureText(String(a), g, d) / 2;if (p == "center") {i += f / 2;}var r = 0;if (h.xAxis.scrollShow) {r = 6 * h.pix;}var o = h._scrollDistance_ || 0;var n = p == "center" ? x[e] + f / 2 : x[e];if (n - Math.abs(o) >= h.area[3] - 1 && n - Math.abs(o) <= h.width - h.area[1] + 1) {d.beginPath();d.setFontSize(g);d.setFillStyle(h.xAxis.fontColor || h.fontColor);d.fillText(String(a), x[e] + i, u + h.xAxis.marginTop * h.pix + (h.xAxis.lineHeight - h.xAxis.fontSize) * h.pix / 2 + h.xAxis.fontSize * h.pix);d.closePath();d.stroke();}});} else {_a25.forEach(function (t, e) {var a = h.xAxis.formatter ? h.xAxis.formatter(t) : t;var i = h._scrollDistance_ || 0;var r = p == "center" ? x[e] + f / 2 : x[e];if (r - Math.abs(i) >= h.area[3] - 1 && r - Math.abs(i) <= h.width - h.area[1] + 1) {d.save();d.beginPath();d.setFontSize(g);d.setFillStyle(h.xAxis.fontColor || h.fontColor);var o = measureText(String(a), g, d);var n = x[e];if (p == "center") {n = x[e] + f / 2;}var l = 0;if (h.xAxis.scrollShow) {l = 6 * h.pix;}var s = u + h.xAxis.marginTop * h.pix + g - g * Math.abs(Math.sin(c._xAxisTextAngle_));if (h.xAxis.rotateAngle < 0) {n -= g / 2;o = 0;} else {n += g / 2;o = -o;}d.translate(n, s);d.rotate(-1 * c._xAxisTextAngle_);d.fillText(String(a), o, 0);d.closePath();d.stroke();d.restore();}});}}d.restore();if (h.xAxis.title) {d.beginPath();d.setFontSize(h.xAxis.titleFontSize * h.pix);d.setFillStyle(h.xAxis.titleFontColor);d.fillText(String(h.xAxis.title), h.width - h.area[1] + h.xAxis.titleOffsetX * h.pix, h.height - h.area[2] + h.xAxis.marginTop * h.pix + (h.xAxis.lineHeight - h.xAxis.titleFontSize) * h.pix / 2 + (h.xAxis.titleFontSize + h.xAxis.titleOffsetY) * h.pix);d.closePath();d.stroke();}if (h.xAxis.axisLine) {d.beginPath();d.setStrokeStyle(h.xAxis.axisLineColor);d.setLineWidth(1 * h.pix);d.moveTo(t, h.height - h.area[2]);d.lineTo(a, h.height - h.area[2]);d.stroke();}}function drawYAxisGrid(c, e, d, a) {if (e.yAxis.disableGrid === true) {return;}var t = e.height - e.area[0] - e.area[2];var i = t / e.yAxis.splitNumber;var r = e.area[3];var o = e.chartData.xAxisData.xAxisPoints,n = e.chartData.xAxisData.eachSpacing;var l = n * (o.length - 1);if (e.type == "mount" && e.extra && e.extra.mount && e.extra.mount.widthRatio && e.extra.mount.widthRatio > 1) {if (e.extra.mount.widthRatio > 2) e.extra.mount.widthRatio = 2;l += (e.extra.mount.widthRatio - 1) * n;}var x = r + l;var s = [];var h = 1;if (e.xAxis.axisLine === false) {h = 0;}for (var _t91 = h; _t91 < e.yAxis.splitNumber + 1; _t91++) {s.push(e.height - e.area[2] - i * _t91);}a.save();if (e._scrollDistance_ && e._scrollDistance_ !== 0) {a.translate(e._scrollDistance_, 0);}if (e.yAxis.gridType == "dash") {a.setLineDash([e.yAxis.dashLength * e.pix, e.yAxis.dashLength * e.pix]);}a.setStrokeStyle(e.yAxis.gridColor);a.setLineWidth(1 * e.pix);s.forEach(function (t, e) {a.beginPath();a.moveTo(r, t);a.lineTo(x, t);a.stroke();});a.setLineDash([]);a.restore();}function drawYAxis(e, h, a, c) {if (h.yAxis.disabled === true) {return;}var i = h.height - h.area[0] - h.area[2];var r = i / h.yAxis.splitNumber;var o = h.area[3];var n = h.width - h.area[1];var t = h.height - h.area[2];c.beginPath();c.setFillStyle(h.background);if (h.enableScroll == true && h.xAxis.scrollPosition && h.xAxis.scrollPosition !== "left") {c.fillRect(0, 0, o, t + 2 * h.pix);}if (h.enableScroll == true && h.xAxis.scrollPosition && h.xAxis.scrollPosition !== "right") {c.fillRect(n, 0, h.width, t + 2 * h.pix);}c.closePath();c.stroke();var d = h.area[3];var x = h.width - h.area[1];var f = h.area[3] + (h.width - h.area[1] - h.area[3]) / 2;if (h.yAxis.data) {var _loop3 = function _loop3(_e57) {var s = h.yAxis.data[_e57];p = [];if (s.type === "categories") {for (var _t92 = 0; _t92 <= s.categories.length; _t92++) {p.push(h.area[0] + i / s.categories.length / 2 + i / s.categories.length * _t92);}} else {for (var _t93 = 0; _t93 <= h.yAxis.splitNumber; _t93++) {p.push(h.area[0] + r * _t93);}}if (s.disabled !== true) {var _t94 = h.chartData.yAxisData.rangesFormat[_e57];var _o7 = s.fontSize ? s.fontSize * h.pix : a.fontSize;var _n3 = h.chartData.yAxisData.yAxisWidth[_e57];var l = s.textAlign || "right";_t94.forEach(function (t, e) {var a = p[e];c.beginPath();c.setFontSize(_o7);c.setLineWidth(1 * h.pix);c.setStrokeStyle(s.axisLineColor || "#cccccc");c.setFillStyle(s.fontColor || h.fontColor);var i = 0;var r = 4 * h.pix;if (_n3.position == "left") {if (s.calibration == true) {c.moveTo(d, a);c.lineTo(d - 3 * h.pix, a);r += 3 * h.pix;}switch (l) {case "left":c.setTextAlign("left");i = d - _n3.width;break;case "right":c.setTextAlign("right");i = d - r;break;default:c.setTextAlign("center");i = d - _n3.width / 2;}c.fillText(String(t), i, a + _o7 / 2 - 3 * h.pix);} else if (_n3.position == "right") {if (s.calibration == true) {c.moveTo(x, a);c.lineTo(x + 3 * h.pix, a);r += 3 * h.pix;}switch (l) {case "left":c.setTextAlign("left");i = x + r;break;case "right":c.setTextAlign("right");i = x + _n3.width;break;default:c.setTextAlign("center");i = x + _n3.width / 2;}c.fillText(String(t), i, a + _o7 / 2 - 3 * h.pix);} else if (_n3.position == "center") {if (s.calibration == true) {c.moveTo(f, a);c.lineTo(f - 3 * h.pix, a);r += 3 * h.pix;}switch (l) {case "left":c.setTextAlign("left");i = f - _n3.width;break;case "right":c.setTextAlign("right");i = f - r;break;default:c.setTextAlign("center");i = f - _n3.width / 2;}c.fillText(String(t), i, a + _o7 / 2 - 3 * h.pix);}c.closePath();c.stroke();c.setTextAlign("left");});if (s.axisLine !== false) {c.beginPath();c.setStrokeStyle(s.axisLineColor || "#cccccc");c.setLineWidth(1 * h.pix);if (_n3.position == "left") {c.moveTo(d, h.height - h.area[2]);c.lineTo(d, h.area[0]);} else if (_n3.position == "right") {c.moveTo(x, h.height - h.area[2]);c.lineTo(x, h.area[0]);} else if (_n3.position == "center") {c.moveTo(f, h.height - h.area[2]);c.lineTo(f, h.area[0]);}c.stroke();}if (h.yAxis.showTitle) {var _t95 = s.titleFontSize * h.pix || a.fontSize;var _e58 = s.title;c.beginPath();c.setFontSize(_t95);c.setFillStyle(s.titleFontColor || h.fontColor);if (_n3.position == "left") {c.fillText(_e58, d - measureText(_e58, _t95, c) / 2 + (s.titleOffsetX || 0), h.area[0] - (10 - (s.titleOffsetY || 0)) * h.pix);} else if (_n3.position == "right") {c.fillText(_e58, x - measureText(_e58, _t95, c) / 2 + (s.titleOffsetX || 0), h.area[0] - (10 - (s.titleOffsetY || 0)) * h.pix);} else if (_n3.position == "center") {c.fillText(_e58, f - measureText(_e58, _t95, c) / 2 + (s.titleOffsetX || 0), h.area[0] - (10 - (s.titleOffsetY || 0)) * h.pix);}c.closePath();c.stroke();}if (_n3.position == "left") {d -= _n3.width + h.yAxis.padding * h.pix;} else {x += _n3.width + h.yAxis.padding * h.pix;}}};for (var _e57 = 0; _e57 < h.yAxis.data.length; _e57++) {var p;_loop3(_e57);}}}function drawLegend(t, l, y, s, e) {if (l.legend.show === false) {return;}var h = e.legendData;var a = h.points;var c = h.area;var d = l.legend.padding * l.pix;var x = l.legend.fontSize * l.pix;var f = 15 * l.pix;var p = 5 * l.pix;var u = l.legend.itemGap * l.pix;var g = Math.max(l.legend.lineHeight * l.pix, x);s.beginPath();s.setLineWidth(l.legend.borderWidth * l.pix);s.setStrokeStyle(l.legend.borderColor);s.setFillStyle(l.legend.backgroundColor);s.moveTo(c.start.x, c.start.y);s.rect(c.start.x, c.start.y, c.width, c.height);s.closePath();s.fill();s.stroke();a.forEach(function (i, t) {var e = 0;var a = 0;e = h.widthArr[t];a = h.heightArr[t];var r = 0;var o = 0;if (l.legend.position == "top" || l.legend.position == "bottom") {switch (l.legend.float) {case "left":r = c.start.x + d;break;case "right":r = c.start.x + c.width - e;break;default:r = c.start.x + (c.width - e) / 2;}o = c.start.y + d + t * g;} else {if (t == 0) {e = 0;} else {e = h.widthArr[t - 1];}r = c.start.x + d + e;o = c.start.y + d + (c.height - a) / 2;}s.setFontSize(y.fontSize);for (var _a26 = 0; _a26 < i.length; _a26++) {var _t96 = i[_a26];_t96.area = [0, 0, 0, 0];_t96.area[0] = r;_t96.area[1] = o;_t96.area[3] = o + g;s.beginPath();s.setLineWidth(1 * l.pix);s.setStrokeStyle(_t96.show ? _t96.color : l.legend.hiddenColor);s.setFillStyle(_t96.show ? _t96.color : l.legend.hiddenColor);switch (_t96.legendShape) {case "line":s.moveTo(r, o + .5 * g - 2 * l.pix);s.fillRect(r, o + .5 * g - 2 * l.pix, 15 * l.pix, 4 * l.pix);break;case "triangle":s.moveTo(r + 7.5 * l.pix, o + .5 * g - 5 * l.pix);s.lineTo(r + 2.5 * l.pix, o + .5 * g + 5 * l.pix);s.lineTo(r + 12.5 * l.pix, o + .5 * g + 5 * l.pix);s.lineTo(r + 7.5 * l.pix, o + .5 * g - 5 * l.pix);break;case "diamond":s.moveTo(r + 7.5 * l.pix, o + .5 * g - 5 * l.pix);s.lineTo(r + 2.5 * l.pix, o + .5 * g);s.lineTo(r + 7.5 * l.pix, o + .5 * g + 5 * l.pix);s.lineTo(r + 12.5 * l.pix, o + .5 * g);s.lineTo(r + 7.5 * l.pix, o + .5 * g - 5 * l.pix);break;case "circle":s.moveTo(r + 7.5 * l.pix, o + .5 * g);s.arc(r + 7.5 * l.pix, o + .5 * g, 5 * l.pix, 0, 2 * Math.PI);break;case "rect":s.moveTo(r, o + .5 * g - 5 * l.pix);s.fillRect(r, o + .5 * g - 5 * l.pix, 15 * l.pix, 10 * l.pix);break;case "square":s.moveTo(r + 5 * l.pix, o + .5 * g - 5 * l.pix);s.fillRect(r + 5 * l.pix, o + .5 * g - 5 * l.pix, 10 * l.pix, 10 * l.pix);break;case "none":break;default:s.moveTo(r, o + .5 * g - 5 * l.pix);s.fillRect(r, o + .5 * g - 5 * l.pix, 15 * l.pix, 10 * l.pix);}s.closePath();s.fill();s.stroke();r += f + p;var _e59 = .5 * g + .5 * x - 2;var n = _t96.legendText ? _t96.legendText : _t96.name;s.beginPath();s.setFontSize(x);s.setFillStyle(_t96.show ? l.legend.fontColor : l.legend.hiddenColor);s.fillText(n, r, o + _e59);s.closePath();s.stroke();if (l.legend.position == "top" || l.legend.position == "bottom") {r += measureText(n, x, s) + u;_t96.area[2] = r;} else {_t96.area[2] = r + measureText(n, x, s) + u;r -= f + p;o += g;}}});}function drawPieDataPoints(t, r, e, o) {var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var n = assign({}, { activeOpacity: .5, activeRadius: 10, offsetAngle: 0, labelWidth: 15, ringWidth: 30, customRadius: 0, border: false, borderWidth: 2, borderColor: "#FFFFFF", centerColor: "#FFFFFF", linearType: "none", customColor: [] }, r.type == "pie" ? r.extra.pie : r.extra.ring);var l = { x: r.area[3] + (r.width - r.area[1] - r.area[3]) / 2, y: r.area[0] + (r.height - r.area[0] - r.area[2]) / 2 };if (e.pieChartLinePadding == 0) {e.pieChartLinePadding = n.activeRadius * r.pix;}var i = Math.min((r.width - r.area[1] - r.area[3]) / 2 - e.pieChartLinePadding - e.pieChartTextPadding - e._pieTextMaxLength_, (r.height - r.area[0] - r.area[2]) / 2 - e.pieChartLinePadding - e.pieChartTextPadding);i = i < 10 ? 10 : i;if (n.customRadius > 0) {i = n.customRadius * r.pix;}t = getPieDataPoints(t, i, a);var h = n.activeRadius * r.pix;n.customColor = fillCustomColor(n.linearType, n.customColor, t, e);t = t.map(function (t) {t._start_ += n.offsetAngle * Math.PI / 180;return t;});t.forEach(function (t, e) {if (r.tooltip) {if (r.tooltip.index == e) {o.beginPath();o.setFillStyle(hexToRgb(t.color, n.activeOpacity || .5));o.moveTo(l.x, l.y);o.arc(l.x, l.y, t._radius_ + h, t._start_, t._start_ + 2 * t._proportion_ * Math.PI);o.closePath();o.fill();}}o.beginPath();o.setLineWidth(n.borderWidth * r.pix);o.lineJoin = "round";o.setStrokeStyle(n.borderColor);var a = t.color;if (n.linearType == "custom") {var i;if (o.createCircularGradient) {i = o.createCircularGradient(l.x, l.y, t._radius_);} else {i = o.createRadialGradient(l.x, l.y, 0, l.x, l.y, t._radius_);}i.addColorStop(0, hexToRgb(n.customColor[t.linearIndex], 1));i.addColorStop(1, hexToRgb(t.color, 1));a = i;}o.setFillStyle(a);o.moveTo(l.x, l.y);o.arc(l.x, l.y, t._radius_, t._start_, t._start_ + 2 * t._proportion_ * Math.PI);o.closePath();o.fill();if (n.border == true) {o.stroke();}});if (r.type === "ring") {var s = i * .6;if (typeof n.ringWidth === "number" && n.ringWidth > 0) {s = Math.max(0, i - n.ringWidth * r.pix);}o.beginPath();o.setFillStyle(n.centerColor);o.moveTo(l.x, l.y);o.arc(l.x, l.y, s, 0, 2 * Math.PI);o.closePath();o.fill();}if (r.dataLabel !== false && a === 1) {drawPieText(t, r, e, o, i, l);}if (a === 1 && r.type === "ring") {drawRingTitle(r, e, o, l);}return { center: l, radius: i, series: t };}function drawRoseDataPoints(t, r, e, o) {var a = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var n = assign({}, { type: "area", activeOpacity: .5, activeRadius: 10, offsetAngle: 0, labelWidth: 15, border: false, borderWidth: 2, borderColor: "#FFFFFF", linearType: "none", customColor: [] }, r.extra.rose);if (e.pieChartLinePadding == 0) {e.pieChartLinePadding = n.activeRadius * r.pix;}var l = { x: r.area[3] + (r.width - r.area[1] - r.area[3]) / 2, y: r.area[0] + (r.height - r.area[0] - r.area[2]) / 2 };var i = Math.min((r.width - r.area[1] - r.area[3]) / 2 - e.pieChartLinePadding - e.pieChartTextPadding - e._pieTextMaxLength_, (r.height - r.area[0] - r.area[2]) / 2 - e.pieChartLinePadding - e.pieChartTextPadding);i = i < 10 ? 10 : i;var s = n.minRadius || i * .5;if (i < s) {i = s + 10;}t = getRoseDataPoints(t, n.type, s, i, a);var h = n.activeRadius * r.pix;n.customColor = fillCustomColor(n.linearType, n.customColor, t, e);t = t.map(function (t) {t._start_ += (n.offsetAngle || 0) * Math.PI / 180;return t;});t.forEach(function (t, e) {if (r.tooltip) {if (r.tooltip.index == e) {o.beginPath();o.setFillStyle(hexToRgb(t.color, n.activeOpacity || .5));o.moveTo(l.x, l.y);o.arc(l.x, l.y, h + t._radius_, t._start_, t._start_ + 2 * t._rose_proportion_ * Math.PI);o.closePath();o.fill();}}o.beginPath();o.setLineWidth(n.borderWidth * r.pix);o.lineJoin = "round";o.setStrokeStyle(n.borderColor);var a = t.color;if (n.linearType == "custom") {var i;if (o.createCircularGradient) {i = o.createCircularGradient(l.x, l.y, t._radius_);} else {i = o.createRadialGradient(l.x, l.y, 0, l.x, l.y, t._radius_);}i.addColorStop(0, hexToRgb(n.customColor[t.linearIndex], 1));i.addColorStop(1, hexToRgb(t.color, 1));a = i;}o.setFillStyle(a);o.moveTo(l.x, l.y);o.arc(l.x, l.y, t._radius_, t._start_, t._start_ + 2 * t._rose_proportion_ * Math.PI);o.closePath();o.fill();if (n.border == true) {o.stroke();}});if (r.dataLabel !== false && a === 1) {drawPieText(t, r, e, o, i, l);}return { center: l, radius: i, series: t };}function drawArcbarDataPoints(a, i, t, r) {var e = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var o = assign({}, { startAngle: .75, endAngle: .25, type: "default", direction: "cw", lineCap: "round", width: 12, gap: 2, linearType: "none", customColor: [] }, i.extra.arcbar);a = getArcbarDataPoints(a, o, e);var n;if (o.centerX || o.centerY) {n = { x: o.centerX ? o.centerX : i.width / 2, y: o.centerY ? o.centerY : i.height / 2 };} else {n = { x: i.width / 2, y: i.height / 2 };}var l;if (o.radius) {l = o.radius;} else {l = Math.min(n.x, n.y);l -= 5 * i.pix;l -= o.width / 2;}l = l < 10 ? 10 : l;o.customColor = fillCustomColor(o.linearType, o.customColor, a, t);for (var _e60 = 0; _e60 < a.length; _e60++) {var _t97 = a[_e60];r.setLineWidth(o.width * i.pix);r.setStrokeStyle(o.backgroundColor || "#E9E9E9");r.setLineCap(o.lineCap);r.beginPath();if (o.type == "default") {r.arc(n.x, n.y, l - (o.width * i.pix + o.gap * i.pix) * _e60, o.startAngle * Math.PI, o.endAngle * Math.PI, o.direction == "ccw");} else {r.arc(n.x, n.y, l - (o.width * i.pix + o.gap * i.pix) * _e60, 0, 2 * Math.PI, o.direction == "ccw");}r.stroke();var s = _t97.color;if (o.linearType == "custom") {var h = r.createLinearGradient(n.x - l, n.y, n.x + l, n.y);h.addColorStop(1, hexToRgb(o.customColor[_t97.linearIndex], 1));h.addColorStop(0, hexToRgb(_t97.color, 1));s = h;}r.setLineWidth(o.width * i.pix);r.setStrokeStyle(s);r.setLineCap(o.lineCap);r.beginPath();r.arc(n.x, n.y, l - (o.width * i.pix + o.gap * i.pix) * _e60, o.startAngle * Math.PI, _t97._proportion_ * Math.PI, o.direction == "ccw");r.stroke();}drawRingTitle(i, t, r, n);return { center: n, radius: l, series: a };}function drawGaugeDataPoints(n, h, c, t, d) {var x = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;var f = assign({}, { type: "default", startAngle: .75, endAngle: .25, width: 15, labelOffset: 13, splitLine: { fixRadius: 0, splitNumber: 10, width: 15, color: "#FFFFFF", childNumber: 5, childWidth: 5 }, pointer: { width: 15, color: "auto" } }, c.extra.gauge);if (f.oldAngle == undefined) {f.oldAngle = f.startAngle;}if (f.oldData == undefined) {f.oldData = 0;}n = getGaugeAxisPoints(n, f.startAngle, f.endAngle);var p = { x: c.width / 2, y: c.height / 2 };var u = Math.min(p.x, p.y);u -= 5 * c.pix;u -= f.width / 2;u = u < 10 ? 10 : u;var g = u - f.width;var y = 0;if (f.type == "progress") {var v = u - f.width * 3;d.beginPath();var _t98 = d.createLinearGradient(p.x, p.y - v, p.x, p.y + v);_t98.addColorStop("0", hexToRgb(h[0].color, .3));_t98.addColorStop("1.0", hexToRgb("#FFFFFF", .1));d.setFillStyle(_t98);d.arc(p.x, p.y, v, 0, 2 * Math.PI, false);d.fill();d.setLineWidth(f.width);d.setStrokeStyle(hexToRgb(h[0].color, .3));d.setLineCap("round");d.beginPath();d.arc(p.x, p.y, g, f.startAngle * Math.PI, f.endAngle * Math.PI, false);d.stroke();if (f.endAngle < f.startAngle) {y = 2 + f.endAngle - f.startAngle;} else {y = f.startAngle - f.endAngle;}var e = y / f.splitLine.splitNumber;var a = y / f.splitLine.splitNumber / f.splitLine.childNumber;var i = -u - f.width * .5 - f.splitLine.fixRadius;var r = -u - f.width - f.splitLine.fixRadius + f.splitLine.width;d.save();d.translate(p.x, p.y);d.rotate((f.startAngle - 1) * Math.PI);var o = f.splitLine.splitNumber * f.splitLine.childNumber + 1;var _n4 = h[0].data * x;for (var _t99 = 0; _t99 < o; _t99++) {d.beginPath();if (_n4 > _t99 / o) {d.setStrokeStyle(hexToRgb(h[0].color, 1));} else {d.setStrokeStyle(hexToRgb(h[0].color, .3));}d.setLineWidth(3 * c.pix);d.moveTo(i, 0);d.lineTo(r, 0);d.stroke();d.rotate(a * Math.PI);}d.restore();h = getGaugeArcbarDataPoints(h, f, x);d.setLineWidth(f.width);d.setStrokeStyle(h[0].color);d.setLineCap("round");d.beginPath();d.arc(p.x, p.y, g, f.startAngle * Math.PI, h[0]._proportion_ * Math.PI, false);d.stroke();var l = u - f.width * 2.5;d.save();d.translate(p.x, p.y);d.rotate((h[0]._proportion_ - 1) * Math.PI);d.beginPath();d.setLineWidth(f.width / 3);var s = d.createLinearGradient(0, -l * .6, 0, l * .6);s.addColorStop("0", hexToRgb("#FFFFFF", 0));s.addColorStop("0.5", hexToRgb(h[0].color, 1));s.addColorStop("1.0", hexToRgb("#FFFFFF", 0));d.setStrokeStyle(s);d.arc(0, 0, l, .85 * Math.PI, 1.15 * Math.PI, false);d.stroke();d.beginPath();d.setLineWidth(1);d.setStrokeStyle(h[0].color);d.setFillStyle(h[0].color);d.moveTo(-l - f.width / 3 / 2, -4);d.lineTo(-l - f.width / 3 / 2 - 4, 0);d.lineTo(-l - f.width / 3 / 2, 4);d.lineTo(-l - f.width / 3 / 2, -4);d.stroke();d.fill();d.restore();} else {d.setLineWidth(f.width);d.setLineCap("butt");for (var _e62 = 0; _e62 < n.length; _e62++) {var _t100 = n[_e62];d.beginPath();d.setStrokeStyle(_t100.color);d.arc(p.x, p.y, u, _t100._startAngle_ * Math.PI, _t100._endAngle_ * Math.PI, false);d.stroke();}d.save();if (f.endAngle < f.startAngle) {y = 2 + f.endAngle - f.startAngle;} else {y = f.startAngle - f.endAngle;}var _e61 = y / f.splitLine.splitNumber;var _a27 = y / f.splitLine.splitNumber / f.splitLine.childNumber;var _i17 = -u - f.width * .5 - f.splitLine.fixRadius;var _r11 = -u - f.width * .5 - f.splitLine.fixRadius + f.splitLine.width;var _o8 = -u - f.width * .5 - f.splitLine.fixRadius + f.splitLine.childWidth;d.translate(p.x, p.y);d.rotate((f.startAngle - 1) * Math.PI);for (var _t101 = 0; _t101 < f.splitLine.splitNumber + 1; _t101++) {d.beginPath();d.setStrokeStyle(f.splitLine.color);d.setLineWidth(2 * c.pix);d.moveTo(_i17, 0);d.lineTo(_r11, 0);d.stroke();d.rotate(_e61 * Math.PI);}d.restore();d.save();d.translate(p.x, p.y);d.rotate((f.startAngle - 1) * Math.PI);for (var _t102 = 0; _t102 < f.splitLine.splitNumber * f.splitLine.childNumber + 1; _t102++) {d.beginPath();d.setStrokeStyle(f.splitLine.color);d.setLineWidth(1 * c.pix);d.moveTo(_i17, 0);d.lineTo(_o8, 0);d.stroke();d.rotate(_a27 * Math.PI);}d.restore();h = getGaugeDataPoints(h, n, f, x);for (var _e63 = 0; _e63 < h.length; _e63++) {var _t103 = h[_e63];d.save();d.translate(p.x, p.y);d.rotate((_t103._proportion_ - 1) * Math.PI);d.beginPath();d.setFillStyle(_t103.color);d.moveTo(f.pointer.width, 0);d.lineTo(0, -f.pointer.width / 2);d.lineTo(-g, 0);d.lineTo(0, f.pointer.width / 2);d.lineTo(f.pointer.width, 0);d.closePath();d.fill();d.beginPath();d.setFillStyle("#FFFFFF");d.arc(0, 0, f.pointer.width / 6, 0, 2 * Math.PI, false);d.fill();d.restore();}if (c.dataLabel !== false) {drawGaugeLabel(f, u, p, c, t, d);}}drawRingTitle(c, t, d, p);if (x === 1 && c.type === "gauge") {c.extra.gauge.oldAngle = h[0]._proportion_;c.extra.gauge.oldData = h[0].data;}return { center: p, radius: u, innerRadius: g, categories: n, totalAngle: y };}function drawRadarDataPoints(o, n, i, l) {var t = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var s = assign({}, { gridColor: "#cccccc", gridType: "radar", gridEval: 1, axisLabel: false, axisLabelTofix: 0, labelShow: true, labelColor: "#666666", labelPointShow: false, labelPointRadius: 3, labelPointColor: "#cccccc", opacity: .2, gridCount: 3, border: false, borderWidth: 2, linearType: "none", customColor: [] }, n.extra.radar);var a = getRadarCoordinateSeries(n.categories.length);var h = { x: n.area[3] + (n.width - n.area[1] - n.area[3]) / 2, y: n.area[0] + (n.height - n.area[0] - n.area[2]) / 2 };var r = (n.width - n.area[1] - n.area[3]) / 2;var d = (n.height - n.area[0] - n.area[2]) / 2;var c = Math.min(r - (getMaxTextListLength(n.categories, i.fontSize, l) + i.radarLabelTextMargin), d - i.radarLabelTextMargin);c -= i.radarLabelTextMargin * n.pix;c = c < 10 ? 10 : c;c = s.radius ? s.radius : c;l.beginPath();l.setLineWidth(1 * n.pix);l.setStrokeStyle(s.gridColor);a.forEach(function (t, e) {var a = convertCoordinateOrigin(c * Math.cos(t), c * Math.sin(t), h);l.moveTo(h.x, h.y);if (e % s.gridEval == 0) {l.lineTo(a.x, a.y);}});l.stroke();l.closePath();var x = function t(i) {var r = {};l.beginPath();l.setLineWidth(1 * n.pix);l.setStrokeStyle(s.gridColor);if (s.gridType == "radar") {a.forEach(function (t, e) {var a = convertCoordinateOrigin(c / s.gridCount * i * Math.cos(t), c / s.gridCount * i * Math.sin(t), h);if (e === 0) {r = a;l.moveTo(a.x, a.y);} else {l.lineTo(a.x, a.y);}});l.lineTo(r.x, r.y);} else {var e = convertCoordinateOrigin(c / s.gridCount * i * Math.cos(1.5), c / s.gridCount * i * Math.sin(1.5), h);l.arc(h.x, h.y, h.y - e.y, 0, 2 * Math.PI, false);}l.stroke();l.closePath();};for (var e = 1; e <= s.gridCount; e++) {x(e);}s.customColor = fillCustomColor(s.linearType, s.customColor, o, i);var f = getRadarDataPoints(a, h, c, o, n, t);f.forEach(function (t, e) {l.beginPath();l.setLineWidth(s.borderWidth * n.pix);l.setStrokeStyle(t.color);var a = hexToRgb(t.color, s.opacity);if (s.linearType == "custom") {var i;if (l.createCircularGradient) {i = l.createCircularGradient(h.x, h.y, c);} else {i = l.createRadialGradient(h.x, h.y, 0, h.x, h.y, c);}i.addColorStop(0, hexToRgb(s.customColor[o[e].linearIndex], s.opacity));i.addColorStop(1, hexToRgb(t.color, s.opacity));a = i;}l.setFillStyle(a);t.data.forEach(function (t, e) {if (e === 0) {l.moveTo(t.position.x, t.position.y);} else {l.lineTo(t.position.x, t.position.y);}});l.closePath();l.fill();if (s.border === true) {l.stroke();}l.closePath();if (n.dataPointShape !== false) {var r = t.data.map(function (t) {return t.position;});drawPointShape(r, t.color, t.pointShape, l, n);}});if (s.axisLabel === true) {var p = Math.max(s.max, Math.max.apply(null, dataCombine(o)));var u = c / s.gridCount;var g = n.fontSize * n.pix;l.setFontSize(g);l.setFillStyle(n.fontColor);l.setTextAlign("left");for (var e = 0; e < s.gridCount + 1; e++) {var _t104 = e * p / s.gridCount;_t104 = _t104.toFixed(s.axisLabelTofix);l.fillText(String(_t104), h.x + 3 * n.pix, h.y - e * u + g / 2);}}drawRadarLabel(a, c, h, n, i, l);if (n.dataLabel !== false && t === 1) {f.forEach(function (t, e) {l.beginPath();var a = t.textSize * n.pix || i.fontSize;l.setFontSize(a);l.setFillStyle(t.textColor || n.fontColor);t.data.forEach(function (t, e) {if (Math.abs(t.position.x - h.x) < 2) {if (t.position.y < h.y) {l.setTextAlign("center");l.fillText(t.value, t.position.x, t.position.y - 4);} else {l.setTextAlign("center");l.fillText(t.value, t.position.x, t.position.y + a + 2);}} else {if (t.position.x < h.x) {l.setTextAlign("right");l.fillText(t.value, t.position.x - 4, t.position.y + a / 2 - 2);} else {l.setTextAlign("left");l.fillText(t.value, t.position.x + 4, t.position.y + a / 2 - 2);}}});l.closePath();l.stroke();});l.setTextAlign("left");}return { center: h, radius: c, angleList: a };}function lonlat2mercator(t, e) {var a = Array(2);var i = t * 20037508.34 / 180;var r = Math.log(Math.tan((90 + e) * Math.PI / 360)) / (Math.PI / 180);r = r * 20037508.34 / 180;a[0] = i;a[1] = r;return a;}function mercator2lonlat(t, e) {var a = Array(2);var i = t / 20037508.34 * 180;var r = e / 20037508.34 * 180;r = 180 / Math.PI * (2 * Math.atan(Math.exp(r * Math.PI / 180)) - Math.PI / 2);a[0] = i;a[1] = r;return a;}function getBoundingBox(t) {var e = {},a;e.xMin = 180;e.xMax = 0;e.yMin = 90;e.yMax = 0;for (var i = 0; i < t.length; i++) {var r = t[i].geometry.coordinates;for (var o = 0; o < r.length; o++) {a = r[o];if (a.length == 1) {a = a[0];}for (var n = 0; n < a.length; n++) {var l = a[n][0];var s = a[n][1];var h = { x: l, y: s };e.xMin = e.xMin < h.x ? e.xMin : h.x;e.xMax = e.xMax > h.x ? e.xMax : h.x;e.yMin = e.yMin < h.y ? e.yMin : h.y;e.yMax = e.yMax > h.y ? e.yMax : h.y;}}}return e;}function coordinateToPoint(t, e, a, i, r, o) {return { x: (e - a.xMin) * i + r, y: (a.yMax - t) * i + o };}function pointToCoordinate(t, e, a, i, r, o) {return { x: (e - r) / i + a.xMin, y: a.yMax - (t - o) / i };}function isRayIntersectsSegment(t, e, a) {if (e[1] == a[1]) {return false;}if (e[1] > t[1] && a[1] > t[1]) {return false;}if (e[1] < t[1] && a[1] < t[1]) {return false;}if (e[1] == t[1] && a[1] > t[1]) {return false;}if (a[1] == t[1] && e[1] > t[1]) {return false;}if (e[0] < t[0] && a[1] < t[1]) {return false;}var i = a[0] - (a[0] - e[0]) * (a[1] - t[1]) / (a[1] - e[1]);if (i < t[0]) {return false;} else {return true;}}function isPoiWithinPoly(r, e, o) {var n = 0;for (var t = 0; t < e.length; t++) {var i = e[t][0];if (e.length == 1) {i = e[t][0];}for (var a = 0; a < i.length - 1; a++) {var _t105 = i[a];var _e64 = i[a + 1];if (o) {_t105 = lonlat2mercator(i[a][0], i[a][1]);_e64 = lonlat2mercator(i[a + 1][0], i[a + 1][1]);}if (isRayIntersectsSegment(r, _t105, _e64)) {n += 1;}}}if (n % 2 == 1) {return true;} else {return false;}}function drawMapDataPoints(a, i, d, r) {var o = assign({}, { border: true, mercator: false, borderWidth: 1, active: true, borderColor: "#666666", fillOpacity: .6, activeBorderColor: "#f04864", activeFillColor: "#facc14", activeFillOpacity: 1 }, i.extra.map);var t, n;var l = a;var s = getBoundingBox(l);if (o.mercator) {var x = lonlat2mercator(s.xMax, s.yMax);var f = lonlat2mercator(s.xMin, s.yMin);s.xMax = x[0];s.yMax = x[1];s.xMin = f[0];s.yMin = f[1];}var p = i.width / Math.abs(s.xMax - s.xMin);var u = i.height / Math.abs(s.yMax - s.yMin);var h = p < u ? p : u;var g = i.width / 2 - Math.abs(s.xMax - s.xMin) / 2 * h;var y = i.height / 2 - Math.abs(s.yMax - s.yMin) / 2 * h;for (var c = 0; c < l.length; c++) {r.beginPath();r.setLineWidth(o.borderWidth * i.pix);r.setStrokeStyle(o.borderColor);r.setFillStyle(hexToRgb(a[c].color, a[c].fillOpacity || o.fillOpacity));if (o.active == true && i.tooltip) {if (i.tooltip.index == c) {r.setStrokeStyle(o.activeBorderColor);r.setFillStyle(hexToRgb(o.activeFillColor, o.activeFillOpacity));}}var v = l[c].geometry.coordinates;for (var m = 0; m < v.length; m++) {t = v[m];if (t.length == 1) {t = t[0];}for (var e = 0; e < t.length; e++) {var T = Array(2);if (o.mercator) {T = lonlat2mercator(t[e][0], t[e][1]);} else {T = t[e];}n = coordinateToPoint(T[1], T[0], s, h, g, y);if (e === 0) {r.beginPath();r.moveTo(n.x, n.y);} else {r.lineTo(n.x, n.y);}}r.fill();if (o.border == true) {r.stroke();}}}if (i.dataLabel == true) {for (var c = 0; c < l.length; c++) {var b = l[c].properties.centroid;if (b) {if (o.mercator) {b = lonlat2mercator(l[c].properties.centroid[0], l[c].properties.centroid[1]);}n = coordinateToPoint(b[1], b[0], s, h, g, y);var _t106 = l[c].textSize * i.pix || d.fontSize;var _e65 = l[c].textColor || i.fontColor;if (o.active && o.activeTextColor && i.tooltip && i.tooltip.index == c) {_e65 = o.activeTextColor;}var _a28 = l[c].properties.name;r.beginPath();r.setFontSize(_t106);r.setFillStyle(_e65);r.fillText(_a28, n.x - measureText(_a28, _t106, r) / 2, n.y + _t106 / 2);r.closePath();r.stroke();}}}i.chartData.mapData = { bounds: s, scale: h, xoffset: g, yoffset: y, mercator: o.mercator };drawToolTipBridge(i, d, r, 1);r.draw();}function normalInt(t, e, a) {a = a == 0 ? 1 : a;var i = [];for (var r = 0; r < a; r++) {i[r] = Math.random();}return Math.floor(i.reduce(function (t, e) {return t + e;}) / a * (e - t)) + t;}function collisionNew(e, a, i, r) {var o = false;for (var t = 0; t < a.length; t++) {if (a[t].area) {if (e[3] < a[t].area[1] || e[0] > a[t].area[2] || e[1] > a[t].area[3] || e[2] < a[t].area[0]) {if (e[0] < 0 || e[1] < 0 || e[2] > i || e[3] > r) {o = true;break;} else {o = false;}} else {o = true;break;}}}return o;}function getWordCloudPoint(c, t, d) {var x = c.series;switch (t) {case "normal":for (var l = 0; l < x.length; l++) {var _t107 = x[l].name;var e = x[l].textSize * c.pix;var a = measureText(_t107, e, d);var i = void 0,r = void 0;var o = void 0;var n = 0;while (true) {n++;i = normalInt(-c.width / 2, c.width / 2, 5) - a / 2;r = normalInt(-c.height / 2, c.height / 2, 5) + e / 2;o = [i - 5 + c.width / 2, r - 5 - e + c.height / 2, i + a + 5 + c.width / 2, r + 5 + c.height / 2];var _t108 = collisionNew(o, x, c.width, c.height);if (!_t108) break;if (n == 1e3) {o = [-100, -100, -100, -100];break;}}x[l].area = o;}break;case "vertical":var f = function f() {if (Math.random() > .7) {return true;} else {return false;}};;for (var h = 0; h < x.length; h++) {var _t109 = x[h].name;var _e66 = x[h].textSize * c.pix;var _a29 = measureText(_t109, _e66, d);var _i18 = f();var _r12 = void 0,_o9 = void 0,_n5 = void 0,_l2 = void 0;var s = 0;while (true) {s++;var _t110 = void 0;if (_i18) {_r12 = normalInt(-c.width / 2, c.width / 2, 5) - _a29 / 2;_o9 = normalInt(-c.height / 2, c.height / 2, 5) + _e66 / 2;_n5 = [_o9 - 5 - _a29 + c.width / 2, -_r12 - 5 + c.height / 2, _o9 + 5 + c.width / 2, -_r12 + _e66 + 5 + c.height / 2];_l2 = [c.width - (c.width / 2 - c.height / 2) - (-_r12 + _e66 + 5 + c.height / 2) - 5, c.height / 2 - c.width / 2 + (_o9 - 5 - _a29 + c.width / 2) - 5, c.width - (c.width / 2 - c.height / 2) - (-_r12 + _e66 + 5 + c.height / 2) + _e66, c.height / 2 - c.width / 2 + (_o9 - 5 - _a29 + c.width / 2) + _a29 + 5];_t110 = collisionNew(_l2, x, c.height, c.width);} else {_r12 = normalInt(-c.width / 2, c.width / 2, 5) - _a29 / 2;_o9 = normalInt(-c.height / 2, c.height / 2, 5) + _e66 / 2;_n5 = [_r12 - 5 + c.width / 2, _o9 - 5 - _e66 + c.height / 2, _r12 + _a29 + 5 + c.width / 2, _o9 + 5 + c.height / 2];_t110 = collisionNew(_n5, x, c.width, c.height);}if (!_t110) break;if (s == 1e3) {_n5 = [-1e3, -1e3, -1e3, -1e3];break;}}if (_i18) {x[h].area = _l2;x[h].areav = _n5;} else {x[h].area = _n5;}x[h].rotate = _i18;};break;}return x;}function drawWordCloudDataPoints(t, r, e, o) {var n = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var a = assign({}, { type: "normal", autoColors: true }, r.extra.word);if (!r.chartData.wordCloudData) {r.chartData.wordCloudData = getWordCloudPoint(r, a.type, o);}o.beginPath();o.setFillStyle(r.background);o.rect(0, 0, r.width, r.height);o.fill();o.save();var l = r.chartData.wordCloudData;o.translate(r.width / 2, r.height / 2);for (var i = 0; i < l.length; i++) {o.save();if (l[i].rotate) {o.rotate(90 * Math.PI / 180);}var _t111 = l[i].name;var _e67 = l[i].textSize * r.pix;var _a30 = measureText(_t111, _e67, o);o.beginPath();o.setStrokeStyle(l[i].color);o.setFillStyle(l[i].color);o.setFontSize(_e67);if (l[i].rotate) {if (l[i].areav[0] > 0) {if (r.tooltip) {if (r.tooltip.index == i) {o.strokeText(_t111, (l[i].areav[0] + 5 - r.width / 2) * n - _a30 * (1 - n) / 2, (l[i].areav[1] + 5 + _e67 - r.height / 2) * n);} else {o.fillText(_t111, (l[i].areav[0] + 5 - r.width / 2) * n - _a30 * (1 - n) / 2, (l[i].areav[1] + 5 + _e67 - r.height / 2) * n);}} else {o.fillText(_t111, (l[i].areav[0] + 5 - r.width / 2) * n - _a30 * (1 - n) / 2, (l[i].areav[1] + 5 + _e67 - r.height / 2) * n);}}} else {if (l[i].area[0] > 0) {if (r.tooltip) {if (r.tooltip.index == i) {o.strokeText(_t111, (l[i].area[0] + 5 - r.width / 2) * n - _a30 * (1 - n) / 2, (l[i].area[1] + 5 + _e67 - r.height / 2) * n);} else {o.fillText(_t111, (l[i].area[0] + 5 - r.width / 2) * n - _a30 * (1 - n) / 2, (l[i].area[1] + 5 + _e67 - r.height / 2) * n);}} else {o.fillText(_t111, (l[i].area[0] + 5 - r.width / 2) * n - _a30 * (1 - n) / 2, (l[i].area[1] + 5 + _e67 - r.height / 2) * n);}}}o.stroke();o.restore();}o.restore();}function drawFunnelDataPoints(t, e, c, a) {var d = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;var i = assign({}, { type: "funnel", activeWidth: 10, activeOpacity: .3, border: false, borderWidth: 2, borderColor: "#FFFFFF", fillOpacity: 1, minSize: 0, labelAlign: "right", linearType: "none", customColor: [] }, e.extra.funnel);var r = (e.height - e.area[0] - e.area[2]) / t.length;var o = { x: e.area[3] + (e.width - e.area[1] - e.area[3]) / 2, y: e.height - e.area[2] };var n = i.activeWidth * e.pix;var x = Math.min((e.width - e.area[1] - e.area[3]) / 2 - n, (e.height - e.area[0] - e.area[2]) / 2 - n);var l = getFunnelDataPoints(t, x, i, r, d);a.save();a.translate(o.x, o.y);i.customColor = fillCustomColor(i.linearType, i.customColor, t, c);if (i.type == "pyramid") {for (var _t112 = 0; _t112 < l.length; _t112++) {if (_t112 == l.length - 1) {if (e.tooltip) {if (e.tooltip.index == _t112) {a.beginPath();a.setFillStyle(hexToRgb(l[_t112].color, i.activeOpacity));a.moveTo(-n, -r);a.lineTo(-l[_t112].radius - n, 0);a.lineTo(l[_t112].radius + n, 0);a.lineTo(n, -r);a.lineTo(-n, -r);a.closePath();a.fill();}}l[_t112].funnelArea = [o.x - l[_t112].radius, o.y - r * (_t112 + 1), o.x + l[_t112].radius, o.y - r * _t112];a.beginPath();a.setLineWidth(i.borderWidth * e.pix);a.setStrokeStyle(i.borderColor);var s = hexToRgb(l[_t112].color, i.fillOpacity);if (i.linearType == "custom") {var h = a.createLinearGradient(l[_t112].radius, -r, -l[_t112].radius, -r);h.addColorStop(0, hexToRgb(l[_t112].color, i.fillOpacity));h.addColorStop(.5, hexToRgb(i.customColor[l[_t112].linearIndex], i.fillOpacity));h.addColorStop(1, hexToRgb(l[_t112].color, i.fillOpacity));s = h;}a.setFillStyle(s);a.moveTo(0, -r);a.lineTo(-l[_t112].radius, 0);a.lineTo(l[_t112].radius, 0);a.lineTo(0, -r);a.closePath();a.fill();if (i.border == true) {a.stroke();}} else {if (e.tooltip) {if (e.tooltip.index == _t112) {a.beginPath();a.setFillStyle(hexToRgb(l[_t112].color, i.activeOpacity));a.moveTo(0, 0);a.lineTo(-l[_t112].radius - n, 0);a.lineTo(-l[_t112 + 1].radius - n, -r);a.lineTo(l[_t112 + 1].radius + n, -r);a.lineTo(l[_t112].radius + n, 0);a.lineTo(0, 0);a.closePath();a.fill();}}l[_t112].funnelArea = [o.x - l[_t112].radius, o.y - r * (_t112 + 1), o.x + l[_t112].radius, o.y - r * _t112];a.beginPath();a.setLineWidth(i.borderWidth * e.pix);a.setStrokeStyle(i.borderColor);var s = hexToRgb(l[_t112].color, i.fillOpacity);if (i.linearType == "custom") {var h = a.createLinearGradient(l[_t112].radius, -r, -l[_t112].radius, -r);h.addColorStop(0, hexToRgb(l[_t112].color, i.fillOpacity));h.addColorStop(.5, hexToRgb(i.customColor[l[_t112].linearIndex], i.fillOpacity));h.addColorStop(1, hexToRgb(l[_t112].color, i.fillOpacity));s = h;}a.setFillStyle(s);a.moveTo(0, 0);a.lineTo(-l[_t112].radius, 0);a.lineTo(-l[_t112 + 1].radius, -r);a.lineTo(l[_t112 + 1].radius, -r);a.lineTo(l[_t112].radius, 0);a.lineTo(0, 0);a.closePath();a.fill();if (i.border == true) {a.stroke();}}a.translate(0, -r);}} else {a.translate(0, -(l.length - 1) * r);for (var _t113 = 0; _t113 < l.length; _t113++) {if (_t113 == l.length - 1) {if (e.tooltip) {if (e.tooltip.index == _t113) {a.beginPath();a.setFillStyle(hexToRgb(l[_t113].color, i.activeOpacity));a.moveTo(-n - i.minSize / 2, 0);a.lineTo(-l[_t113].radius - n, -r);a.lineTo(l[_t113].radius + n, -r);a.lineTo(n + i.minSize / 2, 0);a.lineTo(-n - i.minSize / 2, 0);a.closePath();a.fill();}}l[_t113].funnelArea = [o.x - l[_t113].radius, o.y - r, o.x + l[_t113].radius, o.y];a.beginPath();a.setLineWidth(i.borderWidth * e.pix);a.setStrokeStyle(i.borderColor);var s = hexToRgb(l[_t113].color, i.fillOpacity);if (i.linearType == "custom") {var h = a.createLinearGradient(l[_t113].radius, -r, -l[_t113].radius, -r);h.addColorStop(0, hexToRgb(l[_t113].color, i.fillOpacity));h.addColorStop(.5, hexToRgb(i.customColor[l[_t113].linearIndex], i.fillOpacity));h.addColorStop(1, hexToRgb(l[_t113].color, i.fillOpacity));s = h;}a.setFillStyle(s);a.moveTo(0, 0);a.lineTo(-i.minSize / 2, 0);a.lineTo(-l[_t113].radius, -r);a.lineTo(l[_t113].radius, -r);a.lineTo(i.minSize / 2, 0);a.lineTo(0, 0);a.closePath();a.fill();if (i.border == true) {a.stroke();}} else {if (e.tooltip) {if (e.tooltip.index == _t113) {a.beginPath();a.setFillStyle(hexToRgb(l[_t113].color, i.activeOpacity));a.moveTo(0, 0);a.lineTo(-l[_t113 + 1].radius - n, 0);a.lineTo(-l[_t113].radius - n, -r);a.lineTo(l[_t113].radius + n, -r);a.lineTo(l[_t113 + 1].radius + n, 0);a.lineTo(0, 0);a.closePath();a.fill();}}l[_t113].funnelArea = [o.x - l[_t113].radius, o.y - r * (l.length - _t113), o.x + l[_t113].radius, o.y - r * (l.length - _t113 - 1)];a.beginPath();a.setLineWidth(i.borderWidth * e.pix);a.setStrokeStyle(i.borderColor);var s = hexToRgb(l[_t113].color, i.fillOpacity);if (i.linearType == "custom") {var h = a.createLinearGradient(l[_t113].radius, -r, -l[_t113].radius, -r);h.addColorStop(0, hexToRgb(l[_t113].color, i.fillOpacity));h.addColorStop(.5, hexToRgb(i.customColor[l[_t113].linearIndex], i.fillOpacity));h.addColorStop(1, hexToRgb(l[_t113].color, i.fillOpacity));s = h;}a.setFillStyle(s);a.moveTo(0, 0);a.lineTo(-l[_t113 + 1].radius, 0);a.lineTo(-l[_t113].radius, -r);a.lineTo(l[_t113].radius, -r);a.lineTo(l[_t113 + 1].radius, 0);a.lineTo(0, 0);a.closePath();a.fill();if (i.border == true) {a.stroke();}}a.translate(0, r);}}a.restore();if (e.dataLabel !== false && d === 1) {drawFunnelText(l, e, a, r, i.labelAlign, n, o);}if (d === 1) {drawFunnelCenterText(l, e, a, r, i.labelAlign, n, o);}return { center: o, radius: x, series: l };}function drawFunnelText(l, s, h, c, d, x, f) {for (var n = 0; n < l.length; n++) {var t = l[n];if (t.labelShow === false) {continue;}var e = void 0,a = void 0,i = void 0,r = void 0;var o = t.formatter ? t.formatter(t, n, l, s) : util.toFixed(t._proportion_ * 100) + "%";o = t.labelText ? t.labelText : o;if (d == "right") {if (n == l.length - 1) {e = (t.funnelArea[2] + f.x) / 2;} else {e = (t.funnelArea[2] + l[n + 1].funnelArea[2]) / 2;}a = e + x * 2;i = t.funnelArea[1] + c / 2;r = t.textSize * s.pix || s.fontSize * s.pix;h.setLineWidth(1 * s.pix);h.setStrokeStyle(t.color);h.setFillStyle(t.color);h.beginPath();h.moveTo(e, i);h.lineTo(a, i);h.stroke();h.closePath();h.beginPath();h.moveTo(a, i);h.arc(a, i, 2 * s.pix, 0, 2 * Math.PI);h.closePath();h.fill();h.beginPath();h.setFontSize(r);h.setFillStyle(t.textColor || s.fontColor);h.fillText(o, a + 5, i + r / 2 - 2);h.closePath();h.stroke();h.closePath();}if (d == "left") {if (n == l.length - 1) {e = (t.funnelArea[0] + f.x) / 2;} else {e = (t.funnelArea[0] + l[n + 1].funnelArea[0]) / 2;}a = e - x * 2;i = t.funnelArea[1] + c / 2;r = t.textSize * s.pix || s.fontSize * s.pix;h.setLineWidth(1 * s.pix);h.setStrokeStyle(t.color);h.setFillStyle(t.color);h.beginPath();h.moveTo(e, i);h.lineTo(a, i);h.stroke();h.closePath();h.beginPath();h.moveTo(a, i);h.arc(a, i, 2, 0, 2 * Math.PI);h.closePath();h.fill();h.beginPath();h.setFontSize(r);h.setFillStyle(t.textColor || s.fontColor);h.fillText(o, a - 5 - measureText(o, r, h), i + r / 2 - 2);h.closePath();h.stroke();h.closePath();}}}function drawFunnelCenterText(r, o, n, l, t, e, s) {for (var i = 0; i < r.length; i++) {var _t114 = r[i];var _e68 = void 0,a = void 0;if (_t114.centerText) {_e68 = _t114.funnelArea[1] + l / 2;a = _t114.centerTextSize * o.pix || o.fontSize * o.pix;n.beginPath();n.setFontSize(a);n.setFillStyle(_t114.centerTextColor || "#FFFFFF");n.fillText(_t114.centerText, s.x - measureText(_t114.centerText, a, n) / 2, _e68 + a / 2 - 2);n.closePath();n.stroke();n.closePath();}}}function drawCanvas(t, e) {e.save();e.translate(0, .5);e.restore();e.draw();}var Timing = { easeIn: function t(e) {return Math.pow(e, 3);}, easeOut: function t(e) {return Math.pow(e - 1, 3) + 1;}, easeInOut: function t(e) {if ((e /= .5) < 1) {return .5 * Math.pow(e, 3);} else {return .5 * (Math.pow(e - 2, 3) + 2);}}, linear: function t(e) {return e;} };function Animation(r) {this.isStop = false;r.duration = typeof r.duration === "undefined" ? 1e3 : r.duration;r.timing = r.timing || "easeInOut";var o = 17;function t() {if (typeof setTimeout !== "undefined") {return function (e, t) {setTimeout(function () {var t = +new Date();e(t);}, t);};} else if (typeof requestAnimationFrame !== "undefined") {return requestAnimationFrame;} else {return function (t) {t(null);};}}var n = t();var l = null;var s = function t(e) {if (e === null || this.isStop === true) {r.onProcess && r.onProcess(1);r.onAnimationFinish && r.onAnimationFinish();return;}if (l === null) {l = e;}if (e - l < r.duration) {var a = (e - l) / r.duration;var i = Timing[r.timing];a = i(a);r.onProcess && r.onProcess(a);n(s, o);} else {r.onProcess && r.onProcess(1);r.onAnimationFinish && r.onAnimationFinish();}};s = s.bind(this);n(s, o);}Animation.prototype.stop = function () {this.isStop = true;};function drawCharts(t, l, n, s) {var _this = this;var h = this;var c = l.series;if (t === "pie" || t === "ring" || t === "mount" || t === "rose" || t === "funnel") {c = fixPieSeries(c, l, n);}var d = l.categories;if (t === "mount") {d = [];for (var _t115 = 0; _t115 < c.length; _t115++) {if (c[_t115].show !== false) d.push(c[_t115].name);}l.categories = d;}c = fillSeries(c, l, n);var e = l.animation ? l.duration : 0;h.animationInstance && h.animationInstance.stop();var x = null;if (t == "candle") {var _t116 = assign({}, l.extra.candle.average);if (_t116.show) {x = calCandleMA(_t116.day, _t116.name, _t116.color, c[0].data);x = fillSeries(x, l, n);l.seriesMA = x;} else if (l.seriesMA) {x = l.seriesMA = fillSeries(l.seriesMA, l, n);} else {x = c;}} else {x = c;}l._series_ = c = filterSeries(c);l.area = new Array(4);for (var _t117 = 0; _t117 < 4; _t117++) {l.area[_t117] = l.padding[_t117] * l.pix;}var a = calLegendData(x, l, n, l.chartData, s),r = a.area.wholeHeight,o = a.area.wholeWidth;switch (l.legend.position) {case "top":l.area[0] += r;break;case "bottom":l.area[2] += r;break;case "left":l.area[3] += o;break;case "right":l.area[1] += o;break;}var f = {},i = 0;if (l.type === "line" || l.type === "column" || l.type === "mount" || l.type === "area" || l.type === "mix" || l.type === "candle" || l.type === "scatter" || l.type === "bubble" || l.type === "bar") {f = calYAxisData(c, l, n, s);i = f.yAxisWidth;if (l.yAxis.showTitle) {var _e70 = 0;for (var _t118 = 0; _t118 < l.yAxis.data.length; _t118++) {_e70 = Math.max(_e70, l.yAxis.data[_t118].titleFontSize ? l.yAxis.data[_t118].titleFontSize * l.pix : n.fontSize);}l.area[0] += _e70;}var _e69 = 0,_a31 = 0;for (var _t119 = 0; _t119 < i.length; _t119++) {if (i[_t119].position == "left") {if (_a31 > 0) {l.area[3] += i[_t119].width + l.yAxis.padding * l.pix;} else {l.area[3] += i[_t119].width;}_a31 += 1;} else if (i[_t119].position == "right") {if (_e69 > 0) {l.area[1] += i[_t119].width + l.yAxis.padding * l.pix;} else {l.area[1] += i[_t119].width;}_e69 += 1;}}} else {n.yAxisWidth = i;}l.chartData.yAxisData = f;if (l.categories && l.categories.length && l.type !== "radar" && l.type !== "gauge" && l.type !== "bar") {l.chartData.xAxisData = getXAxisPoints(l.categories, l, n);var _t120 = calCategoriesData(l.categories, l, n, l.chartData.xAxisData.eachSpacing, s),_e71 = _t120.xAxisHeight,_a32 = _t120.angle;n.xAxisHeight = _e71;n._xAxisTextAngle_ = _a32;l.area[2] += _e71;l.chartData.categoriesData = _t120;} else {if (l.type === "line" || l.type === "area" || l.type === "scatter" || l.type === "bubble" || l.type === "bar") {l.chartData.xAxisData = calXAxisData(c, l, n, s);d = l.chartData.xAxisData.rangesFormat;var _t121 = calCategoriesData(d, l, n, l.chartData.xAxisData.eachSpacing, s),_e72 = _t121.xAxisHeight,_a33 = _t121.angle;n.xAxisHeight = _e72;n._xAxisTextAngle_ = _a33;l.area[2] += _e72;l.chartData.categoriesData = _t121;} else {l.chartData.xAxisData = { xAxisPoints: [] };}}if (l.enableScroll && l.xAxis.scrollAlign == "right" && l._scrollDistance_ === undefined) {var _t122 = 0,_e73 = l.chartData.xAxisData.xAxisPoints,_a34 = l.chartData.xAxisData.startX,_i19 = l.chartData.xAxisData.endX,_r13 = l.chartData.xAxisData.eachSpacing;var _o10 = _r13 * (_e73.length - 1);var _n6 = _i19 - _a34;_t122 = _n6 - _o10;h.scrollOption.currentOffset = _t122;h.scrollOption.startTouchX = _t122;h.scrollOption.distance = 0;h.scrollOption.lastMoveTime = 0;l._scrollDistance_ = _t122;}if (t === "pie" || t === "ring" || t === "rose") {n._pieTextMaxLength_ = l.dataLabel === false ? 0 : getPieTextMaxLength(x, n, s, l);}switch (t) {case "word":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function onProcess(t) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawWordCloudDataPoints(c, l, n, s, t);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "map":s.clearRect(0, 0, l.width, l.height);drawMapDataPoints(c, l, n, s);setTimeout(function () {_this.uevent.trigger("renderComplete");}, 50);break;case "funnel":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function onProcess(t) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}l.chartData.funnelData = drawFunnelDataPoints(c, l, n, s, t);drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, t);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "line":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawLineDataPoints(c, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "scatter":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawScatterDataPoints(c, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "bubble":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawBubbleDataPoints(c, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "mix":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawMixDataPoints(c, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "column":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawColumnDataPoints(c, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "mount":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawMountDataPoints(c, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "bar":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawXAxis(d, l, n, s);var a = drawBarDataPoints(c, l, n, s, e),i = a.yAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.yAxisPoints = i;l.chartData.xAxisPoints = l.chartData.xAxisData.xAxisPoints;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "area":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawAreaDataPoints(c, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "ring":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}l.chartData.pieData = drawPieDataPoints(c, l, n, s, e);drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "pie":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}l.chartData.pieData = drawPieDataPoints(c, l, n, s, e);drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "rose":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}l.chartData.pieData = drawRoseDataPoints(c, l, n, s, e);drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "radar":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}l.chartData.radarData = drawRadarDataPoints(c, l, n, s, e);drawLegend(l.series, l, n, s, l.chartData);drawToolTipBridge(l, n, s, e);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "arcbar":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}l.chartData.arcbarData = drawArcbarDataPoints(c, l, n, s, e);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "gauge":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}l.chartData.gaugeData = drawGaugeDataPoints(d, c, l, n, s, e);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;case "candle":this.animationInstance = new Animation({ timing: l.timing, duration: e, onProcess: function t(e) {s.clearRect(0, 0, l.width, l.height);if (l.rotate) {contextRotate(s, l);}drawYAxisGrid(d, l, n, s);drawXAxis(d, l, n, s);var a = drawCandleDataPoints(c, x, l, n, s, e),i = a.xAxisPoints,r = a.calPoints,o = a.eachSpacing;l.chartData.xAxisPoints = i;l.chartData.calPoints = r;l.chartData.eachSpacing = o;drawYAxis(c, l, n, s);if (l.enableMarkLine !== false && e === 1) {drawMarkLine(l, n, s);}if (x) {drawLegend(x, l, n, s, l.chartData);} else {drawLegend(l.series, l, n, s, l.chartData);}drawToolTipBridge(l, n, s, e, o, i);drawCanvas(l, s);}, onAnimationFinish: function t() {h.uevent.trigger("renderComplete");} });break;}}function uChartsEvent() {this.events = {};}uChartsEvent.prototype.addEventListener = function (t, e) {this.events[t] = this.events[t] || [];this.events[t].push(e);};uChartsEvent.prototype.delEventListener = function (t) {this.events[t] = [];};uChartsEvent.prototype.trigger = function () {for (var t = arguments.length, e = Array(t), a = 0; a < t; a++) {e[a] = arguments[a];}var i = e[0];var r = e.slice(1);if (!!this.events[i]) {this.events[i].forEach(function (t) {try {t.apply(null, r);} catch (t) {}});}};var uCharts = function t(a) {a.pix = a.pixelRatio ? a.pixelRatio : 1;a.fontSize = a.fontSize ? a.fontSize : 13;a.fontColor = a.fontColor ? a.fontColor : config.fontColor;if (a.background == "" || a.background == "none") {a.background = "#FFFFFF";}a.title = assign({}, a.title);a.subtitle = assign({}, a.subtitle);a.duration = a.duration ? a.duration : 1e3;a.yAxis = assign({}, { data: [], showTitle: false, disabled: false, disableGrid: false, gridSet: "number", splitNumber: 5, gridType: "solid", dashLength: 4 * a.pix, gridColor: "#cccccc", padding: 10, fontColor: "#666666" }, a.yAxis);a.xAxis = assign({}, { rotateLabel: false, rotateAngle: 45, disabled: false, disableGrid: false, splitNumber: 5, calibration: false, fontColor: "#666666", fontSize: 13, lineHeight: 20, marginTop: 0, gridType: "solid", dashLength: 4, scrollAlign: "left", boundaryGap: "center", axisLine: true, axisLineColor: "#cccccc", titleFontSize: 13, titleOffsetY: 0, titleOffsetX: 0, titleFontColor: "#666666" }, a.xAxis);a.xAxis.scrollPosition = a.xAxis.scrollAlign;a.legend = assign({}, { show: true, position: "bottom", float: "center", backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(0,0,0,0)", borderWidth: 0, padding: 5, margin: 5, itemGap: 10, fontSize: a.fontSize, lineHeight: a.fontSize, fontColor: a.fontColor, formatter: {}, hiddenColor: "#CECECE" }, a.legend);a.extra = assign({ tooltip: { legendShape: "auto" } }, a.extra);a.rotate = a.rotate ? true : false;a.animation = a.animation ? true : false;a.rotate = a.rotate ? true : false;a.canvas2d = a.canvas2d ? true : false;var e = assign({}, config);e.color = a.color ? a.color : e.color;if (a.type == "pie") {e.pieChartLinePadding = a.dataLabel === false ? 0 : a.extra.pie.labelWidth * a.pix || e.pieChartLinePadding * a.pix;}if (a.type == "ring") {e.pieChartLinePadding = a.dataLabel === false ? 0 : a.extra.ring.labelWidth * a.pix || e.pieChartLinePadding * a.pix;}if (a.type == "rose") {e.pieChartLinePadding = a.dataLabel === false ? 0 : a.extra.rose.labelWidth * a.pix || e.pieChartLinePadding * a.pix;}e.pieChartTextPadding = a.dataLabel === false ? 0 : e.pieChartTextPadding * a.pix;e.rotate = a.rotate;if (a.rotate) {var _t123 = a.width;var _e74 = a.height;a.width = _e74;a.height = _t123;}a.padding = a.padding ? a.padding : e.padding;e.yAxisWidth = config.yAxisWidth * a.pix;e.fontSize = a.fontSize * a.pix;e.titleFontSize = config.titleFontSize * a.pix;e.subtitleFontSize = config.subtitleFontSize * a.pix;if (!a.context) {throw new Error("[uCharts] 未获取到context！注意：v2.0版本后，需要自行获取canvas的绘图上下文并传入opts.context！");}this.context = a.context;if (!this.context.setTextAlign) {this.context.setStrokeStyle = function (t) {return this.strokeStyle = t;};this.context.setLineWidth = function (t) {return this.lineWidth = t;};this.context.setLineCap = function (t) {return this.lineCap = t;};this.context.setFontSize = function (t) {return this.font = t + "px sans-serif";};this.context.setFillStyle = function (t) {return this.fillStyle = t;};this.context.setTextAlign = function (t) {return this.textAlign = t;};this.context.setTextBaseline = function (t) {return this.textBaseline = t;};this.context.setShadow = function (t, e, a, i) {this.shadowColor = i;this.shadowOffsetX = t;this.shadowOffsetY = e;this.shadowBlur = a;};this.context.draw = function () {};}if (!this.context.setLineDash) {this.context.setLineDash = function (t) {};}a.chartData = {};this.uevent = new uChartsEvent();this.scrollOption = { currentOffset: 0, startTouchX: 0, distance: 0, lastMoveTime: 0 };this.opts = a;this.config = e;drawCharts.call(this, a.type, a, e, this.context);};uCharts.prototype.updateData = function () {var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};this.opts = assign({}, this.opts, t);this.opts.updateData = true;var c = t.scrollPosition || "current";switch (c) {case "current":this.opts._scrollDistance_ = this.scrollOption.currentOffset;break;case "left":this.opts._scrollDistance_ = 0;this.scrollOption = { currentOffset: 0, startTouchX: 0, distance: 0, lastMoveTime: 0 };break;case "right":var _t124 = calYAxisData(this.opts.series, this.opts, this.config, this.context),e = _t124.yAxisWidth;this.config.yAxisWidth = e;var a = 0;var i = getXAxisPoints(this.opts.categories, this.opts, this.config),r = i.xAxisPoints,o = i.startX,n = i.endX,l = i.eachSpacing;var s = l * (r.length - 1);var h = n - o;a = h - s;this.scrollOption = { currentOffset: a, startTouchX: a, distance: 0, lastMoveTime: 0 };this.opts._scrollDistance_ = a;break;}drawCharts.call(this, this.opts.type, this.opts, this.config, this.context);};uCharts.prototype.zoom = function () {var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.opts.xAxis.itemCount;if (this.opts.enableScroll !== true) {console.log("[uCharts] 请启用滚动条后使用");return;}var e = Math.round(Math.abs(this.scrollOption.currentOffset) / this.opts.chartData.eachSpacing) + Math.round(this.opts.xAxis.itemCount / 2);this.opts.animation = false;this.opts.xAxis.itemCount = t.itemCount;var a = calYAxisData(this.opts.series, this.opts, this.config, this.context),i = a.yAxisWidth;this.config.yAxisWidth = i;var r = 0;var o = getXAxisPoints(this.opts.categories, this.opts, this.config),h = o.xAxisPoints,c = o.startX,d = o.endX,n = o.eachSpacing;var x = n * e;var l = d - c;var s = l - n * (h.length - 1);r = l / 2 - x;if (r > 0) {r = 0;}if (r < s) {r = s;}this.scrollOption = { currentOffset: r, startTouchX: 0, distance: 0, lastMoveTime: 0 };calValidDistance(this, r, this.opts.chartData, this.config, this.opts);this.opts._scrollDistance_ = r;drawCharts.call(this, this.opts.type, this.opts, this.config, this.context);};uCharts.prototype.dobuleZoom = function (t) {if (this.opts.enableScroll !== true) {console.log("[uCharts] 请启用滚动条后使用");return;}var a = t.changedTouches;if (a.length < 2) {return;}for (var e = 0; e < a.length; e++) {a[e].x = a[e].x ? a[e].x : a[e].clientX;a[e].y = a[e].y ? a[e].y : a[e].clientY;}var i = [getTouches(a[0], this.opts, t), getTouches(a[1], this.opts, t)];var c = Math.abs(i[0].x - i[1].x);if (!this.scrollOption.moveCount) {var _t125 = { changedTouches: [{ x: a[0].x, y: this.opts.area[0] / this.opts.pix + 2 }] };var _e75 = { changedTouches: [{ x: a[1].x, y: this.opts.area[0] / this.opts.pix + 2 }] };if (this.opts.rotate) {_t125 = { changedTouches: [{ x: this.opts.height / this.opts.pix - this.opts.area[0] / this.opts.pix - 2, y: a[0].y }] };_e75 = { changedTouches: [{ x: this.opts.height / this.opts.pix - this.opts.area[0] / this.opts.pix - 2, y: a[1].y }] };}var s = this.getCurrentDataIndex(_t125).index;var h = this.getCurrentDataIndex(_e75).index;var v = Math.abs(s - h);this.scrollOption.moveCount = v;this.scrollOption.moveCurrent1 = Math.min(s, h);this.scrollOption.moveCurrent2 = Math.max(s, h);return;}var d = c / this.scrollOption.moveCount;var r = (this.opts.width - this.opts.area[1] - this.opts.area[3]) / d;r = r <= 2 ? 2 : r;r = r >= this.opts.categories.length ? this.opts.categories.length : r;this.opts.animation = false;this.opts.xAxis.itemCount = r;var o = 0;var n = getXAxisPoints(this.opts.categories, this.opts, this.config),x = n.xAxisPoints,f = n.startX,p = n.endX,l = n.eachSpacing;var u = l * this.scrollOption.moveCurrent1;var g = p - f;var y = g - l * (x.length - 1);o = -u + Math.min(i[0].x, i[1].x) - this.opts.area[3] - l;if (o > 0) {o = 0;}if (o < y) {o = y;}this.scrollOption.currentOffset = o;this.scrollOption.startTouchX = 0;this.scrollOption.distance = 0;calValidDistance(this, o, this.opts.chartData, this.config, this.opts);this.opts._scrollDistance_ = o;drawCharts.call(this, this.opts.type, this.opts, this.config, this.context);};uCharts.prototype.stopAnimation = function () {this.animationInstance && this.animationInstance.stop();};uCharts.prototype.addEventListener = function (t, e) {this.uevent.addEventListener(t, e);};uCharts.prototype.delEventListener = function (t) {this.uevent.delEventListener(t);};uCharts.prototype.getCurrentDataIndex = function (e) {var a = null;if (e.changedTouches) {a = e.changedTouches[0];} else {a = e.mp.changedTouches[0];}if (a) {var t = getTouches(a, this.opts, e);if (this.opts.type === "pie" || this.opts.type === "ring") {return findPieChartCurrentIndex({ x: t.x, y: t.y }, this.opts.chartData.pieData, this.opts);} else if (this.opts.type === "rose") {return findRoseChartCurrentIndex({ x: t.x, y: t.y }, this.opts.chartData.pieData, this.opts);} else if (this.opts.type === "radar") {return findRadarChartCurrentIndex({ x: t.x, y: t.y }, this.opts.chartData.radarData, this.opts.categories.length);} else if (this.opts.type === "funnel") {return findFunnelChartCurrentIndex({ x: t.x, y: t.y }, this.opts.chartData.funnelData);} else if (this.opts.type === "map") {return findMapChartCurrentIndex({ x: t.x, y: t.y }, this.opts);} else if (this.opts.type === "word") {return findWordChartCurrentIndex({ x: t.x, y: t.y }, this.opts.chartData.wordCloudData);} else if (this.opts.type === "bar") {return findBarChartCurrentIndex({ x: t.x, y: t.y }, this.opts.chartData.calPoints, this.opts, this.config, Math.abs(this.scrollOption.currentOffset));} else {return findCurrentIndex({ x: t.x, y: t.y }, this.opts.chartData.calPoints, this.opts, this.config, Math.abs(this.scrollOption.currentOffset));}}return -1;};uCharts.prototype.getLegendDataIndex = function (e) {var a = null;if (e.changedTouches) {a = e.changedTouches[0];} else {a = e.mp.changedTouches[0];}if (a) {var t = getTouches(a, this.opts, e);return findLegendIndex({ x: t.x, y: t.y }, this.opts.chartData.legendData);}return -1;};uCharts.prototype.touchLegend = function (t) {var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var a = null;if (t.changedTouches) {a = t.changedTouches[0];} else {a = t.mp.changedTouches[0];}if (a) {var i = getTouches(a, this.opts, t);var r = this.getLegendDataIndex(t);if (r >= 0) {if (this.opts.type == "candle") {this.opts.seriesMA[r].show = !this.opts.seriesMA[r].show;} else {this.opts.series[r].show = !this.opts.series[r].show;}this.opts.animation = e.animation ? true : false;this.opts._scrollDistance_ = this.scrollOption.currentOffset;drawCharts.call(this, this.opts.type, this.opts, this.config, this.context);}}};uCharts.prototype.showToolTip = function (t) {var _this2 = this;var e = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var c = null;if (t.changedTouches) {c = t.changedTouches[0];} else {c = t.mp.changedTouches[0];}if (!c) {console.log("[uCharts] 未获取到event坐标信息");}var a = getTouches(c, this.opts, t);var d = this.scrollOption.currentOffset;var i = assign({}, this.opts, { _scrollDistance_: d, animation: false });if (this.opts.type === "line" || this.opts.type === "area" || this.opts.type === "column" || this.opts.type === "scatter" || this.opts.type === "bubble") {var r = this.getCurrentDataIndex(t);var o = e.index == undefined ? r.index : e.index;if (o > -1 || o.length > 0) {var n = getSeriesDataItem(this.opts.series, o, r.group);if (n.length !== 0) {var l = getToolTipData(n, this.opts, o, r.group, this.opts.categories, e),s = l.textList,h = l.offset;h.y = a.y;i.tooltip = { textList: e.textList !== undefined ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o, group: r.group };}}drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "mount") {var o = e.index == undefined ? this.getCurrentDataIndex(t).index : e.index;if (o > -1) {var i = assign({}, this.opts, { animation: false });var n = assign({}, i._series_[o]);var s = [{ text: e.formatter ? e.formatter(n, undefined, o, i) : n.name + ": " + n.data, color: n.color, legendShape: this.opts.extra.tooltip.legendShape == "auto" ? n.legendShape : this.opts.extra.tooltip.legendShape }];var h = { x: i.chartData.calPoints[o].x, y: a.y };i.tooltip = { textList: e.textList ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "bar") {var r = this.getCurrentDataIndex(t);var o = e.index == undefined ? r.index : e.index;if (o > -1 || o.length > 0) {var n = getSeriesDataItem(this.opts.series, o, r.group);if (n.length !== 0) {var l = getToolTipData(n, this.opts, o, r.group, this.opts.categories, e),s = l.textList,h = l.offset;h.x = a.x;i.tooltip = { textList: e.textList !== undefined ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}}drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "mix") {var r = this.getCurrentDataIndex(t);var o = e.index == undefined ? r.index : e.index;if (o > -1) {var d = this.scrollOption.currentOffset;var i = assign({}, this.opts, { _scrollDistance_: d, animation: false });var n = getSeriesDataItem(this.opts.series, o);if (n.length !== 0) {var x = getMixToolTipData(n, this.opts, o, this.opts.categories, e),s = x.textList,h = x.offset;h.y = a.y;i.tooltip = { textList: e.textList ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}}drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "candle") {var r = this.getCurrentDataIndex(t);var o = e.index == undefined ? r.index : e.index;if (o > -1) {var d = this.scrollOption.currentOffset;var i = assign({}, this.opts, { _scrollDistance_: d, animation: false });var n = getSeriesDataItem(this.opts.series, o);if (n.length !== 0) {var l = getCandleToolTipData(this.opts.series[0].data, n, this.opts, o, this.opts.categories, this.opts.extra.candle, e),s = l.textList,h = l.offset;h.y = a.y;i.tooltip = { textList: e.textList ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}}drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "pie" || this.opts.type === "ring" || this.opts.type === "rose" || this.opts.type === "funnel") {var o = e.index == undefined ? this.getCurrentDataIndex(t) : e.index;if (o > -1) {var i = assign({}, this.opts, { animation: false });var n = assign({}, i._series_[o]);var s = [{ text: e.formatter ? e.formatter(n, undefined, o, i) : n.name + ": " + n.data, color: n.color, legendShape: this.opts.extra.tooltip.legendShape == "auto" ? n.legendShape : this.opts.extra.tooltip.legendShape }];var h = { x: a.x, y: a.y };i.tooltip = { textList: e.textList ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "map") {var o = e.index == undefined ? this.getCurrentDataIndex(t) : e.index;if (o > -1) {var i = assign({}, this.opts, { animation: false });var n = assign({}, this.opts.series[o]);n.name = n.properties.name;var s = [{ text: e.formatter ? e.formatter(n, undefined, o, this.opts) : n.name, color: n.color, legendShape: this.opts.extra.tooltip.legendShape == "auto" ? n.legendShape : this.opts.extra.tooltip.legendShape }];var h = { x: a.x, y: a.y };i.tooltip = { textList: e.textList ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}i.updateData = false;drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "word") {var o = e.index == undefined ? this.getCurrentDataIndex(t) : e.index;if (o > -1) {var i = assign({}, this.opts, { animation: false });var n = assign({}, this.opts.series[o]);var s = [{ text: e.formatter ? e.formatter(n, undefined, o, this.opts) : n.name, color: n.color, legendShape: this.opts.extra.tooltip.legendShape == "auto" ? n.legendShape : this.opts.extra.tooltip.legendShape }];var h = { x: a.x, y: a.y };i.tooltip = { textList: e.textList ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}i.updateData = false;drawCharts.call(this, i.type, i, this.config, this.context);}if (this.opts.type === "radar") {var o = e.index == undefined ? this.getCurrentDataIndex(t) : e.index;if (o > -1) {var i = assign({}, this.opts, { animation: false });var n = getSeriesDataItem(this.opts.series, o);if (n.length !== 0) {var s = n.map(function (t) {return { text: e.formatter ? e.formatter(t, _this2.opts.categories[o], o, _this2.opts) : t.name + ": " + t.data, color: t.color, legendShape: _this2.opts.extra.tooltip.legendShape == "auto" ? t.legendShape : _this2.opts.extra.tooltip.legendShape };});var h = { x: a.x, y: a.y };i.tooltip = { textList: e.textList ? e.textList : s, offset: e.offset !== undefined ? e.offset : h, option: e, index: o };}}drawCharts.call(this, i.type, i, this.config, this.context);}};uCharts.prototype.translate = function (t) {this.scrollOption = { currentOffset: t, startTouchX: t, distance: 0, lastMoveTime: 0 };var e = assign({}, this.opts, { _scrollDistance_: t, animation: false });drawCharts.call(this, this.opts.type, e, this.config, this.context);};uCharts.prototype.scrollStart = function (t) {var e = null;if (t.changedTouches) {e = t.changedTouches[0];} else {e = t.mp.changedTouches[0];}var a = getTouches(e, this.opts, t);if (e && this.opts.enableScroll === true) {this.scrollOption.startTouchX = a.x;}};uCharts.prototype.scroll = function (t) {if (this.scrollOption.lastMoveTime === 0) {this.scrollOption.lastMoveTime = Date.now();}var e = this.opts.touchMoveLimit || 60;var a = Date.now();var i = a - this.scrollOption.lastMoveTime;if (i < Math.floor(1e3 / e)) return;if (this.scrollOption.startTouchX == 0) return;this.scrollOption.lastMoveTime = a;var r = null;if (t.changedTouches) {r = t.changedTouches[0];} else {r = t.mp.changedTouches[0];}if (r && this.opts.enableScroll === true) {var o = getTouches(r, this.opts, t);var n;n = o.x - this.scrollOption.startTouchX;var l = this.scrollOption.currentOffset;var s = calValidDistance(this, l + n, this.opts.chartData, this.config, this.opts);this.scrollOption.distance = n = s - l;var h = assign({}, this.opts, { _scrollDistance_: l + n, animation: false });this.opts = h;drawCharts.call(this, h.type, h, this.config, this.context);return l + n;}};uCharts.prototype.scrollEnd = function (t) {if (this.opts.enableScroll === true) {var e = this.scrollOption,a = e.currentOffset,i = e.distance;this.scrollOption.currentOffset = a + i;this.scrollOption.distance = 0;this.scrollOption.moveCount = 0;}};var _default = uCharts;exports.default = _default;
+
+/***/ }),
+
+/***/ 2:
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ }),
 
@@ -11273,7 +10598,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"NODE_ENV":"development","VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -11294,14 +10619,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -11387,7 +10712,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"ldar_uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -11795,6 +11120,797 @@ internalMixin(Vue);
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 2)))
+
+/***/ }),
+
+/***/ 31:
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ 32);
+
+/***/ }),
+
+/***/ 32:
+/*!************************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// This method of obtaining a reference to the global object needs to be
+// kept identical to the way it is obtained in runtime.js
+var g = (function() {
+  return this || (typeof self === "object" && self);
+})() || Function("return this")();
+
+// Use `getOwnPropertyNames` because not all browsers support calling
+// `hasOwnProperty` on the global `self` object in a worker. See #183.
+var hadRuntime = g.regeneratorRuntime &&
+  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
+
+// Save the old regeneratorRuntime in case it needs to be restored later.
+var oldRuntime = hadRuntime && g.regeneratorRuntime;
+
+// Force reevalutation of runtime.js.
+g.regeneratorRuntime = undefined;
+
+module.exports = __webpack_require__(/*! ./runtime */ 33);
+
+if (hadRuntime) {
+  // Restore the original runtime.
+  g.regeneratorRuntime = oldRuntime;
+} else {
+  // Remove the global property added by runtime.js.
+  try {
+    delete g.regeneratorRuntime;
+  } catch(e) {
+    g.regeneratorRuntime = undefined;
+  }
+}
+
+
+/***/ }),
+
+/***/ 33:
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  runtime.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  runtime.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        if (delegate.iterator.return) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // In sloppy mode, unbound `this` refers to the global object, fallback to
+  // Function constructor if we're in global strict mode. That is sadly a form
+  // of indirect eval which violates Content Security Policy.
+  (function() {
+    return this || (typeof self === "object" && self);
+  })() || Function("return this")()
+);
+
 
 /***/ }),
 
@@ -12262,86 +12378,6 @@ function resolveLocaleChain(locale) {
 
 /***/ }),
 
-/***/ 45:
-/*!*******************************************************************!*\
-  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/store/store.js ***!
-  \*******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
-var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 3));
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 23));
-
-var _user = _interopRequireDefault(__webpack_require__(/*! ./user.js */ 46));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} // 导入vue和vuex
-// 导入购物车的vuex模块
-_vue.default.use(_vuex.default);
-
-// 创建Store的实例对象
-var store = new _vuex.default.Store({
-  modules: {
-    mUser: _user.default } });var _default =
-
-
-
-store;exports.default = _default;
-
-/***/ }),
-
-/***/ 46:
-/*!******************************************************************!*\
-  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/store/user.js ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  // 为当前模块开启命名空间
-  namespaced: true,
-
-  // 模块的state数据
-  state: function state() {return {
-      // // 登录成功后获取token
-      token: uni.getStorageSync('token'),
-      // 用户基本信息
-      userInfo: uni.getStorageSync('userInfo'),
-      // 重定向的object对象 { openType, from }
-      redirectInfo: null };},
-
-
-  // 模块的mutations方法
-  mutations: {
-    // 更新用户信息
-    updateUserInfo: function updateUserInfo(state, userInfo) {
-      state.userInfo = userInfo;
-      this.commit('mUser/saveUserInfoToStorage');
-    },
-    // 持久化存储用户信息
-    saveUserInfoToStorage: function saveUserInfoToStorage(state) {
-      uni.setStorageSync('userInfo', state.userInfo);
-    },
-    updateToken: function updateToken(state, token) {
-      state.token = token;
-      this.commit('mUser/saveTokenToStorage');
-    },
-    // 持久化存储token
-    saveTokenToStorage: function saveTokenToStorage(state) {
-      uni.setStorageSync('token', state.token);
-    },
-    // 更新重定向对象
-    updateRedirectInfo: function updateRedirectInfo(state, info) {
-      state.redirectInfo = info;
-    } },
-
-
-  // 模块的getters属性
-  getters: {} };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
 /***/ 5:
 /*!***************************************************************!*\
   !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/pages.json ***!
@@ -12353,7 +12389,383 @@ store;exports.default = _default;
 
 /***/ }),
 
-/***/ 63:
+/***/ 85:
+/*!************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global, uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 31));var _uniI18n = __webpack_require__(/*! @dcloudio/uni-i18n */ 4);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _iterableToArray(iter) {if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) return _arrayLikeToArray(arr);}function _createForOfIteratorHelper(o, allowArrayLike) {var it;if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {if (it) o = it;var i = 0;var F = function F() {};return { s: F, n: function n() {if (i >= o.length) return { done: true };return { done: false, value: o[i++] };}, e: function e(_e24) {throw _e24;}, f: F };}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}var normalCompletion = true,didErr = false,err;return { s: function s() {it = o[Symbol.iterator]();}, n: function n() {var step = it.next();normalCompletion = step.done;return step;}, e: function e(_e25) {didErr = true;err = _e25;}, f: function f() {try {if (!normalCompletion && it.return != null) it.return();} finally {if (didErr) throw err;}} };}function _unsupportedIterableToArray(o, minLen) {if (!o) return;if (typeof o === "string") return _arrayLikeToArray(o, minLen);var n = Object.prototype.toString.call(o).slice(8, -1);if (n === "Object" && o.constructor) n = o.constructor.name;if (n === "Map" || n === "Set") return Array.from(o);if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);}function _arrayLikeToArray(arr, len) {if (len == null || len > arr.length) len = arr.length;for (var i = 0, arr2 = new Array(len); i < len; i++) {arr2[i] = arr[i];}return arr2;}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function");}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });if (superClass) _setPrototypeOf(subClass, superClass);}function _createSuper(Derived) {var hasNativeReflectConstruct = _isNativeReflectConstruct();return function _createSuperInternal() {var Super = _getPrototypeOf(Derived),result;if (hasNativeReflectConstruct) {var NewTarget = _getPrototypeOf(this).constructor;result = Reflect.construct(Super, arguments, NewTarget);} else {result = Super.apply(this, arguments);}return _possibleConstructorReturn(this, result);};}function _possibleConstructorReturn(self, call) {if (call && (typeof call === "object" || typeof call === "function")) {return call;}return _assertThisInitialized(self);}function _assertThisInitialized(self) {if (self === void 0) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return self;}function _wrapNativeSuper(Class) {var _cache = typeof Map === "function" ? new Map() : undefined;_wrapNativeSuper = function _wrapNativeSuper(Class) {if (Class === null || !_isNativeFunction(Class)) return Class;if (typeof Class !== "function") {throw new TypeError("Super expression must either be null or a function");}if (typeof _cache !== "undefined") {if (_cache.has(Class)) return _cache.get(Class);_cache.set(Class, Wrapper);}function Wrapper() {return _construct(Class, arguments, _getPrototypeOf(this).constructor);}Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } });return _setPrototypeOf(Wrapper, Class);};return _wrapNativeSuper(Class);}function _construct(Parent, args, Class) {if (_isNativeReflectConstruct()) {_construct = Reflect.construct;} else {_construct = function _construct(Parent, args, Class) {var a = [null];a.push.apply(a, args);var Constructor = Function.bind.apply(Parent, a);var instance = new Constructor();if (Class) _setPrototypeOf(instance, Class.prototype);return instance;};}return _construct.apply(null, arguments);}function _isNativeReflectConstruct() {if (typeof Reflect === "undefined" || !Reflect.construct) return false;if (Reflect.construct.sham) return false;if (typeof Proxy === "function") return true;try {Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));return true;} catch (e) {return false;}}function _isNativeFunction(fn) {return Function.toString.call(fn).indexOf("[native code]") !== -1;}function _setPrototypeOf(o, p) {_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {o.__proto__ = p;return o;};return _setPrototypeOf(o, p);}function _getPrototypeOf(o) {_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {return o.__proto__ || Object.getPrototypeOf(o);};return _getPrototypeOf(o);}"undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self && self;function t(e) {return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;}function n(e, t, n) {return e(n = { path: t, exports: {}, require: function require(e, t) {return function () {throw new Error("Dynamic requires are not currently supported by @rollup/plugin-commonjs");}(null == t && n.path);} }, n.exports), n.exports;}var s = n(function (e, t) {var n;e.exports = (n = n || function (e, t) {var n = Object.create || function () {function e() {}return function (t) {var n;return e.prototype = t, n = new e(), e.prototype = null, n;};}(),s = {},r = s.lib = {},o = r.Base = { extend: function extend(e) {var t = n(this);return e && t.mixIn(e), t.hasOwnProperty("init") && this.init !== t.init || (t.init = function () {t.$super.init.apply(this, arguments);}), t.init.prototype = t, t.$super = this, t;}, create: function create() {var e = this.extend();return e.init.apply(e, arguments), e;}, init: function init() {}, mixIn: function mixIn(e) {for (var t in e) {e.hasOwnProperty(t) && (this[t] = e[t]);}e.hasOwnProperty("toString") && (this.toString = e.toString);}, clone: function clone() {return this.init.prototype.extend(this);} },i = r.WordArray = o.extend({ init: function init(e, n) {e = this.words = e || [], this.sigBytes = n != t ? n : 4 * e.length;}, toString: function toString(e) {return (e || c).stringify(this);}, concat: function concat(e) {var t = this.words,n = e.words,s = this.sigBytes,r = e.sigBytes;if (this.clamp(), s % 4) for (var o = 0; o < r; o++) {var i = n[o >>> 2] >>> 24 - o % 4 * 8 & 255;t[s + o >>> 2] |= i << 24 - (s + o) % 4 * 8;} else for (o = 0; o < r; o += 4) {t[s + o >>> 2] = n[o >>> 2];}return this.sigBytes += r, this;}, clamp: function clamp() {var t = this.words,n = this.sigBytes;t[n >>> 2] &= 4294967295 << 32 - n % 4 * 8, t.length = e.ceil(n / 4);}, clone: function clone() {var e = o.clone.call(this);return e.words = this.words.slice(0), e;}, random: function random(t) {for (var n, s = [], r = function r(t) {t = t;var n = 987654321,s = 4294967295;return function () {var r = ((n = 36969 * (65535 & n) + (n >> 16) & s) << 16) + (t = 18e3 * (65535 & t) + (t >> 16) & s) & s;return r /= 4294967296, (r += .5) * (e.random() > .5 ? 1 : -1);};}, o = 0; o < t; o += 4) {var a = r(4294967296 * (n || e.random()));n = 987654071 * a(), s.push(4294967296 * a() | 0);}return new i.init(s, t);} }),a = s.enc = {},c = a.Hex = { stringify: function stringify(e) {for (var t = e.words, n = e.sigBytes, s = [], r = 0; r < n; r++) {var o = t[r >>> 2] >>> 24 - r % 4 * 8 & 255;s.push((o >>> 4).toString(16)), s.push((15 & o).toString(16));}return s.join("");}, parse: function parse(e) {for (var t = e.length, n = [], s = 0; s < t; s += 2) {n[s >>> 3] |= parseInt(e.substr(s, 2), 16) << 24 - s % 8 * 4;}return new i.init(n, t / 2);} },u = a.Latin1 = { stringify: function stringify(e) {for (var t = e.words, n = e.sigBytes, s = [], r = 0; r < n; r++) {var o = t[r >>> 2] >>> 24 - r % 4 * 8 & 255;s.push(String.fromCharCode(o));}return s.join("");}, parse: function parse(e) {for (var t = e.length, n = [], s = 0; s < t; s++) {n[s >>> 2] |= (255 & e.charCodeAt(s)) << 24 - s % 4 * 8;}return new i.init(n, t);} },h = a.Utf8 = { stringify: function stringify(e) {try {return decodeURIComponent(escape(u.stringify(e)));} catch (e) {throw new Error("Malformed UTF-8 data");}}, parse: function parse(e) {return u.parse(unescape(encodeURIComponent(e)));} },l = r.BufferedBlockAlgorithm = o.extend({ reset: function reset() {this._data = new i.init(), this._nDataBytes = 0;}, _append: function _append(e) {"string" == typeof e && (e = h.parse(e)), this._data.concat(e), this._nDataBytes += e.sigBytes;}, _process: function _process(t) {var n = this._data,s = n.words,r = n.sigBytes,o = this.blockSize,a = r / (4 * o),c = (a = t ? e.ceil(a) : e.max((0 | a) - this._minBufferSize, 0)) * o,u = e.min(4 * c, r);if (c) {for (var h = 0; h < c; h += o) {this._doProcessBlock(s, h);}var l = s.splice(0, c);n.sigBytes -= u;}return new i.init(l, u);}, clone: function clone() {var e = o.clone.call(this);return e._data = this._data.clone(), e;}, _minBufferSize: 0 });r.Hasher = l.extend({ cfg: o.extend(), init: function init(e) {this.cfg = this.cfg.extend(e), this.reset();}, reset: function reset() {l.reset.call(this), this._doReset();}, update: function update(e) {return this._append(e), this._process(), this;}, finalize: function finalize(e) {return e && this._append(e), this._doFinalize();}, blockSize: 16, _createHelper: function _createHelper(e) {return function (t, n) {return new e.init(n).finalize(t);};}, _createHmacHelper: function _createHmacHelper(e) {return function (t, n) {return new d.HMAC.init(e, n).finalize(t);};} });var d = s.algo = {};return s;}(Math), n);}),r = (n(function (e, t) {var n;e.exports = (n = s, function (e) {var t = n,s = t.lib,r = s.WordArray,o = s.Hasher,i = t.algo,a = [];!function () {for (var t = 0; t < 64; t++) {a[t] = 4294967296 * e.abs(e.sin(t + 1)) | 0;}}();var c = i.MD5 = o.extend({ _doReset: function _doReset() {this._hash = new r.init([1732584193, 4023233417, 2562383102, 271733878]);}, _doProcessBlock: function _doProcessBlock(e, t) {for (var n = 0; n < 16; n++) {var s = t + n,r = e[s];e[s] = 16711935 & (r << 8 | r >>> 24) | 4278255360 & (r << 24 | r >>> 8);}var o = this._hash.words,i = e[t + 0],c = e[t + 1],f = e[t + 2],p = e[t + 3],g = e[t + 4],m = e[t + 5],y = e[t + 6],_ = e[t + 7],w = e[t + 8],k = e[t + 9],S = e[t + 10],v = e[t + 11],T = e[t + 12],A = e[t + 13],P = e[t + 14],I = e[t + 15],b = o[0],E = o[1],O = o[2],C = o[3];b = u(b, E, O, C, i, 7, a[0]), C = u(C, b, E, O, c, 12, a[1]), O = u(O, C, b, E, f, 17, a[2]), E = u(E, O, C, b, p, 22, a[3]), b = u(b, E, O, C, g, 7, a[4]), C = u(C, b, E, O, m, 12, a[5]), O = u(O, C, b, E, y, 17, a[6]), E = u(E, O, C, b, _, 22, a[7]), b = u(b, E, O, C, w, 7, a[8]), C = u(C, b, E, O, k, 12, a[9]), O = u(O, C, b, E, S, 17, a[10]), E = u(E, O, C, b, v, 22, a[11]), b = u(b, E, O, C, T, 7, a[12]), C = u(C, b, E, O, A, 12, a[13]), O = u(O, C, b, E, P, 17, a[14]), b = h(b, E = u(E, O, C, b, I, 22, a[15]), O, C, c, 5, a[16]), C = h(C, b, E, O, y, 9, a[17]), O = h(O, C, b, E, v, 14, a[18]), E = h(E, O, C, b, i, 20, a[19]), b = h(b, E, O, C, m, 5, a[20]), C = h(C, b, E, O, S, 9, a[21]), O = h(O, C, b, E, I, 14, a[22]), E = h(E, O, C, b, g, 20, a[23]), b = h(b, E, O, C, k, 5, a[24]), C = h(C, b, E, O, P, 9, a[25]), O = h(O, C, b, E, p, 14, a[26]), E = h(E, O, C, b, w, 20, a[27]), b = h(b, E, O, C, A, 5, a[28]), C = h(C, b, E, O, f, 9, a[29]), O = h(O, C, b, E, _, 14, a[30]), b = l(b, E = h(E, O, C, b, T, 20, a[31]), O, C, m, 4, a[32]), C = l(C, b, E, O, w, 11, a[33]), O = l(O, C, b, E, v, 16, a[34]), E = l(E, O, C, b, P, 23, a[35]), b = l(b, E, O, C, c, 4, a[36]), C = l(C, b, E, O, g, 11, a[37]), O = l(O, C, b, E, _, 16, a[38]), E = l(E, O, C, b, S, 23, a[39]), b = l(b, E, O, C, A, 4, a[40]), C = l(C, b, E, O, i, 11, a[41]), O = l(O, C, b, E, p, 16, a[42]), E = l(E, O, C, b, y, 23, a[43]), b = l(b, E, O, C, k, 4, a[44]), C = l(C, b, E, O, T, 11, a[45]), O = l(O, C, b, E, I, 16, a[46]), b = d(b, E = l(E, O, C, b, f, 23, a[47]), O, C, i, 6, a[48]), C = d(C, b, E, O, _, 10, a[49]), O = d(O, C, b, E, P, 15, a[50]), E = d(E, O, C, b, m, 21, a[51]), b = d(b, E, O, C, T, 6, a[52]), C = d(C, b, E, O, p, 10, a[53]), O = d(O, C, b, E, S, 15, a[54]), E = d(E, O, C, b, c, 21, a[55]), b = d(b, E, O, C, w, 6, a[56]), C = d(C, b, E, O, I, 10, a[57]), O = d(O, C, b, E, y, 15, a[58]), E = d(E, O, C, b, A, 21, a[59]), b = d(b, E, O, C, g, 6, a[60]), C = d(C, b, E, O, v, 10, a[61]), O = d(O, C, b, E, f, 15, a[62]), E = d(E, O, C, b, k, 21, a[63]), o[0] = o[0] + b | 0, o[1] = o[1] + E | 0, o[2] = o[2] + O | 0, o[3] = o[3] + C | 0;}, _doFinalize: function _doFinalize() {var t = this._data,n = t.words,s = 8 * this._nDataBytes,r = 8 * t.sigBytes;n[r >>> 5] |= 128 << 24 - r % 32;var o = e.floor(s / 4294967296),i = s;n[15 + (r + 64 >>> 9 << 4)] = 16711935 & (o << 8 | o >>> 24) | 4278255360 & (o << 24 | o >>> 8), n[14 + (r + 64 >>> 9 << 4)] = 16711935 & (i << 8 | i >>> 24) | 4278255360 & (i << 24 | i >>> 8), t.sigBytes = 4 * (n.length + 1), this._process();for (var a = this._hash, c = a.words, u = 0; u < 4; u++) {var h = c[u];c[u] = 16711935 & (h << 8 | h >>> 24) | 4278255360 & (h << 24 | h >>> 8);}return a;}, clone: function clone() {var e = o.clone.call(this);return e._hash = this._hash.clone(), e;} });function u(e, t, n, s, r, o, i) {var a = e + (t & n | ~t & s) + r + i;return (a << o | a >>> 32 - o) + t;}function h(e, t, n, s, r, o, i) {var a = e + (t & s | n & ~s) + r + i;return (a << o | a >>> 32 - o) + t;}function l(e, t, n, s, r, o, i) {var a = e + (t ^ n ^ s) + r + i;return (a << o | a >>> 32 - o) + t;}function d(e, t, n, s, r, o, i) {var a = e + (n ^ (t | ~s)) + r + i;return (a << o | a >>> 32 - o) + t;}t.MD5 = o._createHelper(c), t.HmacMD5 = o._createHmacHelper(c);}(Math), n.MD5);}), n(function (e, t) {var n, r, o;e.exports = (r = (n = s).lib.Base, o = n.enc.Utf8, void (n.algo.HMAC = r.extend({ init: function init(e, t) {e = this._hasher = new e.init(), "string" == typeof t && (t = o.parse(t));var n = e.blockSize,s = 4 * n;t.sigBytes > s && (t = e.finalize(t)), t.clamp();for (var r = this._oKey = t.clone(), i = this._iKey = t.clone(), a = r.words, c = i.words, u = 0; u < n; u++) {a[u] ^= 1549556828, c[u] ^= 909522486;}r.sigBytes = i.sigBytes = s, this.reset();}, reset: function reset() {var e = this._hasher;e.reset(), e.update(this._iKey);}, update: function update(e) {return this._hasher.update(e), this;}, finalize: function finalize(e) {var t = this._hasher,n = t.finalize(e);return t.reset(), t.finalize(this._oKey.clone().concat(n));} })));}), n(function (e, t) {e.exports = s.HmacMD5;}));function o(e) {return Object.prototype.toString.call(e).slice(8, -1).toLowerCase();}function i(e) {return "object" === o(e);}var a = /*#__PURE__*/function (_Error) {_inherits(a, _Error);var _super = _createSuper(a);function a(e, t) {var _this;_classCallCheck(this, a);_this = _super.call(this, e), _this.code = t;return _this;}return a;}( /*#__PURE__*/_wrapNativeSuper(Error));function c(e) {return e && "string" == typeof e ? JSON.parse(e) : e;}var u = "development" === "development",h = "mp-weixin",l = c(undefined),d = c([]),f = true;var p = "";try {{var _e2 = __webpack_require__(/*! uni-stat-config */ 86).default || __webpack_require__(/*! uni-stat-config */ 86);p = _e2.appid;}} catch (e) {}var g = {};function m(e) {var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var n, s;return n = g, s = e, Object.prototype.hasOwnProperty.call(n, s) || (g[e] = t), g[e];}"app-plus" === h && (g = uni._globalUniCloudObj ? uni._globalUniCloudObj : uni._globalUniCloudObj = {});var y = ["invoke", "success", "fail", "complete"],_ = m("_globalUniCloudInterceptor");function w(e, t) {_[e] || (_[e] = {}), i(t) && Object.keys(t).forEach(function (n) {y.indexOf(n) > -1 && function (e, t, n) {var s = _[e][t];s || (s = _[e][t] = []), -1 === s.indexOf(n) && "function" == typeof n && s.push(n);}(e, n, t[n]);});}function k(e, t) {_[e] || (_[e] = {}), i(t) ? Object.keys(t).forEach(function (n) {y.indexOf(n) > -1 && function (e, t, n) {var s = _[e][t];if (!s) return;var r = s.indexOf(n);r > -1 && s.splice(r, 1);}(e, n, t[n]);}) : delete _[e];}function S(e, t) {return e && 0 !== e.length ? e.reduce(function (e, n) {return e.then(function () {return n(t);});}, Promise.resolve()) : Promise.resolve();}function v(e, t) {return _[e] && _[e][t] || [];}function T(e, t) {return t ? function (n) {var _this2 = this;var s = "callFunction" === t && "DCloud-clientDB" === (n && n.name);var r;r = this.isReady ? Promise.resolve() : this.initUniCloud, n = n || {};var o = r.then(function () {return s ? Promise.resolve() : S(v(t, "invoke"), n);}).then(function () {return e.call(_this2, n);}).then(function (e) {return s ? Promise.resolve(e) : S(v(t, "success"), e).then(function () {return S(v(t, "complete"), e);}).then(function () {return Promise.resolve(e);});}, function (e) {return s ? Promise.reject(e) : S(v(t, "fail"), e).then(function () {return S(v(t, "complete"), e);}).then(function () {return Promise.reject(e);});});if (!(n.success || n.fail || n.complete)) return o;o.then(function (e) {n.success && n.success(e), n.complete && n.complete(e);}, function (e) {n.fail && n.fail(e), n.complete && n.complete(e);});} : function (t) {if (!((t = t || {}).success || t.fail || t.complete)) return e.call(this, t);e.call(this, t).then(function (e) {t.success && t.success(e), t.complete && t.complete(e);}, function (e) {t.fail && t.fail(e), t.complete && t.complete(e);});};}var A = /*#__PURE__*/function (_Error2) {_inherits(A, _Error2);var _super2 = _createSuper(A);function A(e) {var _this3;_classCallCheck(this, A);_this3 = _super2.call(this, e.message), _this3.errMsg = e.message || "", Object.defineProperties(_assertThisInitialized(_this3), { code: { get: function get() {return e.code;} }, requestId: { get: function get() {return e.requestId;} }, message: { get: function get() {return this.errMsg;}, set: function set(e) {this.errMsg = e;} } });return _this3;}return A;}( /*#__PURE__*/_wrapNativeSuper(Error));var P;function I() {var e = uni.getLocale && uni.getLocale() || "en";if (P) return _objectSpread(_objectSpread({}, P), {}, { LOCALE: e });var _uni$getSystemInfoSyn = uni.getSystemInfoSync(),t = _uni$getSystemInfoSyn.deviceId,n = _uni$getSystemInfoSyn.platform;return P = { PLATFORM: h, OS: n, APPID: p, DEVICEID: t, CLIENT_SDK_VERSION: "1.0.21" }, _objectSpread(_objectSpread({}, P), {}, { LOCALE: e });}var b = { sign: function sign(e, t) {var n = "";return Object.keys(e).sort().forEach(function (t) {e[t] && (n = n + "&" + t + "=" + e[t]);}), n = n.slice(1), r(n, t).toString();}, wrappedRequest: function wrappedRequest(e, t) {return new Promise(function (n, s) {t(Object.assign(e, { complete: function complete(e) {e || (e = {}), u && "h5" === h && e.errMsg && 0 === e.errMsg.indexOf("request:fail") && console.warn("发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5");var t = e.data && e.data.header && e.data.header["x-serverless-request-id"] || e.header && e.header["request-id"];if (!e.statusCode || e.statusCode >= 400) return s(new A({ code: "SYS_ERR", message: e.errMsg || "request:fail", requestId: t }));var r = e.data;if (r.error) return s(new A({ code: r.error.code, message: r.error.message, requestId: t }));r.result = r.data, r.requestId = t, delete r.data, n(r);} }));});} };var E = { request: function request(e) {return uni.request(e);}, uploadFile: function uploadFile(e) {return uni.uploadFile(e);}, setStorageSync: function setStorageSync(e, t) {return uni.setStorageSync(e, t);}, getStorageSync: function getStorageSync(e) {return uni.getStorageSync(e);}, removeStorageSync: function removeStorageSync(e) {return uni.removeStorageSync(e);}, clearStorageSync: function clearStorageSync() {return uni.clearStorageSync();} },O = { "uniCloud.init.paramRequired": "{param} required", "uniCloud.uploadFile.fileError": "filePath should be instance of File" };var _e3 = (0, _uniI18n.initVueI18n)({ "zh-Hans": { "uniCloud.init.paramRequired": "缺少参数：{param}", "uniCloud.uploadFile.fileError": "filePath应为File对象" }, "zh-Hant": { "uniCloud.init.paramRequired": "缺少参数：{param}", "uniCloud.uploadFile.fileError": "filePath应为File对象" }, en: O, fr: { "uniCloud.init.paramRequired": "{param} required", "uniCloud.uploadFile.fileError": "filePath should be instance of File" }, es: { "uniCloud.init.paramRequired": "{param} required", "uniCloud.uploadFile.fileError": "filePath should be instance of File" }, ja: O }, "zh-Hans"),C = _e3.t;var U = /*#__PURE__*/function () {function U(e) {_classCallCheck(this, U);["spaceId", "clientSecret"].forEach(function (t) {if (!Object.prototype.hasOwnProperty.call(e, t)) throw new Error(C("uniCloud.init.paramRequired", { param: t }));}), this.config = Object.assign({}, { endpoint: "https://api.bspapp.com" }, e), this.config.provider = "aliyun", this.config.requestUrl = this.config.endpoint + "/client", this.config.envType = this.config.envType || "public", this.config.accessTokenKey = "access_token_" + this.config.spaceId, this.adapter = E, this._getAccessTokenPromise = null, this._getAccessTokenPromiseStatus = null;}_createClass(U, [{ key: "setAccessToken", value: function setAccessToken(e) {this.accessToken = e;} }, { key: "requestWrapped", value: function requestWrapped(e) {return b.wrappedRequest(e, this.adapter.request);} }, { key: "requestAuth", value: function requestAuth(e) {return this.requestWrapped(e);} }, { key: "request", value: function request(e, t) {var _this4 = this;return Promise.resolve().then(function () {return _this4.hasAccessToken ? t ? _this4.requestWrapped(e) : _this4.requestWrapped(e).catch(function (t) {return new Promise(function (e, n) {!t || "GATEWAY_INVALID_TOKEN" !== t.code && "InvalidParameter.InvalidToken" !== t.code ? n(t) : e();}).then(function () {return _this4.getAccessToken();}).then(function () {var t = _this4.rebuildRequest(e);return _this4.request(t, !0);});}) : _this4.getAccessToken().then(function () {var t = _this4.rebuildRequest(e);return _this4.request(t, !0);});});} }, { key: "rebuildRequest", value: function rebuildRequest(e) {var t = Object.assign({}, e);return t.data.token = this.accessToken, t.header["x-basement-token"] = this.accessToken, t.header["x-serverless-sign"] = b.sign(t.data, this.config.clientSecret), t;} }, { key: "setupRequest", value: function setupRequest(e, t) {var n = Object.assign({}, e, { spaceId: this.config.spaceId, timestamp: Date.now() }),s = { "Content-Type": "application/json" };return "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = b.sign(n, this.config.clientSecret), { url: this.config.requestUrl, method: "POST", data: n, dataType: "json", header: s };} }, { key: "getAccessToken", value: function getAccessToken() {var _this5 = this;if ("pending" === this._getAccessTokenPromiseStatus) return this._getAccessTokenPromise;this._getAccessTokenPromiseStatus = "pending";return this._getAccessTokenPromise = this.requestAuth(this.setupRequest({ method: "serverless.auth.user.anonymousAuthorize", params: "{}" }, "auth")).then(function (e) {return new Promise(function (t, n) {e.result && e.result.accessToken ? (_this5.setAccessToken(e.result.accessToken), _this5._getAccessTokenPromiseStatus = "fulfilled", t(_this5.accessToken)) : (_this5._getAccessTokenPromiseStatus = "rejected", n(new A({ code: "AUTH_FAILED", message: "获取accessToken失败" })));});}, function (e) {return _this5._getAccessTokenPromiseStatus = "rejected", Promise.reject(e);}), this._getAccessTokenPromise;} }, { key: "authorize", value: function authorize() {this.getAccessToken();} }, { key: "callFunction", value: function callFunction(e) {var t = { method: "serverless.function.runtime.invoke", params: JSON.stringify({ functionTarget: e.name, functionArgs: e.data || {} }) };return this.request(this.setupRequest(t));} }, { key: "getOSSUploadOptionsFromPath", value: function getOSSUploadOptionsFromPath(e) {var t = { method: "serverless.file.resource.generateProximalSign", params: JSON.stringify(e) };return this.request(this.setupRequest(t));} }, { key: "uploadFileToOSS", value: function uploadFileToOSS(_ref) {var _this6 = this;var e = _ref.url,t = _ref.formData,n = _ref.name,s = _ref.filePath,r = _ref.fileType,o = _ref.onUploadProgress;return new Promise(function (i, a) {var c = _this6.adapter.uploadFile({ url: e, formData: t, name: n, filePath: s, fileType: r, header: { "X-OSS-server-side-encrpytion": "AES256" }, success: function success(e) {e && e.statusCode < 400 ? i(e) : a(new A({ code: "UPLOAD_FAILED", message: "文件上传失败" }));}, fail: function fail(e) {a(new A({ code: e.code || "UPLOAD_FAILED", message: e.message || e.errMsg || "文件上传失败" }));} });"function" == typeof o && c && "function" == typeof c.onProgressUpdate && c.onProgressUpdate(function (e) {o({ loaded: e.totalBytesSent, total: e.totalBytesExpectedToSend });});});} }, { key: "reportOSSUpload", value: function reportOSSUpload(e) {var t = { method: "serverless.file.resource.report", params: JSON.stringify(e) };return this.request(this.setupRequest(t));} }, { key: "uploadFile", value: function uploadFile(_ref2) {var _this7 = this;var e = _ref2.filePath,t = _ref2.cloudPath,_ref2$fileType = _ref2.fileType,n = _ref2$fileType === void 0 ? "image" : _ref2$fileType,s = _ref2.onUploadProgress,r = _ref2.config;if ("string" !== o(t)) throw new A({ code: "INVALID_PARAM", message: "cloudPath必须为字符串类型" });if (!(t = t.trim())) throw new A({ code: "CLOUDPATH_REQUIRED", message: "cloudPath不可为空" });if (/:\/\//.test(t)) throw new A({ code: "INVALID_PARAM", message: "cloudPath不合法" });var i = r && r.envType || this.config.envType;var a, c;return this.getOSSUploadOptionsFromPath({ env: i, filename: t }).then(function (t) {var r = t.result;a = r.id, c = "https://" + r.cdnDomain + "/" + r.ossPath;var o = { url: "https://" + r.host, formData: { "Cache-Control": "max-age=2592000", "Content-Disposition": "attachment", OSSAccessKeyId: r.accessKeyId, Signature: r.signature, host: r.host, id: a, key: r.ossPath, policy: r.policy, success_action_status: 200 }, fileName: "file", name: "file", filePath: e, fileType: n };return _this7.uploadFileToOSS(Object.assign({}, o, { onUploadProgress: s }));}).then(function () {return _this7.reportOSSUpload({ id: a });}).then(function (t) {return new Promise(function (n, s) {t.success ? n({ success: !0, filePath: e, fileID: c }) : s(new A({ code: "UPLOAD_FAILED", message: "文件上传失败" }));});});} }, { key: "deleteFile", value: function deleteFile(_ref3) {var e = _ref3.fileList;var t = { method: "serverless.file.resource.delete", params: JSON.stringify({ id: e[0] }) };return this.request(this.setupRequest(t));} }, { key: "getTempFileURL", value: function getTempFileURL() {var _ref4 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},e = _ref4.fileList;return new Promise(function (t, n) {Array.isArray(e) && 0 !== e.length || n(new A({ code: "INVALID_PARAM", message: "fileList的元素必须是非空的字符串" })), t({ fileList: e.map(function (e) {return { fileID: e, tempFileURL: e };}) });});} }, { key: "hasAccessToken", get: function get() {return !!this.accessToken;} }]);return U;}();var x = { init: function init(e) {var t = new U(e),n = { signInAnonymously: function signInAnonymously() {return t.authorize();}, getLoginState: function getLoginState() {return Promise.resolve(!1);} };return t.auth = function () {return n;}, t.customAuth = t.auth, t;} };var D = "undefined" != typeof location && "http:" === location.protocol ? "http:" : "https:";var R;!function (e) {e.local = "local", e.none = "none", e.session = "session";}(R || (R = {}));var q = function q() {};var L = function L() {var e;if (!Promise) {e = function e() {}, e.promise = {};var _t2 = function _t2() {throw new Error('Your Node runtime does support ES6 Promises. Set "global.Promise" to your preferred implementation of promises.');};return Object.defineProperty(e.promise, "then", { get: _t2 }), Object.defineProperty(e.promise, "catch", { get: _t2 }), e;}var t = new Promise(function (t, n) {e = function e(_e4, s) {return _e4 ? n(_e4) : t(s);};});return e.promise = t, e;};function F(e) {return void 0 === e;}function N(e) {return "[object Null]" === Object.prototype.toString.call(e);}var $;function M(e) {var t = (n = e, "[object Array]" === Object.prototype.toString.call(n) ? e : [e]);var n;var _iterator = _createForOfIteratorHelper(t),_step;try {for (_iterator.s(); !(_step = _iterator.n()).done;) {var _e5 = _step.value;var _t3 = _e5.isMatch,_n = _e5.genAdapter,_s = _e5.runtime;if (_t3()) return { adapter: _n(), runtime: _s };}} catch (err) {_iterator.e(err);} finally {_iterator.f();}}!function (e) {e.WEB = "web", e.WX_MP = "wx_mp";}($ || ($ = {}));var j = { adapter: null, runtime: void 0 },B = ["anonymousUuidKey"];var K = /*#__PURE__*/function (_q) {_inherits(K, _q);var _super3 = _createSuper(K);function K() {var _this8;_classCallCheck(this, K);_this8 = _super3.call(this), j.adapter.root.tcbObject || (j.adapter.root.tcbObject = {});return _this8;}_createClass(K, [{ key: "setItem", value: function setItem(e, t) {j.adapter.root.tcbObject[e] = t;} }, { key: "getItem", value: function getItem(e) {return j.adapter.root.tcbObject[e];} }, { key: "removeItem", value: function removeItem(e) {delete j.adapter.root.tcbObject[e];} }, { key: "clear", value: function clear() {delete j.adapter.root.tcbObject;} }]);return K;}(q);function H(e, t) {switch (e) {case "local":return t.localStorage || new K();case "none":return new K();default:return t.sessionStorage || new K();}}var W = /*#__PURE__*/function () {function W(e) {_classCallCheck(this, W);if (!this._storage) {this._persistence = j.adapter.primaryStorage || e.persistence, this._storage = H(this._persistence, j.adapter);var _t4 = "access_token_".concat(e.env),_n2 = "access_token_expire_".concat(e.env),_s2 = "refresh_token_".concat(e.env),_r = "anonymous_uuid_".concat(e.env),_o = "login_type_".concat(e.env),_i = "user_info_".concat(e.env);this.keys = { accessTokenKey: _t4, accessTokenExpireKey: _n2, refreshTokenKey: _s2, anonymousUuidKey: _r, loginTypeKey: _o, userInfoKey: _i };}}_createClass(W, [{ key: "updatePersistence", value: function updatePersistence(e) {if (e === this._persistence) return;var t = "local" === this._persistence;this._persistence = e;var n = H(e, j.adapter);for (var _e6 in this.keys) {var _s3 = this.keys[_e6];if (t && B.includes(_e6)) continue;var _r2 = this._storage.getItem(_s3);F(_r2) || N(_r2) || (n.setItem(_s3, _r2), this._storage.removeItem(_s3));}this._storage = n;} }, { key: "setStore", value: function setStore(e, t, n) {if (!this._storage) return;var s = { version: n || "localCachev1", content: t },r = JSON.stringify(s);try {this._storage.setItem(e, r);} catch (e) {throw e;}} }, { key: "getStore", value: function getStore(e, t) {try {if (!this._storage) return;} catch (e) {return "";}t = t || "localCachev1";var n = this._storage.getItem(e);if (!n) return "";if (n.indexOf(t) >= 0) {return JSON.parse(n).content;}return "";} }, { key: "removeStore", value: function removeStore(e) {this._storage.removeItem(e);} }]);return W;}();var z = {},J = {};function V(e) {return z[e];}var Y = function Y(e, t) {_classCallCheck(this, Y);this.data = t || null, this.name = e;};var X = /*#__PURE__*/function (_Y) {_inherits(X, _Y);var _super4 = _createSuper(X);function X(e, t) {var _this9;_classCallCheck(this, X);_this9 = _super4.call(this, "error", { error: e, data: t }), _this9.error = e;return _this9;}return X;}(Y);var G = new ( /*#__PURE__*/function () {function _class() {_classCallCheck(this, _class);this._listeners = {};}_createClass(_class, [{ key: "on", value: function on(e, t) {return function (e, t, n) {n[e] = n[e] || [], n[e].push(t);}(e, t, this._listeners), this;} }, { key: "off", value: function off(e, t) {return function (e, t, n) {if (n && n[e]) {var _s4 = n[e].indexOf(t);-1 !== _s4 && n[e].splice(_s4, 1);}}(e, t, this._listeners), this;} }, { key: "fire", value: function fire(e, t) {if (e instanceof X) return console.error(e.error), this;var n = "string" == typeof e ? new Y(e, t || {}) : e;var s = n.name;if (this._listens(s)) {n.target = this;var _e7 = this._listeners[s] ? _toConsumableArray(this._listeners[s]) : [];var _iterator2 = _createForOfIteratorHelper(_e7),_step2;try {for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {var _t5 = _step2.value;_t5.call(this, n);}} catch (err) {_iterator2.e(err);} finally {_iterator2.f();}}return this;} }, { key: "_listens", value: function _listens(e) {return this._listeners[e] && this._listeners[e].length > 0;} }]);return _class;}())();function Q(e, t) {G.on(e, t);}function Z(e) {var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};G.fire(e, t);}function ee(e, t) {G.off(e, t);}var te = "loginStateChanged",ne = "loginStateExpire",se = "loginTypeChanged",re = "anonymousConverted",oe = "refreshAccessToken";var ie;!function (e) {e.ANONYMOUS = "ANONYMOUS", e.WECHAT = "WECHAT", e.WECHAT_PUBLIC = "WECHAT-PUBLIC", e.WECHAT_OPEN = "WECHAT-OPEN", e.CUSTOM = "CUSTOM", e.EMAIL = "EMAIL", e.USERNAME = "USERNAME", e.NULL = "NULL";}(ie || (ie = {}));var ae = ["auth.getJwt", "auth.logout", "auth.signInWithTicket", "auth.signInAnonymously", "auth.signIn", "auth.fetchAccessTokenWithRefreshToken", "auth.signUpWithEmailAndPassword", "auth.activateEndUserMail", "auth.sendPasswordResetEmail", "auth.resetPasswordWithToken", "auth.isUsernameRegistered"],ce = { "X-SDK-Version": "1.3.5" };function ue(e, t, n) {var s = e[t];e[t] = function (t) {var r = {},o = {};n.forEach(function (n) {var _n$call = n.call(e, t),s = _n$call.data,i = _n$call.headers;Object.assign(r, s), Object.assign(o, i);});var i = t.data;return i && function () {var e;if (e = i, "[object FormData]" !== Object.prototype.toString.call(e)) t.data = _objectSpread(_objectSpread({}, i), r);else for (var _e8 in r) {i.append(_e8, r[_e8]);}}(), t.headers = _objectSpread(_objectSpread({}, t.headers || {}), o), s.call(e, t);};}function he() {var e = Math.random().toString(16).slice(2);return { data: { seqId: e }, headers: _objectSpread(_objectSpread({}, ce), {}, { "x-seqid": e }) };}var le = /*#__PURE__*/function () {function le() {var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};_classCallCheck(this, le);var t;this.config = e, this._reqClass = new j.adapter.reqClass({ timeout: this.config.timeout, timeoutMsg: "\u8BF7\u6C42\u5728".concat(this.config.timeout / 1e3, "s\u5185\u672A\u5B8C\u6210\uFF0C\u5DF2\u4E2D\u65AD"), restrictedMethods: ["post"] }), this._cache = V(this.config.env), this._localCache = (t = this.config.env, J[t]), ue(this._reqClass, "post", [he]), ue(this._reqClass, "upload", [he]), ue(this._reqClass, "download", [he]);}_createClass(le, [{ key: "post", value: function () {var _post = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(e) {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return this._reqClass.post(e);case 2:return _context.abrupt("return", _context.sent);case 3:case "end":return _context.stop();}}}, _callee, this);}));function post(_x) {return _post.apply(this, arguments);}return post;}() }, { key: "upload", value: function () {var _upload = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(e) {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return this._reqClass.upload(e);case 2:return _context2.abrupt("return", _context2.sent);case 3:case "end":return _context2.stop();}}}, _callee2, this);}));function upload(_x2) {return _upload.apply(this, arguments);}return upload;}() }, { key: "download", value: function () {var _download = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3(e) {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return this._reqClass.download(e);case 2:return _context3.abrupt("return", _context3.sent);case 3:case "end":return _context3.stop();}}}, _callee3, this);}));function download(_x3) {return _download.apply(this, arguments);}return download;}() }, { key: "refreshAccessToken", value: function () {var _refreshAccessToken2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var e, t;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:this._refreshAccessTokenPromise || (this._refreshAccessTokenPromise = this._refreshAccessToken());_context4.prev = 1;_context4.next = 4;return this._refreshAccessTokenPromise;case 4:e = _context4.sent;_context4.next = 10;break;case 7:_context4.prev = 7;_context4.t0 = _context4["catch"](1);t = _context4.t0;case 10:if (!(this._refreshAccessTokenPromise = null, this._shouldRefreshAccessTokenHook = null, t)) {_context4.next = 12;break;}throw t;case 12:return _context4.abrupt("return", e);case 13:case "end":return _context4.stop();}}}, _callee4, this, [[1, 7]]);}));function refreshAccessToken() {return _refreshAccessToken2.apply(this, arguments);}return refreshAccessToken;}() }, { key: "_refreshAccessToken", value: function () {var _refreshAccessToken3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {var _this$_cache$keys, e, t, n, s, r, o, i, a, _e9, _e10, _t6, _s5;return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:_this$_cache$keys = this._cache.keys, e = _this$_cache$keys.accessTokenKey, t = _this$_cache$keys.accessTokenExpireKey, n = _this$_cache$keys.refreshTokenKey, s = _this$_cache$keys.loginTypeKey, r = _this$_cache$keys.anonymousUuidKey;this._cache.removeStore(e), this._cache.removeStore(t);o = this._cache.getStore(n);if (o) {_context5.next = 5;break;}throw new Error("未登录CloudBase");case 5:i = { refresh_token: o };_context5.next = 8;return this.request("auth.fetchAccessTokenWithRefreshToken", i);case 8:a = _context5.sent;if (!a.data.code) {_context5.next = 21;break;}_e9 = a.data.code;if (!("SIGN_PARAM_INVALID" === _e9 || "REFRESH_TOKEN_EXPIRED" === _e9 || "INVALID_REFRESH_TOKEN" === _e9)) {_context5.next = 20;break;}if (!(this._cache.getStore(s) === ie.ANONYMOUS && "INVALID_REFRESH_TOKEN" === _e9)) {_context5.next = 19;break;}_e10 = this._cache.getStore(r);_t6 = this._cache.getStore(n);_context5.next = 17;return this.send("auth.signInAnonymously", { anonymous_uuid: _e10, refresh_token: _t6 });case 17:_s5 = _context5.sent;return _context5.abrupt("return", (this.setRefreshToken(_s5.refresh_token), this._refreshAccessToken()));case 19:Z(ne), this._cache.removeStore(n);case 20:throw new Error("\u5237\u65B0access token\u5931\u8D25\uFF1A".concat(a.data.code));case 21:if (!a.data.access_token) {_context5.next = 23;break;}return _context5.abrupt("return", (Z(oe), this._cache.setStore(e, a.data.access_token), this._cache.setStore(t, a.data.access_token_expire + Date.now()), { accessToken: a.data.access_token, accessTokenExpire: a.data.access_token_expire }));case 23:a.data.refresh_token && (this._cache.removeStore(n), this._cache.setStore(n, a.data.refresh_token), this._refreshAccessToken());case 24:case "end":return _context5.stop();}}}, _callee5, this);}));function _refreshAccessToken() {return _refreshAccessToken3.apply(this, arguments);}return _refreshAccessToken;}() }, { key: "getAccessToken", value: function () {var _getAccessToken = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee6() {var _this$_cache$keys2, e, t, n, s, r, o;return _regenerator.default.wrap(function _callee6$(_context6) {while (1) {switch (_context6.prev = _context6.next) {case 0:_this$_cache$keys2 = this._cache.keys, e = _this$_cache$keys2.accessTokenKey, t = _this$_cache$keys2.accessTokenExpireKey, n = _this$_cache$keys2.refreshTokenKey;if (this._cache.getStore(n)) {_context6.next = 3;break;}throw new Error("refresh token不存在，登录状态异常");case 3:s = this._cache.getStore(e), r = this._cache.getStore(t), o = !0;_context6.t0 = this._shouldRefreshAccessTokenHook;if (!_context6.t0) {_context6.next = 9;break;}_context6.next = 8;return this._shouldRefreshAccessTokenHook(s, r);case 8:_context6.t0 = !_context6.sent;case 9:_context6.t1 = _context6.t0;if (!_context6.t1) {_context6.next = 12;break;}o = !1;case 12:return _context6.abrupt("return", (!s || !r || r < Date.now()) && o ? this.refreshAccessToken() : { accessToken: s, accessTokenExpire: r });case 13:case "end":return _context6.stop();}}}, _callee6, this);}));function getAccessToken() {return _getAccessToken.apply(this, arguments);}return getAccessToken;}() }, { key: "request", value: function () {var _request = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee7(e, t, n) {var s, r, o, _e11, i, _e12, _e13, a, c, u, h, l, d, f, p, g;return _regenerator.default.wrap(function _callee7$(_context7) {while (1) {switch (_context7.prev = _context7.next) {case 0:s = "x-tcb-trace_".concat(this.config.env);r = "application/x-www-form-urlencoded";o = _objectSpread({ action: e, env: this.config.env, dataVersion: "2019-08-16" }, t);if (!(-1 === ae.indexOf(e))) {_context7.next = 10;break;}_e11 = this._cache.keys.refreshTokenKey;_context7.t0 = this._cache.getStore(_e11);if (!_context7.t0) {_context7.next = 10;break;}_context7.next = 9;return this.getAccessToken();case 9:o.access_token = _context7.sent.accessToken;case 10:if ("storage.uploadFile" === e) {i = new FormData();for (_e12 in i) {i.hasOwnProperty(_e12) && void 0 !== i[_e12] && i.append(_e12, o[_e12]);}r = "multipart/form-data";} else {r = "application/json", i = {};for (_e13 in o) {void 0 !== o[_e13] && (i[_e13] = o[_e13]);}}a = { headers: { "content-type": r } };n && n.onUploadProgress && (a.onUploadProgress = n.onUploadProgress);c = this._localCache.getStore(s);c && (a.headers["X-TCB-Trace"] = c);u = t.parse, h = t.inQuery, l = t.search;d = { env: this.config.env };u && (d.parse = !0), h && (d = _objectSpread(_objectSpread({}, h), d));f = function (e, t) {var n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};var s = /\?/.test(t);var r = "";for (var _e14 in n) {"" === r ? !s && (t += "?") : r += "&", r += "".concat(_e14, "=").concat(encodeURIComponent(n[_e14]));}return /^http(s)?\:\/\//.test(t += r) ? t : "".concat(e).concat(t);}(D, "//tcb-api.tencentcloudapi.com/web", d);l && (f += l);_context7.next = 22;return this.post(_objectSpread({ url: f, data: i }, a));case 22:p = _context7.sent;g = p.header && p.header["x-tcb-trace"];if (!(g && this._localCache.setStore(s, g), 200 !== Number(p.status) && 200 !== Number(p.statusCode) || !p.data)) {_context7.next = 26;break;}throw new Error("network request error");case 26:return _context7.abrupt("return", p);case 27:case "end":return _context7.stop();}}}, _callee7, this);}));function request(_x4, _x5, _x6) {return _request.apply(this, arguments);}return request;}() }, { key: "send", value: function () {var _send = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee8(e) {var t,n,_n3,_args8 = arguments;return _regenerator.default.wrap(function _callee8$(_context8) {while (1) {switch (_context8.prev = _context8.next) {case 0:t = _args8.length > 1 && _args8[1] !== undefined ? _args8[1] : {};_context8.next = 3;return this.request(e, t, { onUploadProgress: t.onUploadProgress });case 3:n = _context8.sent;if (!("ACCESS_TOKEN_EXPIRED" === n.data.code && -1 === ae.indexOf(e))) {_context8.next = 13;break;}_context8.next = 7;return this.refreshAccessToken();case 7:_context8.next = 9;return this.request(e, t, { onUploadProgress: t.onUploadProgress });case 9:_n3 = _context8.sent;if (!_n3.data.code) {_context8.next = 12;break;}throw new Error("[".concat(_n3.data.code, "] ").concat(_n3.data.message));case 12:return _context8.abrupt("return", _n3.data);case 13:if (!n.data.code) {_context8.next = 15;break;}throw new Error("[".concat(n.data.code, "] ").concat(n.data.message));case 15:return _context8.abrupt("return", n.data);case 16:case "end":return _context8.stop();}}}, _callee8, this);}));function send(_x7) {return _send.apply(this, arguments);}return send;}() }, { key: "setRefreshToken", value: function setRefreshToken(e) {var _this$_cache$keys3 = this._cache.keys,t = _this$_cache$keys3.accessTokenKey,n = _this$_cache$keys3.accessTokenExpireKey,s = _this$_cache$keys3.refreshTokenKey;this._cache.removeStore(t), this._cache.removeStore(n), this._cache.setStore(s, e);} }]);return le;}();var de = {};function fe(e) {return de[e];}var pe = /*#__PURE__*/function () {function pe(e) {_classCallCheck(this, pe);this.config = e, this._cache = V(e.env), this._request = fe(e.env);}_createClass(pe, [{ key: "setRefreshToken", value: function setRefreshToken(e) {var _this$_cache$keys4 = this._cache.keys,t = _this$_cache$keys4.accessTokenKey,n = _this$_cache$keys4.accessTokenExpireKey,s = _this$_cache$keys4.refreshTokenKey;this._cache.removeStore(t), this._cache.removeStore(n), this._cache.setStore(s, e);} }, { key: "setAccessToken", value: function setAccessToken(e, t) {var _this$_cache$keys5 = this._cache.keys,n = _this$_cache$keys5.accessTokenKey,s = _this$_cache$keys5.accessTokenExpireKey;this._cache.setStore(n, e), this._cache.setStore(s, t);} }, { key: "refreshUserInfo", value: function () {var _refreshUserInfo = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee9() {var _yield$this$_request$, e;return _regenerator.default.wrap(function _callee9$(_context9) {while (1) {switch (_context9.prev = _context9.next) {case 0:_context9.next = 2;return this._request.send("auth.getUserInfo", {});case 2:_yield$this$_request$ = _context9.sent;e = _yield$this$_request$.data;return _context9.abrupt("return", (this.setLocalUserInfo(e), e));case 5:case "end":return _context9.stop();}}}, _callee9, this);}));function refreshUserInfo() {return _refreshUserInfo.apply(this, arguments);}return refreshUserInfo;}() }, { key: "setLocalUserInfo", value: function setLocalUserInfo(e) {var t = this._cache.keys.userInfoKey;this._cache.setStore(t, e);} }]);return pe;}();var ge = /*#__PURE__*/function () {function ge(e) {_classCallCheck(this, ge);if (!e) throw new Error("envId is not defined");this._envId = e, this._cache = V(this._envId), this._request = fe(this._envId), this.setUserInfo();}_createClass(ge, [{ key: "linkWithTicket", value: function linkWithTicket(e) {if ("string" != typeof e) throw new Error("ticket must be string");return this._request.send("auth.linkWithTicket", { ticket: e });} }, { key: "linkWithRedirect", value: function linkWithRedirect(e) {e.signInWithRedirect();} }, { key: "updatePassword", value: function updatePassword(e, t) {return this._request.send("auth.updatePassword", { oldPassword: t, newPassword: e });} }, { key: "updateEmail", value: function updateEmail(e) {return this._request.send("auth.updateEmail", { newEmail: e });} }, { key: "updateUsername", value: function updateUsername(e) {if ("string" != typeof e) throw new Error("username must be a string");return this._request.send("auth.updateUsername", { username: e });} }, { key: "getLinkedUidList", value: function () {var _getLinkedUidList = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee10() {var _yield$this$_request$2, e, t, n;return _regenerator.default.wrap(function _callee10$(_context10) {while (1) {switch (_context10.prev = _context10.next) {case 0:_context10.next = 2;return this._request.send("auth.getLinkedUidList", {});case 2:_yield$this$_request$2 = _context10.sent;e = _yield$this$_request$2.data;t = !1;n = e.users;return _context10.abrupt("return", (n.forEach(function (e) {e.wxOpenId && e.wxPublicId && (t = !0);}), { users: n, hasPrimaryUid: t }));case 7:case "end":return _context10.stop();}}}, _callee10, this);}));function getLinkedUidList() {return _getLinkedUidList.apply(this, arguments);}return getLinkedUidList;}() }, { key: "setPrimaryUid", value: function setPrimaryUid(e) {return this._request.send("auth.setPrimaryUid", { uid: e });} }, { key: "unlink", value: function unlink(e) {return this._request.send("auth.unlink", { platform: e });} }, { key: "update", value: function () {var _update = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee11(e) {var t, n, s, r, o, i, _yield$this$_request$3, a;return _regenerator.default.wrap(function _callee11$(_context11) {while (1) {switch (_context11.prev = _context11.next) {case 0:t = e.nickName;n = e.gender;s = e.avatarUrl;r = e.province;o = e.country;i = e.city;_context11.next = 8;return this._request.send("auth.updateUserInfo", { nickName: t, gender: n, avatarUrl: s, province: r, country: o, city: i });case 8:_yield$this$_request$3 = _context11.sent;a = _yield$this$_request$3.data;this.setLocalUserInfo(a);case 11:case "end":return _context11.stop();}}}, _callee11, this);}));function update(_x8) {return _update.apply(this, arguments);}return update;}() }, { key: "refresh", value: function () {var _refresh = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee12() {var _yield$this$_request$4, e;return _regenerator.default.wrap(function _callee12$(_context12) {while (1) {switch (_context12.prev = _context12.next) {case 0:_context12.next = 2;return this._request.send("auth.getUserInfo", {});case 2:_yield$this$_request$4 = _context12.sent;e = _yield$this$_request$4.data;return _context12.abrupt("return", (this.setLocalUserInfo(e), e));case 5:case "end":return _context12.stop();}}}, _callee12, this);}));function refresh() {return _refresh.apply(this, arguments);}return refresh;}() }, { key: "setUserInfo", value: function setUserInfo() {var _this10 = this;var e = this._cache.keys.userInfoKey,t = this._cache.getStore(e);["uid", "loginType", "openid", "wxOpenId", "wxPublicId", "unionId", "qqMiniOpenId", "email", "hasPassword", "customUserId", "nickName", "gender", "avatarUrl"].forEach(function (e) {_this10[e] = t[e];}), this.location = { country: t.country, province: t.province, city: t.city };} }, { key: "setLocalUserInfo", value: function setLocalUserInfo(e) {var t = this._cache.keys.userInfoKey;this._cache.setStore(t, e), this.setUserInfo();} }]);return ge;}();var me = /*#__PURE__*/function () {function me(e) {_classCallCheck(this, me);if (!e) throw new Error("envId is not defined");this._cache = V(e);var _this$_cache$keys6 = this._cache.keys,t = _this$_cache$keys6.refreshTokenKey,n = _this$_cache$keys6.accessTokenKey,s = _this$_cache$keys6.accessTokenExpireKey,r = this._cache.getStore(t),o = this._cache.getStore(n),i = this._cache.getStore(s);this.credential = { refreshToken: r, accessToken: o, accessTokenExpire: i }, this.user = new ge(e);}_createClass(me, [{ key: "isAnonymousAuth", get: function get() {return this.loginType === ie.ANONYMOUS;} }, { key: "isCustomAuth", get: function get() {return this.loginType === ie.CUSTOM;} }, { key: "isWeixinAuth", get: function get() {return this.loginType === ie.WECHAT || this.loginType === ie.WECHAT_OPEN || this.loginType === ie.WECHAT_PUBLIC;} }, { key: "loginType", get: function get() {return this._cache.getStore(this._cache.keys.loginTypeKey);} }]);return me;}();var ye = /*#__PURE__*/function (_pe) {_inherits(ye, _pe);var _super5 = _createSuper(ye);function ye() {_classCallCheck(this, ye);return _super5.apply(this, arguments);}_createClass(ye, [{ key: "signIn", value: function () {var _signIn = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee13() {var _this$_cache$keys7, e, t, n, s, r, _e15;return _regenerator.default.wrap(function _callee13$(_context13) {while (1) {switch (_context13.prev = _context13.next) {case 0:this._cache.updatePersistence("local");_this$_cache$keys7 = this._cache.keys;e = _this$_cache$keys7.anonymousUuidKey;t = _this$_cache$keys7.refreshTokenKey;n = this._cache.getStore(e) || void 0;s = this._cache.getStore(t) || void 0;_context13.next = 8;return this._request.send("auth.signInAnonymously", { anonymous_uuid: n, refresh_token: s });case 8:r = _context13.sent;if (!(r.uuid && r.refresh_token)) {_context13.next = 20;break;}this._setAnonymousUUID(r.uuid);this.setRefreshToken(r.refresh_token);_context13.next = 14;return this._request.refreshAccessToken();case 14:Z(te);Z(se, { env: this.config.env, loginType: ie.ANONYMOUS, persistence: "local" });_e15 = new me(this.config.env);_context13.next = 19;return _e15.user.refresh();case 19:return _context13.abrupt("return", _e15);case 20:throw new Error("匿名登录失败");case 21:case "end":return _context13.stop();}}}, _callee13, this);}));function signIn() {return _signIn.apply(this, arguments);}return signIn;}() }, { key: "linkAndRetrieveDataWithTicket", value: function () {var _linkAndRetrieveDataWithTicket = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee14(e) {var _this$_cache$keys8, t, n, s, r, o;return _regenerator.default.wrap(function _callee14$(_context14) {while (1) {switch (_context14.prev = _context14.next) {case 0:_this$_cache$keys8 = this._cache.keys;t = _this$_cache$keys8.anonymousUuidKey;n = _this$_cache$keys8.refreshTokenKey;s = this._cache.getStore(t);r = this._cache.getStore(n);_context14.next = 7;return this._request.send("auth.linkAndRetrieveDataWithTicket", { anonymous_uuid: s, refresh_token: r, ticket: e });case 7:o = _context14.sent;if (!o.refresh_token) {_context14.next = 16;break;}this._clearAnonymousUUID();this.setRefreshToken(o.refresh_token);_context14.next = 13;return this._request.refreshAccessToken();case 13:Z(re, { env: this.config.env });Z(se, { loginType: ie.CUSTOM, persistence: "local" });return _context14.abrupt("return", { credential: { refreshToken: o.refresh_token } });case 16:throw new Error("匿名转化失败");case 17:case "end":return _context14.stop();}}}, _callee14, this);}));function linkAndRetrieveDataWithTicket(_x9) {return _linkAndRetrieveDataWithTicket.apply(this, arguments);}return linkAndRetrieveDataWithTicket;}() }, { key: "_setAnonymousUUID", value: function _setAnonymousUUID(e) {var _this$_cache$keys9 = this._cache.keys,t = _this$_cache$keys9.anonymousUuidKey,n = _this$_cache$keys9.loginTypeKey;this._cache.removeStore(t), this._cache.setStore(t, e), this._cache.setStore(n, ie.ANONYMOUS);} }, { key: "_clearAnonymousUUID", value: function _clearAnonymousUUID() {this._cache.removeStore(this._cache.keys.anonymousUuidKey);} }]);return ye;}(pe);var _e = /*#__PURE__*/function (_pe2) {_inherits(_e, _pe2);var _super6 = _createSuper(_e);function _e() {_classCallCheck(this, _e);return _super6.apply(this, arguments);}_createClass(_e, [{ key: "signIn", value: function () {var _signIn2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee15(e) {var t, n;return _regenerator.default.wrap(function _callee15$(_context15) {while (1) {switch (_context15.prev = _context15.next) {case 0:if (!("string" != typeof e)) {_context15.next = 2;break;}throw new Error("ticket must be a string");case 2:t = this._cache.keys.refreshTokenKey;_context15.next = 5;return this._request.send("auth.signInWithTicket", { ticket: e, refresh_token: this._cache.getStore(t) || "" });case 5:n = _context15.sent;if (!n.refresh_token) {_context15.next = 15;break;}this.setRefreshToken(n.refresh_token);_context15.next = 10;return this._request.refreshAccessToken();case 10:Z(te);Z(se, { env: this.config.env, loginType: ie.CUSTOM, persistence: this.config.persistence });_context15.next = 14;return this.refreshUserInfo();case 14:return _context15.abrupt("return", new me(this.config.env));case 15:throw new Error("自定义登录失败");case 16:case "end":return _context15.stop();}}}, _callee15, this);}));function signIn(_x10) {return _signIn2.apply(this, arguments);}return signIn;}() }]);return _e;}(pe);var we = /*#__PURE__*/function (_pe3) {_inherits(we, _pe3);var _super7 = _createSuper(we);function we() {_classCallCheck(this, we);return _super7.apply(this, arguments);}_createClass(we, [{ key: "signIn", value: function () {var _signIn3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee16(e, t) {var n, s, r, o, i;return _regenerator.default.wrap(function _callee16$(_context16) {while (1) {switch (_context16.prev = _context16.next) {case 0:if (!("string" != typeof e)) {_context16.next = 2;break;}throw new Error("email must be a string");case 2:n = this._cache.keys.refreshTokenKey;_context16.next = 5;return this._request.send("auth.signIn", { loginType: "EMAIL", email: e, password: t, refresh_token: this._cache.getStore(n) || "" });case 5:s = _context16.sent;r = s.refresh_token;o = s.access_token;i = s.access_token_expire;if (!r) {_context16.next = 22;break;}this.setRefreshToken(r);if (!(o && i)) {_context16.next = 15;break;}this.setAccessToken(o, i);_context16.next = 17;break;case 15:_context16.next = 17;return this._request.refreshAccessToken();case 17:_context16.next = 19;return this.refreshUserInfo();case 19:Z(te);Z(se, { env: this.config.env, loginType: ie.EMAIL, persistence: this.config.persistence });return _context16.abrupt("return", new me(this.config.env));case 22:throw s.code ? new Error("\u90AE\u7BB1\u767B\u5F55\u5931\u8D25: [".concat(s.code, "] ").concat(s.message)) : new Error("邮箱登录失败");case 23:case "end":return _context16.stop();}}}, _callee16, this);}));function signIn(_x11, _x12) {return _signIn3.apply(this, arguments);}return signIn;}() }, { key: "activate", value: function () {var _activate = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee17(e) {return _regenerator.default.wrap(function _callee17$(_context17) {while (1) {switch (_context17.prev = _context17.next) {case 0:return _context17.abrupt("return", this._request.send("auth.activateEndUserMail", { token: e }));case 1:case "end":return _context17.stop();}}}, _callee17, this);}));function activate(_x13) {return _activate.apply(this, arguments);}return activate;}() }, { key: "resetPasswordWithToken", value: function () {var _resetPasswordWithToken = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee18(e, t) {return _regenerator.default.wrap(function _callee18$(_context18) {while (1) {switch (_context18.prev = _context18.next) {case 0:return _context18.abrupt("return", this._request.send("auth.resetPasswordWithToken", { token: e, newPassword: t }));case 1:case "end":return _context18.stop();}}}, _callee18, this);}));function resetPasswordWithToken(_x14, _x15) {return _resetPasswordWithToken.apply(this, arguments);}return resetPasswordWithToken;}() }]);return we;}(pe);var ke = /*#__PURE__*/function (_pe4) {_inherits(ke, _pe4);var _super8 = _createSuper(ke);function ke() {_classCallCheck(this, ke);return _super8.apply(this, arguments);}_createClass(ke, [{ key: "signIn", value: function () {var _signIn4 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee19(e, t) {var n, s, r, o, i;return _regenerator.default.wrap(function _callee19$(_context19) {while (1) {switch (_context19.prev = _context19.next) {case 0:if (!("string" != typeof e)) {_context19.next = 2;break;}throw new Error("username must be a string");case 2:"string" != typeof t && (t = "", console.warn("password is empty"));n = this._cache.keys.refreshTokenKey;_context19.next = 6;return this._request.send("auth.signIn", { loginType: ie.USERNAME, username: e, password: t, refresh_token: this._cache.getStore(n) || "" });case 6:s = _context19.sent;r = s.refresh_token;o = s.access_token_expire;i = s.access_token;if (!r) {_context19.next = 23;break;}this.setRefreshToken(r);if (!(i && o)) {_context19.next = 16;break;}this.setAccessToken(i, o);_context19.next = 18;break;case 16:_context19.next = 18;return this._request.refreshAccessToken();case 18:_context19.next = 20;return this.refreshUserInfo();case 20:Z(te);Z(se, { env: this.config.env, loginType: ie.USERNAME, persistence: this.config.persistence });return _context19.abrupt("return", new me(this.config.env));case 23:throw s.code ? new Error("\u7528\u6237\u540D\u5BC6\u7801\u767B\u5F55\u5931\u8D25: [".concat(s.code, "] ").concat(s.message)) : new Error("用户名密码登录失败");case 24:case "end":return _context19.stop();}}}, _callee19, this);}));function signIn(_x16, _x17) {return _signIn4.apply(this, arguments);}return signIn;}() }]);return ke;}(pe);var Se = /*#__PURE__*/function () {function Se(e) {_classCallCheck(this, Se);this.config = e, this._cache = V(e.env), this._request = fe(e.env), this._onAnonymousConverted = this._onAnonymousConverted.bind(this), this._onLoginTypeChanged = this._onLoginTypeChanged.bind(this), Q(se, this._onLoginTypeChanged);}_createClass(Se, [{ key: "anonymousAuthProvider", value: function anonymousAuthProvider() {return new ye(this.config);} }, { key: "customAuthProvider", value: function customAuthProvider() {return new _e(this.config);} }, { key: "emailAuthProvider", value: function emailAuthProvider() {return new we(this.config);} }, { key: "usernameAuthProvider", value: function usernameAuthProvider() {return new ke(this.config);} }, { key: "signInAnonymously", value: function () {var _signInAnonymously = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee20() {return _regenerator.default.wrap(function _callee20$(_context20) {while (1) {switch (_context20.prev = _context20.next) {case 0:return _context20.abrupt("return", new ye(this.config).signIn());case 1:case "end":return _context20.stop();}}}, _callee20, this);}));function signInAnonymously() {return _signInAnonymously.apply(this, arguments);}return signInAnonymously;}() }, { key: "signInWithEmailAndPassword", value: function () {var _signInWithEmailAndPassword = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee21(e, t) {return _regenerator.default.wrap(function _callee21$(_context21) {while (1) {switch (_context21.prev = _context21.next) {case 0:return _context21.abrupt("return", new we(this.config).signIn(e, t));case 1:case "end":return _context21.stop();}}}, _callee21, this);}));function signInWithEmailAndPassword(_x18, _x19) {return _signInWithEmailAndPassword.apply(this, arguments);}return signInWithEmailAndPassword;}() }, { key: "signInWithUsernameAndPassword", value: function signInWithUsernameAndPassword(e, t) {return new ke(this.config).signIn(e, t);} }, { key: "linkAndRetrieveDataWithTicket", value: function () {var _linkAndRetrieveDataWithTicket2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee22(e) {return _regenerator.default.wrap(function _callee22$(_context22) {while (1) {switch (_context22.prev = _context22.next) {case 0:this._anonymousAuthProvider || (this._anonymousAuthProvider = new ye(this.config)), Q(re, this._onAnonymousConverted);_context22.next = 3;return this._anonymousAuthProvider.linkAndRetrieveDataWithTicket(e);case 3:return _context22.abrupt("return", _context22.sent);case 4:case "end":return _context22.stop();}}}, _callee22, this);}));function linkAndRetrieveDataWithTicket(_x20) {return _linkAndRetrieveDataWithTicket2.apply(this, arguments);}return linkAndRetrieveDataWithTicket;}() }, { key: "signOut", value: function () {var _signOut = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee23() {var _this$_cache$keys10, e, t, n, s, r;return _regenerator.default.wrap(function _callee23$(_context23) {while (1) {switch (_context23.prev = _context23.next) {case 0:if (!(this.loginType === ie.ANONYMOUS)) {_context23.next = 2;break;}throw new Error("匿名用户不支持登出操作");case 2:_this$_cache$keys10 = this._cache.keys, e = _this$_cache$keys10.refreshTokenKey, t = _this$_cache$keys10.accessTokenKey, n = _this$_cache$keys10.accessTokenExpireKey, s = this._cache.getStore(e);if (s) {_context23.next = 5;break;}return _context23.abrupt("return");case 5:_context23.next = 7;return this._request.send("auth.logout", { refresh_token: s });case 7:r = _context23.sent;return _context23.abrupt("return", (this._cache.removeStore(e), this._cache.removeStore(t), this._cache.removeStore(n), Z(te), Z(se, { env: this.config.env, loginType: ie.NULL, persistence: this.config.persistence }), r));case 9:case "end":return _context23.stop();}}}, _callee23, this);}));function signOut() {return _signOut.apply(this, arguments);}return signOut;}() }, { key: "signUpWithEmailAndPassword", value: function () {var _signUpWithEmailAndPassword = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee24(e, t) {return _regenerator.default.wrap(function _callee24$(_context24) {while (1) {switch (_context24.prev = _context24.next) {case 0:return _context24.abrupt("return", this._request.send("auth.signUpWithEmailAndPassword", { email: e, password: t }));case 1:case "end":return _context24.stop();}}}, _callee24, this);}));function signUpWithEmailAndPassword(_x21, _x22) {return _signUpWithEmailAndPassword.apply(this, arguments);}return signUpWithEmailAndPassword;}() }, { key: "sendPasswordResetEmail", value: function () {var _sendPasswordResetEmail = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee25(e) {return _regenerator.default.wrap(function _callee25$(_context25) {while (1) {switch (_context25.prev = _context25.next) {case 0:return _context25.abrupt("return", this._request.send("auth.sendPasswordResetEmail", { email: e }));case 1:case "end":return _context25.stop();}}}, _callee25, this);}));function sendPasswordResetEmail(_x23) {return _sendPasswordResetEmail.apply(this, arguments);}return sendPasswordResetEmail;}() }, { key: "onLoginStateChanged", value: function onLoginStateChanged(e) {var _this11 = this;Q(te, function () {var t = _this11.hasLoginState();e.call(_this11, t);});var t = this.hasLoginState();e.call(this, t);} }, { key: "onLoginStateExpired", value: function onLoginStateExpired(e) {Q(ne, e.bind(this));} }, { key: "onAccessTokenRefreshed", value: function onAccessTokenRefreshed(e) {Q(oe, e.bind(this));} }, { key: "onAnonymousConverted", value: function onAnonymousConverted(e) {Q(re, e.bind(this));} }, { key: "onLoginTypeChanged", value: function onLoginTypeChanged(e) {var _this12 = this;Q(se, function () {var t = _this12.hasLoginState();e.call(_this12, t);});} }, { key: "getAccessToken", value: function () {var _getAccessToken2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee26() {return _regenerator.default.wrap(function _callee26$(_context26) {while (1) {switch (_context26.prev = _context26.next) {case 0:_context26.next = 2;return this._request.getAccessToken();case 2:_context26.t0 = _context26.sent.accessToken;_context26.t1 = this.config.env;return _context26.abrupt("return", { accessToken: _context26.t0, env: _context26.t1 });case 5:case "end":return _context26.stop();}}}, _callee26, this);}));function getAccessToken() {return _getAccessToken2.apply(this, arguments);}return getAccessToken;}() }, { key: "hasLoginState", value: function hasLoginState() {var e = this._cache.keys.refreshTokenKey;return this._cache.getStore(e) ? new me(this.config.env) : null;} }, { key: "isUsernameRegistered", value: function () {var _isUsernameRegistered = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee27(e) {var _yield$this$_request$5, t;return _regenerator.default.wrap(function _callee27$(_context27) {while (1) {switch (_context27.prev = _context27.next) {case 0:if (!("string" != typeof e)) {_context27.next = 2;break;}throw new Error("username must be a string");case 2:_context27.next = 4;return this._request.send("auth.isUsernameRegistered", { username: e });case 4:_yield$this$_request$5 = _context27.sent;t = _yield$this$_request$5.data;return _context27.abrupt("return", t && t.isRegistered);case 7:case "end":return _context27.stop();}}}, _callee27, this);}));function isUsernameRegistered(_x24) {return _isUsernameRegistered.apply(this, arguments);}return isUsernameRegistered;}() }, { key: "getLoginState", value: function getLoginState() {return Promise.resolve(this.hasLoginState());} }, { key: "signInWithTicket", value: function () {var _signInWithTicket = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee28(e) {return _regenerator.default.wrap(function _callee28$(_context28) {while (1) {switch (_context28.prev = _context28.next) {case 0:return _context28.abrupt("return", new _e(this.config).signIn(e));case 1:case "end":return _context28.stop();}}}, _callee28, this);}));function signInWithTicket(_x25) {return _signInWithTicket.apply(this, arguments);}return signInWithTicket;}() }, { key: "shouldRefreshAccessToken", value: function shouldRefreshAccessToken(e) {this._request._shouldRefreshAccessTokenHook = e.bind(this);} }, { key: "getUserInfo", value: function getUserInfo() {return this._request.send("auth.getUserInfo", {}).then(function (e) {return e.code ? e : _objectSpread(_objectSpread({}, e.data), {}, { requestId: e.seqId });});} }, { key: "getAuthHeader", value: function getAuthHeader() {var _this$_cache$keys11 = this._cache.keys,e = _this$_cache$keys11.refreshTokenKey,t = _this$_cache$keys11.accessTokenKey,n = this._cache.getStore(e);return { "x-cloudbase-credentials": this._cache.getStore(t) + "/@@/" + n };} }, { key: "_onAnonymousConverted", value: function _onAnonymousConverted(e) {var t = e.data.env;t === this.config.env && this._cache.updatePersistence(this.config.persistence);} }, { key: "_onLoginTypeChanged", value: function _onLoginTypeChanged(e) {var _e$data = e.data,t = _e$data.loginType,n = _e$data.persistence,s = _e$data.env;s === this.config.env && (this._cache.updatePersistence(n), this._cache.setStore(this._cache.keys.loginTypeKey, t));} }, { key: "currentUser", get: function get() {var e = this.hasLoginState();return e && e.user || null;} }, { key: "loginType", get: function get() {return this._cache.getStore(this._cache.keys.loginTypeKey);} }]);return Se;}();var ve = function ve(e, t) {t = t || L();var n = fe(this.config.env),s = e.cloudPath,r = e.filePath,o = e.onUploadProgress,_e$fileType = e.fileType,i = _e$fileType === void 0 ? "image" : _e$fileType;return n.send("storage.getUploadMetadata", { path: s }).then(function (e) {var _e$data2 = e.data,a = _e$data2.url,c = _e$data2.authorization,u = _e$data2.token,h = _e$data2.fileId,l = _e$data2.cosFileId,d = e.requestId,f = { key: s, signature: c, "x-cos-meta-fileid": l, success_action_status: "201", "x-cos-security-token": u };n.upload({ url: a, data: f, file: r, name: s, fileType: i, onUploadProgress: o }).then(function (e) {201 === e.statusCode ? t(null, { fileID: h, requestId: d }) : t(new Error("STORAGE_REQUEST_FAIL: ".concat(e.data)));}).catch(function (e) {t(e);});}).catch(function (e) {t(e);}), t.promise;},Te = function Te(e, t) {t = t || L();var n = fe(this.config.env),s = e.cloudPath;return n.send("storage.getUploadMetadata", { path: s }).then(function (e) {t(null, e);}).catch(function (e) {t(e);}), t.promise;},Ae = function Ae(_ref5, t) {var e = _ref5.fileList;if (t = t || L(), !e || !Array.isArray(e)) return { code: "INVALID_PARAM", message: "fileList必须是非空的数组" };var _iterator3 = _createForOfIteratorHelper(e),_step3;try {for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {var _t7 = _step3.value;if (!_t7 || "string" != typeof _t7) return { code: "INVALID_PARAM", message: "fileList的元素必须是非空的字符串" };}} catch (err) {_iterator3.e(err);} finally {_iterator3.f();}var n = { fileid_list: e };return fe(this.config.env).send("storage.batchDeleteFile", n).then(function (e) {e.code ? t(null, e) : t(null, { fileList: e.data.delete_list, requestId: e.requestId });}).catch(function (e) {t(e);}), t.promise;},Pe = function Pe(_ref6, t) {var e = _ref6.fileList;t = t || L(), e && Array.isArray(e) || t(null, { code: "INVALID_PARAM", message: "fileList必须是非空的数组" });var n = [];var _iterator4 = _createForOfIteratorHelper(e),_step4;try {for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {var _s6 = _step4.value;"object" == typeof _s6 ? (_s6.hasOwnProperty("fileID") && _s6.hasOwnProperty("maxAge") || t(null, { code: "INVALID_PARAM", message: "fileList的元素必须是包含fileID和maxAge的对象" }), n.push({ fileid: _s6.fileID, max_age: _s6.maxAge })) : "string" == typeof _s6 ? n.push({ fileid: _s6 }) : t(null, { code: "INVALID_PARAM", message: "fileList的元素必须是字符串" });}} catch (err) {_iterator4.e(err);} finally {_iterator4.f();}var s = { file_list: n };return fe(this.config.env).send("storage.batchGetDownloadUrl", s).then(function (e) {e.code ? t(null, e) : t(null, { fileList: e.data.download_list, requestId: e.requestId });}).catch(function (e) {t(e);}), t.promise;},Ie = /*#__PURE__*/function () {var _ref8 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee29(_ref7, t) {var e, n, s, r;return _regenerator.default.wrap(function _callee29$(_context29) {while (1) {switch (_context29.prev = _context29.next) {case 0:e = _ref7.fileID;_context29.next = 3;return Pe.call(this, { fileList: [{ fileID: e, maxAge: 600 }] });case 3:n = _context29.sent.fileList[0];if (!("SUCCESS" !== n.code)) {_context29.next = 6;break;}return _context29.abrupt("return", t ? t(n) : new Promise(function (e) {e(n);}));case 6:s = fe(this.config.env);r = n.download_url;if (!(r = encodeURI(r), !t)) {_context29.next = 10;break;}return _context29.abrupt("return", s.download({ url: r }));case 10:_context29.t0 = t;_context29.next = 13;return s.download({ url: r });case 13:_context29.t1 = _context29.sent;(0, _context29.t0)(_context29.t1);case 15:case "end":return _context29.stop();}}}, _callee29, this);}));return function Ie(_x26, _x27) {return _ref8.apply(this, arguments);};}(),be = function be(_ref9, o) {var e = _ref9.name,t = _ref9.data,n = _ref9.query,s = _ref9.parse,r = _ref9.search;var i = o || L();var a;try {a = t ? JSON.stringify(t) : "";} catch (e) {return Promise.reject(e);}if (!e) return Promise.reject(new Error("函数名不能为空"));var c = { inQuery: n, parse: s, search: r, function_name: e, request_data: a };return fe(this.config.env).send("functions.invokeFunction", c).then(function (e) {if (e.code) i(null, e);else {var _t8 = e.data.response_data;if (s) i(null, { result: _t8, requestId: e.requestId });else try {_t8 = JSON.parse(e.data.response_data), i(null, { result: _t8, requestId: e.requestId });} catch (e) {i(new Error("response data must be json"));}}return i.promise;}).catch(function (e) {i(e);}), i.promise;},Ee = { timeout: 15e3, persistence: "session" },Oe = {};var Ce = /*#__PURE__*/function () {function Ce(e) {_classCallCheck(this, Ce);this.config = e || this.config, this.authObj = void 0;}_createClass(Ce, [{ key: "init", value: function init(e) {switch (j.adapter || (this.requestClient = new j.adapter.reqClass({ timeout: e.timeout || 5e3, timeoutMsg: "\u8BF7\u6C42\u5728".concat((e.timeout || 5e3) / 1e3, "s\u5185\u672A\u5B8C\u6210\uFF0C\u5DF2\u4E2D\u65AD") })), this.config = _objectSpread(_objectSpread({}, Ee), e), !0) {case this.config.timeout > 6e5:console.warn("timeout大于可配置上限[10分钟]，已重置为上限数值"), this.config.timeout = 6e5;break;case this.config.timeout < 100:console.warn("timeout小于可配置下限[100ms]，已重置为下限数值"), this.config.timeout = 100;}return new Ce(this.config);} }, { key: "auth", value: function auth() {var _ref10 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},e = _ref10.persistence;if (this.authObj) return this.authObj;var t = e || j.adapter.primaryStorage || Ee.persistence;var n;return t !== this.config.persistence && (this.config.persistence = t), function (e) {var t = e.env;z[t] = new W(e), J[t] = new W(_objectSpread(_objectSpread({}, e), {}, { persistence: "local" }));}(this.config), n = this.config, de[n.env] = new le(n), this.authObj = new Se(this.config), this.authObj;} }, { key: "on", value: function on(e, t) {return Q.apply(this, [e, t]);} }, { key: "off", value: function off(e, t) {return ee.apply(this, [e, t]);} }, { key: "callFunction", value: function callFunction(e, t) {return be.apply(this, [e, t]);} }, { key: "deleteFile", value: function deleteFile(e, t) {return Ae.apply(this, [e, t]);} }, { key: "getTempFileURL", value: function getTempFileURL(e, t) {return Pe.apply(this, [e, t]);} }, { key: "downloadFile", value: function downloadFile(e, t) {return Ie.apply(this, [e, t]);} }, { key: "uploadFile", value: function uploadFile(e, t) {return ve.apply(this, [e, t]);} }, { key: "getUploadMetadata", value: function getUploadMetadata(e, t) {return Te.apply(this, [e, t]);} }, { key: "registerExtension", value: function registerExtension(e) {Oe[e.name] = e;} }, { key: "invokeExtension", value: function () {var _invokeExtension = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee30(e, t) {var n;return _regenerator.default.wrap(function _callee30$(_context30) {while (1) {switch (_context30.prev = _context30.next) {case 0:n = Oe[e];if (n) {_context30.next = 3;break;}throw Error("\u6269\u5C55".concat(e, " \u5FC5\u987B\u5148\u6CE8\u518C"));case 3:_context30.next = 5;return n.invoke(t, this);case 5:return _context30.abrupt("return", _context30.sent);case 6:case "end":return _context30.stop();}}}, _callee30, this);}));function invokeExtension(_x28, _x29) {return _invokeExtension.apply(this, arguments);}return invokeExtension;}() }, { key: "useAdapters", value: function useAdapters(e) {var _ref11 = M(e) || {},t = _ref11.adapter,n = _ref11.runtime;t && (j.adapter = t), n && (j.runtime = n);} }]);return Ce;}();var Ue = new Ce();function xe(e, t, n) {void 0 === n && (n = {});var s = /\?/.test(t),r = "";for (var o in n) {"" === r ? !s && (t += "?") : r += "&", r += o + "=" + encodeURIComponent(n[o]);}return /^http(s)?:\/\//.test(t += r) ? t : "" + e + t;}var De = /*#__PURE__*/function () {function De() {_classCallCheck(this, De);}_createClass(De, [{ key: "post", value: function post(e) {var t = e.url,n = e.data,s = e.headers;return new Promise(function (e, r) {E.request({ url: xe("https:", t), data: n, method: "POST", header: s, success: function success(t) {e(t);}, fail: function fail(e) {r(e);} });});} }, { key: "upload", value: function upload(e) {return new Promise(function (t, n) {var s = e.url,r = e.file,o = e.data,i = e.headers,a = e.fileType,c = E.uploadFile({ url: xe("https:", s), name: "file", formData: Object.assign({}, o), filePath: r, fileType: a, header: i, success: function success(e) {var n = { statusCode: e.statusCode, data: e.data || {} };200 === e.statusCode && o.success_action_status && (n.statusCode = parseInt(o.success_action_status, 10)), t(n);}, fail: function fail(e) {u && "mp-alipay" === h && console.warn("支付宝小程序开发工具上传腾讯云时无法准确判断是否上传成功，请使用真机测试"), n(new Error(e.errMsg || "uploadFile:fail"));} });"function" == typeof e.onUploadProgress && c && "function" == typeof c.onProgressUpdate && c.onProgressUpdate(function (t) {e.onUploadProgress({ loaded: t.totalBytesSent, total: t.totalBytesExpectedToSend });});});} }]);return De;}();var Re = { setItem: function setItem(e, t) {E.setStorageSync(e, t);}, getItem: function getItem(e) {return E.getStorageSync(e);}, removeItem: function removeItem(e) {E.removeStorageSync(e);}, clear: function clear() {E.clearStorageSync();} };var qe = { genAdapter: function genAdapter() {return { root: {}, reqClass: De, localStorage: Re, primaryStorage: "local" };}, isMatch: function isMatch() {return !0;}, runtime: "uni_app" };Ue.useAdapters(qe);var Le = Ue,Fe = Le.init;Le.init = function (e) {e.env = e.spaceId;var t = Fe.call(this, e);t.config.provider = "tencent", t.config.spaceId = e.spaceId;var n = t.auth;return t.auth = function (e) {var t = n.call(this, e);return ["linkAndRetrieveDataWithTicket", "signInAnonymously", "signOut", "getAccessToken", "getLoginState", "signInWithTicket", "getUserInfo"].forEach(function (e) {t[e] = T(t[e]).bind(t);}), t;}, t.customAuth = t.auth, t;};var Ne = Le;function $e() {return { token: E.getStorageSync("uni_id_token") || E.getStorageSync("uniIdToken"), tokenExpired: E.getStorageSync("uni_id_token_expired") };}function Me() {if (!u || "h5" !== h) return;uni.getStorageSync("__LAST_DCLOUD_APPID") !== p && (uni.setStorageSync("__LAST_DCLOUD_APPID", p), console.warn("检测到当前项目与上次运行到此端口的项目不一致，自动清理uni-id保存的token信息（仅开发调试时生效）"), E.removeStorageSync("uni_id_token"), E.removeStorageSync("uniIdToken"), E.removeStorageSync("uni_id_token_expired"));}var je = /*#__PURE__*/function (_U) {_inherits(je, _U);var _super9 = _createSuper(je);function je() {_classCallCheck(this, je);return _super9.apply(this, arguments);}_createClass(je, [{ key: "getAccessToken", value: function getAccessToken() {var _this13 = this;return new Promise(function (e, t) {var n = "Anonymous_Access_token";_this13.setAccessToken(n), e(n);});} }, { key: "setupRequest", value: function setupRequest(e, t) {var n = Object.assign({}, e, { spaceId: this.config.spaceId, timestamp: Date.now() }),s = { "Content-Type": "application/json" };"auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = b.sign(n, this.config.clientSecret);var r = I();s["x-client-info"] = JSON.stringify(r);var _$e = $e(),o = _$e.token;return s["x-client-token"] = o, { url: this.config.requestUrl, method: "POST", data: n, dataType: "json", header: JSON.parse(JSON.stringify(s)) };} }, { key: "uploadFileToOSS", value: function uploadFileToOSS(_ref12) {var _this14 = this;var e = _ref12.url,t = _ref12.formData,n = _ref12.name,s = _ref12.filePath,r = _ref12.fileType,o = _ref12.onUploadProgress;return new Promise(function (i, a) {var c = _this14.adapter.uploadFile({ url: e, formData: t, name: n, filePath: s, fileType: r, success: function success(e) {e && e.statusCode < 400 ? i(e) : a(new A({ code: "UPLOAD_FAILED", message: "文件上传失败" }));}, fail: function fail(e) {a(new A({ code: e.code || "UPLOAD_FAILED", message: e.message || e.errMsg || "文件上传失败" }));} });"function" == typeof o && c && "function" == typeof c.onProgressUpdate && c.onProgressUpdate(function (e) {o({ loaded: e.totalBytesSent, total: e.totalBytesExpectedToSend });});});} }, { key: "uploadFile", value: function uploadFile(_ref13) {var _this15 = this;var e = _ref13.filePath,t = _ref13.cloudPath,_ref13$fileType = _ref13.fileType,n = _ref13$fileType === void 0 ? "image" : _ref13$fileType,s = _ref13.onUploadProgress;if (!t) throw new A({ code: "CLOUDPATH_REQUIRED", message: "cloudPath不可为空" });var r;return this.getOSSUploadOptionsFromPath({ cloudPath: t }).then(function (t) {var _t$result = t.result,o = _t$result.url,i = _t$result.formData,a = _t$result.name;r = t.result.fileUrl;var c = { url: o, formData: i, name: a, filePath: e, fileType: n };return _this15.uploadFileToOSS(Object.assign({}, c, { onUploadProgress: s }));}).then(function () {return _this15.reportOSSUpload({ cloudPath: t });}).then(function (t) {return new Promise(function (n, s) {t.success ? n({ success: !0, filePath: e, fileID: r }) : s(new A({ code: "UPLOAD_FAILED", message: "文件上传失败" }));});});} }, { key: "deleteFile", value: function deleteFile(_ref14) {var e = _ref14.fileList;var t = { method: "serverless.file.resource.delete", params: JSON.stringify({ fileList: e }) };return this.request(this.setupRequest(t));} }, { key: "getTempFileURL", value: function getTempFileURL() {var _ref15 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},e = _ref15.fileList;var t = { method: "serverless.file.resource.getTempFileURL", params: JSON.stringify({ fileList: e }) };return this.request(this.setupRequest(t));} }]);return je;}(U);var Be = { init: function init(e) {var t = new je(e),n = { signInAnonymously: function signInAnonymously() {return t.authorize();}, getLoginState: function getLoginState() {return Promise.resolve(!1);} };return t.auth = function () {return n;}, t.customAuth = t.auth, t;} };function Ke(_ref16) {var e = _ref16.data;var t;t = I();var n = JSON.parse(JSON.stringify(e || {}));if (Object.assign(n, { clientInfo: t }), !n.uniIdToken) {var _$e2 = $e(),_e16 = _$e2.token;_e16 && (n.uniIdToken = _e16);}return n;}function He(_ref17) {var _this16 = this;var e = _ref17.name,t = _ref17.data;var n = this.localAddress,s = this.localPort,r = { aliyun: "aliyun", tencent: "tcb" }[this.config.provider],o = this.config.spaceId,i = "http://".concat(n, ":").concat(s, "/system/check-function"),a = "http://".concat(n, ":").concat(s, "/cloudfunctions/").concat(e);return new Promise(function (t, n) {E.request({ method: "POST", url: i, data: { name: e, platform: h, provider: r, spaceId: o }, timeout: 3e3, success: function success(e) {t(e);}, fail: function fail() {t({ data: { code: "NETWORK_ERROR", message: "连接本地调试服务失败，请检查客户端是否和主机在同一局域网下，自动切换为已部署的云函数。" } });} });}).then(function () {var _ref18 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},e = _ref18.data;var _ref19 = e || {},t = _ref19.code,n = _ref19.message;return { code: 0 === t ? 0 : t || "SYS_ERR", message: n || "SYS_ERR" };}).then(function (_ref20) {var n = _ref20.code,s = _ref20.message;if (0 !== n) {switch (n) {case "MODULE_ENCRYPTED":console.error("\u6B64\u4E91\u51FD\u6570\uFF08".concat(e, "\uFF09\u4F9D\u8D56\u52A0\u5BC6\u516C\u5171\u6A21\u5757\u4E0D\u53EF\u672C\u5730\u8C03\u8BD5\uFF0C\u81EA\u52A8\u5207\u6362\u4E3A\u4E91\u7AEF\u5DF2\u90E8\u7F72\u7684\u4E91\u51FD\u6570"));break;case "FUNCTION_ENCRYPTED":console.error("\u6B64\u4E91\u51FD\u6570\uFF08".concat(e, "\uFF09\u5DF2\u52A0\u5BC6\u4E0D\u53EF\u672C\u5730\u8C03\u8BD5\uFF0C\u81EA\u52A8\u5207\u6362\u4E3A\u4E91\u7AEF\u5DF2\u90E8\u7F72\u7684\u4E91\u51FD\u6570"));break;case "ACTION_ENCRYPTED":console.error(s || "需要访问加密的uni-clientDB-action，自动切换为云端环境");break;case "NETWORK_ERROR":{var _e17 = "连接本地调试服务失败，请检查客户端是否和主机在同一局域网下";throw console.error(_e17), new Error(_e17);}case "SWITCH_TO_CLOUD":break;default:{var _e18 = "\u68C0\u6D4B\u672C\u5730\u8C03\u8BD5\u670D\u52A1\u51FA\u73B0\u9519\u8BEF\uFF1A".concat(s, "\uFF0C\u8BF7\u68C0\u67E5\u7F51\u7EDC\u73AF\u5883\u6216\u91CD\u542F\u5BA2\u6237\u7AEF\u518D\u8BD5");throw console.error(_e18), new Error(_e18);}}return _this16._originCallFunction({ name: e, data: t });}return new Promise(function (e, n) {var s = Ke.call(_this16, { data: t });E.request({ method: "POST", url: a, data: { provider: r, platform: h, param: s }, success: function success() {var _ref21 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},t = _ref21.statusCode,s = _ref21.data;return !t || t >= 400 ? n(new A({ code: s.code || "SYS_ERR", message: s.message || "request:fail" })) : e({ result: s });}, fail: function fail(e) {n(new A({ code: e.code || e.errCode || "SYS_ERR", message: e.message || e.errMsg || "request:fail" }));} });});});}var We = [{ rule: /fc_function_not_found|FUNCTION_NOT_FOUND/, content: "，云函数[{functionName}]在云端不存在，请检查此云函数名称是否正确以及该云函数是否已上传到服务空间", mode: "append" }];var ze = /[\\^$.*+?()[\]{}|]/g,Je = RegExp(ze.source);function Ve(e, t, n) {return e.replace(new RegExp((s = t) && Je.test(s) ? s.replace(ze, "\\$&") : s, "g"), n);var s;}function Ye(_ref22) {var e = _ref22.functionName,t = _ref22.result,n = _ref22.logPvd;if (this.config.useDebugFunction && t && t.requestId) {var _s7 = JSON.stringify({ spaceId: this.config.spaceId, functionName: e, requestId: t.requestId });console.log("[".concat(n, "-request]").concat(_s7, "[/").concat(n, "-request]"));}}function Xe(e) {var t = e.callFunction,n = function n(_n4) {var _this17 = this;var s = _n4.name;_n4.data = Ke.call(e, { data: _n4.data });var r = { aliyun: "aliyun", tencent: "tcb" }[this.config.provider];return t.call(this, _n4).then(function (e) {return Ye.call(_this17, { functionName: s, result: e, logPvd: r }), Promise.resolve(e);}, function (e) {return Ye.call(_this17, { functionName: s, result: e, logPvd: r }), e && e.message && (e.message = function () {var _ref23 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},_ref23$message = _ref23.message,e = _ref23$message === void 0 ? "" : _ref23$message,_ref23$extraInfo = _ref23.extraInfo,t = _ref23$extraInfo === void 0 ? {} : _ref23$extraInfo,_ref23$formatter = _ref23.formatter,n = _ref23$formatter === void 0 ? [] : _ref23$formatter;for (var _s8 = 0; _s8 < n.length; _s8++) {var _n$_s = n[_s8],_r3 = _n$_s.rule,_o2 = _n$_s.content,i = _n$_s.mode,_a = e.match(_r3);if (!_a) continue;var _c = _o2;for (var _e19 = 1; _e19 < _a.length; _e19++) {_c = Ve(_c, "{$".concat(_e19, "}"), _a[_e19]);}for (var _e20 in t) {_c = Ve(_c, "{".concat(_e20, "}"), t[_e20]);}return "replace" === i ? _c : e + _c;}return e;}({ message: "[".concat(_n4.name, "]: ").concat(e.message), formatter: We, extraInfo: { functionName: s } })), Promise.reject(e);});};e.callFunction = function (t) {var s;return u && e.debugInfo && !e.debugInfo.forceRemote && d ? (e._originCallFunction || (e._originCallFunction = n), s = He.call(this, t)) : s = n.call(this, t), Object.defineProperty(s, "result", { get: function get() {return console.warn("当前返回结果为Promise类型，不可直接访问其result属性，详情请参考：https://uniapp.dcloud.net.cn/uniCloud/faq?id=promise"), {};} }), s;};}var Ge = Symbol("CLIENT_DB_INTERNAL");function Qe(e, t) {return e.then = "DoNotReturnProxyWithAFunctionNamedThen", e._internalType = Ge, e.__ob__ = void 0, new Proxy(e, { get: function get(e, n, s) {if ("_uniClient" === n) return null;if (n in e || "string" != typeof n) {var _t9 = e[n];return "function" == typeof _t9 ? _t9.bind(e) : _t9;}return t.get(e, n, s);} });}function Ze(e) {return { on: function on(t, n) {e[t] = e[t] || [], e[t].indexOf(n) > -1 || e[t].push(n);}, off: function off(t, n) {e[t] = e[t] || [];var s = e[t].indexOf(n);-1 !== s && e[t].splice(s, 1);} };}var et = ["db.Geo", "db.command", "command.aggregate"];function tt(e, t) {return et.indexOf("".concat(e, ".").concat(t)) > -1;}function nt(e) {switch (o(e)) {case "array":return e.map(function (e) {return nt(e);});case "object":return e._internalType === Ge || Object.keys(e).forEach(function (t) {e[t] = nt(e[t]);}), e;case "regexp":return { $regexp: { source: e.source, flags: e.flags } };case "date":return { $date: e.toISOString() };default:return e;}}var st = /*#__PURE__*/function () {function st(e, t, n) {_classCallCheck(this, st);this.content = e, this.prevStage = t || null, this.udb = null, this._database = n;}_createClass(st, [{ key: "toJSON", value: function toJSON() {var e = this;var t = [e.content];for (; e.prevStage;) {e = e.prevStage, t.push(e.content);}return { $db: t.reverse().map(function (e) {return { $method: e.$method, $param: nt(e.$param) };}) };} }, { key: "getAction", value: function getAction() {var e = this.toJSON().$db.find(function (e) {return "action" === e.$method;});return e && e.$param && e.$param[0];} }, { key: "getCommand", value: function getCommand() {return { $db: this.toJSON().$db.filter(function (e) {return "action" !== e.$method;}) };} }, { key: "get", value: function get() {return this._send("get", Array.from(arguments));} }, { key: "add", value: function add() {return this._send("add", Array.from(arguments));} }, { key: "remove", value: function remove() {return this._send("remove", Array.from(arguments));} }, { key: "update", value: function update() {return this._send("update", Array.from(arguments));} }, { key: "end", value: function end() {return this._send("end", Array.from(arguments));} }, { key: "set", value: function set() {throw new Error("clientDB禁止使用set方法");} }, { key: "_send", value: function _send(e, t) {var n = this.getAction(),s = this.getCommand();if (s.$db.push({ $method: e, $param: nt(t) }), u) {var _e21 = s.$db.find(function (e) {return "collection" === e.$method;}),_t10 = _e21 && _e21.$param;_t10 && 1 === _t10.length && "string" == typeof _e21.$param[0] && _e21.$param[0].indexOf(",") > -1 && console.warn("检测到使用JQL语法联表查询时，未使用getTemp先过滤主表数据，在主表数据量大的情况下可能会查询缓慢。\n- 如何优化请参考此文档：https://uniapp.dcloud.net.cn/uniCloud/jql?id=lookup-with-temp \n- 如果主表数据量很小请忽略此信息，项目发行时不会出现此提示。");}return this._database._callCloudFunction({ action: n, command: s });} }, { key: "useAggregate", get: function get() {var e = this,t = !1;for (; e.prevStage;) {e = e.prevStage;var _n5 = e.content.$method;if ("aggregate" === _n5 || "pipeline" === _n5) {t = !0;break;}}return t;} }, { key: "count", get: function get() {if (!this.useAggregate) return function () {return this._send("count", Array.from(arguments));};var e = this;return function () {return rt({ $method: "count", $param: nt(Array.from(arguments)) }, e, this._database);};} }]);return st;}();function rt(e, t, n) {return Qe(new st(e, t, n), { get: function get(e, t) {var s = "db";return e && e.content && (s = e.content.$method), tt(s, t) ? rt({ $method: t }, e, n) : function () {return rt({ $method: t, $param: nt(Array.from(arguments)) }, e, n);};} });}function ot(_ref24) {var e = _ref24.path,t = _ref24.method;return /*#__PURE__*/function () {function _class2() {_classCallCheck(this, _class2);this.param = Array.from(arguments);}_createClass(_class2, [{ key: "toJSON", value: function toJSON() {return { $newDb: [].concat(_toConsumableArray(e.map(function (e) {return { $method: e };})), [{ $method: t, $param: this.param }]) };} }]);return _class2;}();}var it = /*#__PURE__*/function (_ref25) {_inherits(it, _ref25);var _super10 = _createSuper(it);function it() {_classCallCheck(this, it);return _super10.apply(this, arguments);}_createClass(it, [{ key: "_callCloudFunction", value: function _callCloudFunction(_ref26) {var _this18 = this;var e = _ref26.action,t = _ref26.command,n = _ref26.multiCommand,s = _ref26.queryList;function r(e, t) {if (n && s) for (var _n6 = 0; _n6 < s.length; _n6++) {var _r4 = s[_n6];_r4.udb && "function" == typeof _r4.udb.setResult && (t ? _r4.udb.setResult(t) : _r4.udb.setResult(e.result.dataList[_n6]));}}var o = S(v("database", "invoke")),i = this._uniClient;return o.then(function () {return i.callFunction({ name: "DCloud-clientDB", data: { action: e, command: t, multiCommand: n } });}).then(function (e) {var _e$result = e.result,t = _e$result.code,n = _e$result.message,s = _e$result.token,o = _e$result.tokenExpired,_e$result$systemInfo = _e$result.systemInfo,i = _e$result$systemInfo === void 0 ? [] : _e$result$systemInfo;if (i) for (var _e22 = 0; _e22 < i.length; _e22++) {var _i$_e = i[_e22],_t11 = _i$_e.level,_n7 = _i$_e.message,_s9 = _i$_e.detail,_r5 = console["app-plus" === h && "warn" === _t11 ? "error" : _t11] || console.log;var _o3 = "[System Info]" + _n7;_s9 && (_o3 = "".concat(_o3, "\n\u8BE6\u7EC6\u4FE1\u606F\uFF1A").concat(_s9)), _r5(_o3);}if (t) {var _e23 = new a(n, t);return _this18._callback("error", [_e23]), Promise.reject(_e23);}s && o && (!function () {var _ref27 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},e = _ref27.token,t = _ref27.tokenExpired;e && E.setStorageSync("uni_id_token", e), t && E.setStorageSync("uni_id_token_expired", t);}({ token: s, tokenExpired: o }), _this18._callbackAuth("refreshToken", [{ token: s, tokenExpired: o }]), _this18._callback("refreshToken", [{ token: s, tokenExpired: o }]));var c = e.result.affectedDocs;return "number" == typeof c && Object.defineProperty(e.result, "affectedDocs", { get: function get() {return console.warn("affectedDocs不再推荐使用，请使用inserted/deleted/updated/data.length替代"), c;} }), S(v("database", "success"), e).then(function () {return S(v("database", "complete"), e);}).then(function () {return r(e, null), Promise.resolve(e);});}, function (e) {var t = new a(e.message, e.code || "SYSTEM_ERROR");return _this18._callback("error", [t]), /fc_function_not_found|FUNCTION_NOT_FOUND/g.test(e.message) && console.warn("clientDB未初始化，请在web控制台保存一次schema以开启clientDB"), S(v("database", "fail"), e).then(function () {return S(v("database", "complete"), e);}).then(function () {return r(null, e), Promise.reject(e);});});} }]);return it;}( /*#__PURE__*/function () {function _class3() {var _ref28 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},_ref28$uniClient = _ref28.uniClient,e = _ref28$uniClient === void 0 ? {} : _ref28$uniClient;_classCallCheck(this, _class3);this._uniClient = e, this._authCallBacks = {}, this._dbCallBacks = {}, e.isDefault && (this._dbCallBacks = m("_globalUniCloudDatabaseCallback")), this.auth = Ze(this._authCallBacks), Object.assign(this, Ze(this._dbCallBacks)), this.env = Qe({}, { get: function get(e, t) {return { $env: t };} }), this.Geo = Qe({}, { get: function get(e, t) {return ot({ path: ["Geo"], method: t });} }), this.serverDate = ot({ path: [], method: "serverDate" }), this.RegExp = ot({ path: [], method: "RegExp" });}_createClass(_class3, [{ key: "getCloudEnv", value: function getCloudEnv(e) {if ("string" != typeof e || !e.trim()) throw new Error("getCloudEnv参数错误");return { $env: e.replace("$cloudEnv_", "") };} }, { key: "_callback", value: function _callback(e, t) {var n = this._dbCallBacks;n[e] && n[e].forEach(function (e) {e.apply(void 0, _toConsumableArray(t));});} }, { key: "_callbackAuth", value: function _callbackAuth(e, t) {var n = this._authCallBacks;n[e] && n[e].forEach(function (e) {e.apply(void 0, _toConsumableArray(t));});} }, { key: "multiSend", value: function multiSend() {var e = Array.from(arguments),t = e.map(function (e) {var t = e.getAction(),n = e.getCommand();if ("getTemp" !== n.$db[n.$db.length - 1].$method) throw new Error("multiSend只支持子命令内使用getTemp");return { action: t, command: n };});return this._callCloudFunction({ multiCommand: t, queryList: e });} }]);return _class3;}());function at(e) {e.database = function (t) {if (t && Object.keys(t).length > 0) return e.init(t).database();if (this._database) return this._database;var n = function (e) {var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};return Qe(new e(t), { get: function get(e, t) {return tt("db", t) ? rt({ $method: t }, null, e) : function () {return rt({ $method: t, $param: nt(Array.from(arguments)) }, null, e);};} });}(it, { uniClient: e });return this._database = n, n;};}var ct;var ut = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",ht = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;function lt() {var e = $e().token || "",t = e.split(".");if (!e || 3 !== t.length) return { uid: null, role: [], permission: [], tokenExpired: 0 };var n;try {n = JSON.parse((s = t[1], decodeURIComponent(ct(s).split("").map(function (e) {return "%" + ("00" + e.charCodeAt(0).toString(16)).slice(-2);}).join(""))));} catch (e) {throw new Error("获取当前用户信息出错，详细错误信息为：" + e.message);}var s;return n.tokenExpired = 1e3 * n.exp, delete n.exp, delete n.iat, n;}ct = "function" != typeof atob ? function (e) {if (e = String(e).replace(/[\t\n\f\r ]+/g, ""), !ht.test(e)) throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");var t;e += "==".slice(2 - (3 & e.length));for (var n, s, r = "", o = 0; o < e.length;) {t = ut.indexOf(e.charAt(o++)) << 18 | ut.indexOf(e.charAt(o++)) << 12 | (n = ut.indexOf(e.charAt(o++))) << 6 | (s = ut.indexOf(e.charAt(o++))), r += 64 === n ? String.fromCharCode(t >> 16 & 255) : 64 === s ? String.fromCharCode(t >> 16 & 255, t >> 8 & 255) : String.fromCharCode(t >> 16 & 255, t >> 8 & 255, 255 & t);}return r;} : atob;var dt = t(n(function (e, t) {Object.defineProperty(t, "__esModule", { value: !0 });var n = "chooseAndUploadFile:ok",s = "chooseAndUploadFile:fail";function r(e, t) {return e.tempFiles.forEach(function (e, n) {e.name || (e.name = e.path.substring(e.path.lastIndexOf("/") + 1)), t && (e.fileType = t), e.cloudPath = Date.now() + "_" + n + e.name.substring(e.name.lastIndexOf("."));}), e.tempFilePaths || (e.tempFilePaths = e.tempFiles.map(function (e) {return e.path;})), e;}function o(e, t, _ref29) {var s = _ref29.onChooseFile,r = _ref29.onUploadProgress;return t.then(function (e) {if (s) {var _t12 = s(e);if (void 0 !== _t12) return Promise.resolve(_t12).then(function (t) {return void 0 === t ? e : t;});}return e;}).then(function (t) {return !1 === t ? { errMsg: n, tempFilePaths: [], tempFiles: [] } : function (e, t) {var s = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 5;var r = arguments.length > 3 ? arguments[3] : undefined;(t = Object.assign({}, t)).errMsg = n;var o = t.tempFiles,i = o.length;var a = 0;return new Promise(function (n) {for (; a < s;) {c();}function c() {var s = a++;if (s >= i) return void (!o.find(function (e) {return !e.url && !e.errMsg;}) && n(t));var u = o[s];e.uploadFile({ filePath: u.path, cloudPath: u.cloudPath, fileType: u.fileType, onUploadProgress: function onUploadProgress(e) {e.index = s, e.tempFile = u, e.tempFilePath = u.path, r && r(e);} }).then(function (e) {u.url = e.fileID, s < i && c();}).catch(function (e) {u.errMsg = e.errMsg || e.message, s < i && c();});}});}(e, t, 5, r);});}t.initChooseAndUploadFile = function (e) {return function () {var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { type: "all" };return "image" === t.type ? o(e, function (e) {var t = e.count,n = e.sizeType,_e$sourceType = e.sourceType,o = _e$sourceType === void 0 ? ["album", "camera"] : _e$sourceType,i = e.extension;return new Promise(function (e, a) {uni.chooseImage({ count: t, sizeType: n, sourceType: o, extension: i, success: function success(t) {e(r(t, "image"));}, fail: function fail(e) {a({ errMsg: e.errMsg.replace("chooseImage:fail", s) });} });});}(t), t) : "video" === t.type ? o(e, function (e) {var t = e.camera,n = e.compressed,o = e.maxDuration,_e$sourceType2 = e.sourceType,i = _e$sourceType2 === void 0 ? ["album", "camera"] : _e$sourceType2,a = e.extension;return new Promise(function (e, c) {uni.chooseVideo({ camera: t, compressed: n, maxDuration: o, sourceType: i, extension: a, success: function success(t) {var n = t.tempFilePath,s = t.duration,o = t.size,i = t.height,a = t.width;e(r({ errMsg: "chooseVideo:ok", tempFilePaths: [n], tempFiles: [{ name: t.tempFile && t.tempFile.name || "", path: n, size: o, type: t.tempFile && t.tempFile.type || "", width: a, height: i, duration: s, fileType: "video", cloudPath: "" }] }, "video"));}, fail: function fail(e) {c({ errMsg: e.errMsg.replace("chooseVideo:fail", s) });} });});}(t), t) : o(e, function (e) {var t = e.count,n = e.extension;return new Promise(function (e, o) {var i = uni.chooseFile;if ("undefined" != typeof wx && "function" == typeof wx.chooseMessageFile && (i = wx.chooseMessageFile), "function" != typeof i) return o({ errMsg: s + " 请指定 type 类型，该平台仅支持选择 image 或 video。" });i({ type: "all", count: t, extension: n, success: function success(t) {e(r(t));}, fail: function fail(e) {o({ errMsg: e.errMsg.replace("chooseFile:fail", s) });} });});}(t), t);};};}));var ft = "manual";function pt(e) {return { props: { localdata: { type: Array, default: function _default() {return [];} }, options: { type: [Object, Array], default: function _default() {return {};} }, spaceInfo: { type: Object, default: function _default() {return {};} }, collection: { type: [String, Array], default: "" }, action: { type: String, default: "" }, field: { type: String, default: "" }, orderby: { type: String, default: "" }, where: { type: [String, Object], default: "" }, pageData: { type: String, default: "add" }, pageCurrent: { type: Number, default: 1 }, pageSize: { type: Number, default: 20 }, getcount: { type: [Boolean, String], default: !1 }, gettree: { type: [Boolean, String], default: !1 }, gettreepath: { type: [Boolean, String], default: !1 }, startwith: { type: String, default: "" }, limitlevel: { type: Number, default: 10 }, groupby: { type: String, default: "" }, groupField: { type: String, default: "" }, distinct: { type: [Boolean, String], default: !1 }, foreignKey: { type: String, default: "" }, loadtime: { type: String, default: "auto" }, manual: { type: Boolean, default: !1 } }, data: function data() {return { mixinDatacomLoading: !1, mixinDatacomHasMore: !1, mixinDatacomResData: [], mixinDatacomErrorMessage: "", mixinDatacomPage: {} };}, created: function created() {var _this19 = this;this.mixinDatacomPage = { current: this.pageCurrent, size: this.pageSize, count: 0 }, this.$watch(function () {var e = [];return ["pageCurrent", "pageSize", "localdata", "collection", "action", "field", "orderby", "where", "getont", "getcount", "gettree", "groupby", "groupField", "distinct"].forEach(function (t) {e.push(_this19[t]);}), e;}, function (e, t) {if (_this19.loadtime === ft) return;var n = !1;var s = [];for (var _r6 = 2; _r6 < e.length; _r6++) {e[_r6] !== t[_r6] && (s.push(e[_r6]), n = !0);}e[0] !== t[0] && (_this19.mixinDatacomPage.current = _this19.pageCurrent), _this19.mixinDatacomPage.size = _this19.pageSize, _this19.onMixinDatacomPropsChange(n, s);});}, methods: { onMixinDatacomPropsChange: function onMixinDatacomPropsChange(e, t) {}, mixinDatacomEasyGet: function mixinDatacomEasyGet() {var _this20 = this;var _ref30 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},_ref30$getone = _ref30.getone,e = _ref30$getone === void 0 ? !1 : _ref30$getone,t = _ref30.success,n = _ref30.fail;this.mixinDatacomLoading || (this.mixinDatacomLoading = !0, this.mixinDatacomErrorMessage = "", this.mixinDatacomGet().then(function (n) {_this20.mixinDatacomLoading = !1;var _n$result = n.result,s = _n$result.data,r = _n$result.count;_this20.getcount && (_this20.mixinDatacomPage.count = r), _this20.mixinDatacomHasMore = s.length < _this20.pageSize;var o = e ? s.length ? s[0] : void 0 : s;_this20.mixinDatacomResData = o, t && t(o);}).catch(function (e) {_this20.mixinDatacomLoading = !1, _this20.mixinDatacomErrorMessage = e, n && n(e);}));}, mixinDatacomGet: function mixinDatacomGet() {var _n8;var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var n = e.database(this.spaceInfo);var s = t.action || this.action;s && (n = n.action(s));var r = t.collection || this.collection;n = Array.isArray(r) ? (_n8 = n).collection.apply(_n8, _toConsumableArray(r)) : n.collection(r);var o = t.where || this.where;o && Object.keys(o).length && (n = n.where(o));var i = t.field || this.field;i && (n = n.field(i));var a = t.foreignKey || this.foreignKey;a && (n = n.foreignKey(a));var c = t.groupby || this.groupby;c && (n = n.groupBy(c));var u = t.groupField || this.groupField;u && (n = n.groupField(u));!0 === (void 0 !== t.distinct ? t.distinct : this.distinct) && (n = n.distinct());var h = t.orderby || this.orderby;h && (n = n.orderBy(h));var l = void 0 !== t.pageCurrent ? t.pageCurrent : this.mixinDatacomPage.current,d = void 0 !== t.pageSize ? t.pageSize : this.mixinDatacomPage.size,f = void 0 !== t.getcount ? t.getcount : this.getcount,p = void 0 !== t.gettree ? t.gettree : this.gettree,g = void 0 !== t.gettreepath ? t.gettreepath : this.gettreepath,m = { getCount: f },y = { limitLevel: void 0 !== t.limitlevel ? t.limitlevel : this.limitlevel, startWith: void 0 !== t.startwith ? t.startwith : this.startwith };return p && (m.getTree = y), g && (m.getTreePath = y), n = n.skip(d * (l - 1)).limit(d).get(m), n;} } };}function gt(_x30, _x31) {return _gt.apply(this, arguments);}function _gt() {_gt = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee32(e, t) {var n, _e26, s;return _regenerator.default.wrap(function _callee32$(_context32) {while (1) {switch (_context32.prev = _context32.next) {case 0:n = "http://".concat(e, ":").concat(t, "/system/ping");_context32.prev = 1;_context32.next = 4;return s = { url: n, timeout: 500 }, new Promise(function (e, t) {E.request(_objectSpread(_objectSpread({}, s), {}, { success: function success(t) {e(t);}, fail: function fail(e) {t(e);} }));});case 4:_e26 = _context32.sent;return _context32.abrupt("return", !(!_e26.data || 0 !== _e26.data.code));case 8:_context32.prev = 8;_context32.t0 = _context32["catch"](1);return _context32.abrupt("return", !1);case 11:case "end":return _context32.stop();}}}, _callee32, null, [[1, 8]]);}));return _gt.apply(this, arguments);}function mt(e) {if (e.initUniCloudStatus && "rejected" !== e.initUniCloudStatus) return;var t = Promise.resolve();var n;n = 1, t = new Promise(function (e, t) {setTimeout(function () {e();}, n);}), e.isReady = !1, e.isDefault = !1;var s = e.auth();e.initUniCloudStatus = "pending", e.initUniCloud = t.then(function () {return s.getLoginState();}).then(function (e) {return e ? Promise.resolve() : s.signInAnonymously();}).then(function () {if (!u) return Promise.resolve();if (u && e.debugInfo) {var _e$debugInfo = e.debugInfo,_t13 = _e$debugInfo.address,_n9 = _e$debugInfo.servePort;return function () {var _ref31 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee31(e, t) {var n, _s10, _r7;return _regenerator.default.wrap(function _callee31$(_context31) {while (1) {switch (_context31.prev = _context31.next) {case 0:_s10 = 0;case 1:if (!(_s10 < e.length)) {_context31.next = 11;break;}_r7 = e[_s10];_context31.next = 5;return gt(_r7, t);case 5:if (!_context31.sent) {_context31.next = 8;break;}n = _r7;return _context31.abrupt("break", 11);case 8:_s10++;_context31.next = 1;break;case 11:return _context31.abrupt("return", { address: n, port: t });case 12:case "end":return _context31.stop();}}}, _callee31);}));return function (_x32, _x33) {return _ref31.apply(this, arguments);};}()(_t13, _n9);}}).then(function () {var _ref32 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},t = _ref32.address,n = _ref32.port;if (!u) return Promise.resolve();if (t) e.localAddress = t, e.localPort = n;else if (e.debugInfo) {var _t14 = console["app-plus" === h ? "error" : "warn"];var _n10 = "";"remote" === e.debugInfo.initialLaunchType ? (e.debugInfo.forceRemote = !0, _n10 = "当前客户端和HBuilderX不在同一局域网下（或其他网络原因无法连接HBuilderX），uniCloud本地调试服务不对当前客户端生效。\n- 如果不使用uniCloud本地调试服务，请直接忽略此信息。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。\n- 如果在HBuilderX开启的状态下切换过网络环境，请重启HBuilderX后再试\n- 检查系统防火墙是否拦截了HBuilderX自带的nodejs") : _n10 = "无法连接uniCloud本地调试服务，请检查当前客户端是否与主机在同一局域网下。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。\n- 如果在HBuilderX开启的状态下切换过网络环境，请重启HBuilderX后再试\n- 检查系统防火墙是否拦截了HBuilderX自带的nodejs", "h5" === h && (_n10 += "\n- 部分浏览器开启节流模式之后访问本地地址受限，请检查是否启用了节流模式"), _t14(_n10);}}).then(function () {Me(), e.isReady = !0, e.initUniCloudStatus = "fulfilled";}).catch(function (t) {console.error(t), e.initUniCloudStatus = "rejected";});}var yt = new ( /*#__PURE__*/function () {function _class4() {_classCallCheck(this, _class4);}_createClass(_class4, [{ key: "init", value: function init(e) {var t = {};var n = !1 !== e.debugFunction && u && ("h5" === h && navigator.userAgent.indexOf("HBuilderX") > 0 || "app-plus" === h);switch (e.provider) {case "tencent":t = Ne.init(Object.assign(e, { useDebugFunction: n }));break;case "aliyun":t = x.init(Object.assign(e, { useDebugFunction: n }));break;case "private":t = Be.init(Object.assign(e, { useDebugFunction: n }));break;default:throw new Error("未提供正确的provider参数");}var s = l;u && s && !s.code && (t.debugInfo = s), mt(t), t.reInit = function () {mt(this);}, Xe(t), function (e) {var t = e.uploadFile;e.uploadFile = function (e) {return t.call(this, e);};}(t), at(t), function (e) {e.getCurrentUserInfo = lt, e.chooseAndUploadFile = dt.initChooseAndUploadFile(e), Object.assign(e, { get mixinDatacom() {return pt(e);} });}(t);return ["callFunction", "uploadFile", "deleteFile", "getTempFileURL", "downloadFile", "chooseAndUploadFile"].forEach(function (e) {if (!t[e]) return;var n = t[e];t[e] = function () {return t.reInit(), n.apply(t, Array.from(arguments));}, t[e] = T(t[e], e).bind(t);}), t.init = this.init, t;} }]);return _class4;}())();(function () {{var e = d;var t = {};if (1 === e.length) t = e[0], yt = yt.init(t), yt.isDefault = !0;else {var _t15 = ["auth", "callFunction", "uploadFile", "deleteFile", "getTempFileURL", "downloadFile", "database", "getCurrentUSerInfo"];var _n11;_n11 = e && e.length > 0 ? "应用有多个服务空间，请通过uniCloud.init方法指定要使用的服务空间" : f ? "应用未关联服务空间，请在uniCloud目录右键关联服务空间" : "uni-app cli项目内使用uniCloud需要使用HBuilderX的运行菜单运行项目，且需要在uniCloud目录关联服务空间", _t15.forEach(function (e) {yt[e] = function () {return console.error(_n11), Promise.reject(new A({ code: "SYS_ERR", message: _n11 }));};});}Object.assign(yt, { get mixinDatacom() {return pt(yt);} }), yt.addInterceptor = w, yt.removeInterceptor = k, u && "h5" === h && (window.uniCloud = yt);}})();var _t = yt;exports.default = _t;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 2), __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 86:
+/*!*******************************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/pages.json?{"type":"stat"} ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "appid": "" };exports.default = _default;
+
+/***/ }),
+
+/***/ 87:
+/*!*************************************************************************************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/uni_modules/uni-file-picker/components/uni-file-picker/choose-and-upload-file.js ***!
+  \*************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni, uniCloud) {Object.defineProperty(exports, "__esModule", { value: true });exports.chooseAndUploadFile = chooseAndUploadFile;exports.uploadCloudFiles = uploadCloudFiles;
+
+var ERR_MSG_OK = 'chooseAndUploadFile:ok';
+var ERR_MSG_FAIL = 'chooseAndUploadFile:fail';
+
+function chooseImage(opts) {var
+
+  count =
+
+
+
+  opts.count,_opts$sizeType = opts.sizeType,sizeType = _opts$sizeType === void 0 ? ['original', 'compressed'] : _opts$sizeType,sourceType = opts.sourceType,extension = opts.extension;
+  return new Promise(function (resolve, reject) {
+    uni.chooseImage({
+      count: count,
+      sizeType: sizeType,
+      sourceType: sourceType,
+      extension: extension,
+      success: function success(res) {
+        resolve(normalizeChooseAndUploadFileRes(res, 'image'));
+      },
+      fail: function fail(res) {
+        reject({
+          errMsg: res.errMsg.replace('chooseImage:fail', ERR_MSG_FAIL) });
+
+      } });
+
+  });
+}
+
+function chooseVideo(opts) {var
+
+  camera =
+
+
+
+
+  opts.camera,compressed = opts.compressed,maxDuration = opts.maxDuration,sourceType = opts.sourceType,extension = opts.extension;
+  return new Promise(function (resolve, reject) {
+    uni.chooseVideo({
+      camera: camera,
+      compressed: compressed,
+      maxDuration: maxDuration,
+      sourceType: sourceType,
+      extension: extension,
+      success: function success(res) {var
+
+        tempFilePath =
+
+
+
+
+        res.tempFilePath,duration = res.duration,size = res.size,height = res.height,width = res.width;
+        resolve(normalizeChooseAndUploadFileRes({
+          errMsg: 'chooseVideo:ok',
+          tempFilePaths: [tempFilePath],
+          tempFiles: [
+          {
+            name: res.tempFile && res.tempFile.name || '',
+            path: tempFilePath,
+            size: size,
+            type: res.tempFile && res.tempFile.type || '',
+            width: width,
+            height: height,
+            duration: duration,
+            fileType: 'video',
+            cloudPath: '' }] },
+
+        'video'));
+      },
+      fail: function fail(res) {
+        reject({
+          errMsg: res.errMsg.replace('chooseVideo:fail', ERR_MSG_FAIL) });
+
+      } });
+
+  });
+}
+
+function chooseAll(opts) {var
+
+  count =
+
+  opts.count,extension = opts.extension;
+  return new Promise(function (resolve, reject) {
+    var chooseFile = uni.chooseFile;
+    if (typeof wx !== 'undefined' &&
+    typeof wx.chooseMessageFile === 'function') {
+      chooseFile = wx.chooseMessageFile;
+    }
+    if (typeof chooseFile !== 'function') {
+      return reject({
+        errMsg: ERR_MSG_FAIL + ' 请指定 type 类型，该平台仅支持选择 image 或 video。' });
+
+    }
+    chooseFile({
+      type: 'all',
+      count: count,
+      extension: extension,
+      success: function success(res) {
+        resolve(normalizeChooseAndUploadFileRes(res));
+      },
+      fail: function fail(res) {
+        reject({
+          errMsg: res.errMsg.replace('chooseFile:fail', ERR_MSG_FAIL) });
+
+      } });
+
+  });
+}
+
+function normalizeChooseAndUploadFileRes(res, fileType) {
+  res.tempFiles.forEach(function (item, index) {
+    if (!item.name) {
+      item.name = item.path.substring(item.path.lastIndexOf('/') + 1);
+    }
+    if (fileType) {
+      item.fileType = fileType;
+    }
+    item.cloudPath =
+    Date.now() + '_' + index + item.name.substring(item.name.lastIndexOf('.'));
+  });
+  if (!res.tempFilePaths) {
+    res.tempFilePaths = res.tempFiles.map(function (file) {return file.path;});
+  }
+  return res;
+}
+
+function uploadCloudFiles(files) {var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 5;var _onUploadProgress = arguments.length > 2 ? arguments[2] : undefined;
+  files = JSON.parse(JSON.stringify(files));
+  var len = files.length;
+  var count = 0;
+  var self = this;
+  return new Promise(function (resolve) {
+    while (count < max) {
+      next();
+    }
+
+    function next() {
+      var cur = count++;
+      if (cur >= len) {
+        !files.find(function (item) {return !item.url && !item.errMsg;}) && resolve(files);
+        return;
+      }
+      var fileItem = files[cur];
+      var index = self.files.findIndex(function (v) {return v.uuid === fileItem.uuid;});
+      fileItem.url = '';
+      delete fileItem.errMsg;
+
+      uniCloud.
+      uploadFile({
+        filePath: fileItem.path,
+        cloudPath: fileItem.cloudPath,
+        fileType: fileItem.fileType,
+        onUploadProgress: function onUploadProgress(res) {
+          res.index = index;
+          _onUploadProgress && _onUploadProgress(res);
+        } }).
+
+      then(function (res) {
+        fileItem.url = res.fileID;
+        fileItem.index = index;
+        if (cur < len) {
+          next();
+        }
+      }).
+      catch(function (res) {
+        fileItem.errMsg = res.errMsg || res.message;
+        fileItem.index = index;
+        if (cur < len) {
+          next();
+        }
+      });
+    }
+  });
+}
+
+
+
+
+
+function uploadFiles(choosePromise, _ref)
+
+
+{var onChooseFile = _ref.onChooseFile,onUploadProgress = _ref.onUploadProgress;
+  return choosePromise.
+  then(function (res) {
+    if (onChooseFile) {
+      var customChooseRes = onChooseFile(res);
+      if (typeof customChooseRes !== 'undefined') {
+        return Promise.resolve(customChooseRes).then(function (chooseRes) {return typeof chooseRes === 'undefined' ?
+          res : chooseRes;});
+      }
+    }
+    return res;
+  }).
+  then(function (res) {
+    if (res === false) {
+      return {
+        errMsg: ERR_MSG_OK,
+        tempFilePaths: [],
+        tempFiles: [] };
+
+    }
+    return res;
+  });
+}
+
+function chooseAndUploadFile()
+
+{var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { type: 'all' };
+  if (opts.type === 'image') {
+    return uploadFiles(chooseImage(opts), opts);
+  } else
+  if (opts.type === 'video') {
+    return uploadFiles(chooseVideo(opts), opts);
+  }
+  return uploadFiles(chooseAll(opts), opts);
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 85)["default"]))
+
+/***/ }),
+
+/***/ 88:
+/*!********************************************************************************************************************!*\
+  !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/uni_modules/uni-file-picker/components/uni-file-picker/utils.js ***!
+  \********************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.get_file_data = exports.get_file_info = exports.get_files_and_is_max = exports.get_extname = exports.get_file_ext = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 31));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * 获取文件名和后缀
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * @param {String} name
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
+var get_file_ext = function get_file_ext(name) {
+  var last_len = name.lastIndexOf('.');
+  var len = name.length;
+  return {
+    name: name.substring(0, last_len),
+    ext: name.substring(last_len + 1, len) };
+
+};
+
+/**
+    * 获取扩展名
+    * @param {Array} fileExtname
+    */exports.get_file_ext = get_file_ext;
+var get_extname = function get_extname(fileExtname) {
+  if (!Array.isArray(fileExtname)) {
+    var extname = fileExtname.replace(/(\[|\])/g, '');
+    return extname.split(',');
+  } else {
+    return fileExtname;
+  }
+  return [];
+};
+
+/**
+    * 获取文件和检测是否可选
+    */exports.get_extname = get_extname;
+var get_files_and_is_max = function get_files_and_is_max(res, _extname) {
+  var filePaths = [];
+  var files = [];
+  if (!_extname || _extname.length === 0) {
+    return {
+      filePaths: filePaths,
+      files: files };
+
+  }
+  res.tempFiles.forEach(function (v) {
+    var fileFullName = get_file_ext(v.name);
+    var extname = fileFullName.ext.toLowerCase();
+    if (_extname.indexOf(extname) !== -1) {
+      files.push(v);
+      filePaths.push(v.path);
+    }
+  });
+  if (files.length !== res.tempFiles.length) {
+    uni.showToast({
+      title: "\u5F53\u524D\u9009\u62E9\u4E86".concat(res.tempFiles.length, "\u4E2A\u6587\u4EF6 \uFF0C").concat(res.tempFiles.length - files.length, " \u4E2A\u6587\u4EF6\u683C\u5F0F\u4E0D\u6B63\u786E"),
+      icon: 'none',
+      duration: 5000 });
+
+  }
+
+  return {
+    filePaths: filePaths,
+    files: files };
+
+};
+
+
+/**
+    * 获取图片信息
+    * @param {Object} filepath
+    */exports.get_files_and_is_max = get_files_and_is_max;
+var get_file_info = function get_file_info(filepath) {
+  return new Promise(function (resolve, reject) {
+    uni.getImageInfo({
+      src: filepath,
+      success: function success(res) {
+        resolve(res);
+      },
+      fail: function fail(err) {
+        reject(err);
+      } });
+
+  });
+};
+/**
+    * 获取封装数据
+    */exports.get_file_info = get_file_info;
+var get_file_data = /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(files) {var type,fileFullName,extname,filedata,imageinfo,_args = arguments;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:type = _args.length > 1 && _args[1] !== undefined ? _args[1] : 'image';
+            // 最终需要上传数据库的数据
+            fileFullName = get_file_ext(files.name);
+            extname = fileFullName.ext.toLowerCase();
+            filedata = {
+              name: files.name,
+              uuid: files.uuid,
+              extname: extname || '',
+              cloudPath: files.cloudPath,
+              fileType: files.fileType,
+              url: files.path || files.path,
+              size: files.size, //单位是字节
+              image: {},
+              path: files.path,
+              video: {} };if (!(
+
+            type === 'image')) {_context.next = 14;break;}_context.next = 7;return (
+              get_file_info(files.path));case 7:imageinfo = _context.sent;
+            delete filedata.video;
+            filedata.image.width = imageinfo.width;
+            filedata.image.height = imageinfo.height;
+            filedata.image.location = imageinfo.path;_context.next = 15;break;case 14:
+
+            delete filedata.image;case 15:return _context.abrupt("return",
+
+            filedata);case 16:case "end":return _context.stop();}}}, _callee);}));return function get_file_data(_x) {return _ref.apply(this, arguments);};}();exports.get_file_data = get_file_data;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 96:
 /*!***********************************************************************************************************!*\
   !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/uni_modules/uni-forms/components/uni-forms/validate.js ***!
   \***********************************************************************************************************/
@@ -12361,7 +12773,7 @@ store;exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 20));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function");}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });if (superClass) _setPrototypeOf(subClass, superClass);}function _setPrototypeOf(o, p) {_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {o.__proto__ = p;return o;};return _setPrototypeOf(o, p);}function _createSuper(Derived) {var hasNativeReflectConstruct = _isNativeReflectConstruct();return function _createSuperInternal() {var Super = _getPrototypeOf(Derived),result;if (hasNativeReflectConstruct) {var NewTarget = _getPrototypeOf(this).constructor;result = Reflect.construct(Super, arguments, NewTarget);} else {result = Super.apply(this, arguments);}return _possibleConstructorReturn(this, result);};}function _possibleConstructorReturn(self, call) {if (call && (typeof call === "object" || typeof call === "function")) {return call;}return _assertThisInitialized(self);}function _assertThisInitialized(self) {if (self === void 0) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return self;}function _isNativeReflectConstruct() {if (typeof Reflect === "undefined" || !Reflect.construct) return false;if (Reflect.construct.sham) return false;if (typeof Proxy === "function") return true;try {Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));return true;} catch (e) {return false;}}function _getPrototypeOf(o) {_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {return o.__proto__ || Object.getPrototypeOf(o);};return _getPrototypeOf(o);}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var pattern = {
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 31));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function");}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });if (superClass) _setPrototypeOf(subClass, superClass);}function _setPrototypeOf(o, p) {_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {o.__proto__ = p;return o;};return _setPrototypeOf(o, p);}function _createSuper(Derived) {var hasNativeReflectConstruct = _isNativeReflectConstruct();return function _createSuperInternal() {var Super = _getPrototypeOf(Derived),result;if (hasNativeReflectConstruct) {var NewTarget = _getPrototypeOf(this).constructor;result = Reflect.construct(Super, arguments, NewTarget);} else {result = Super.apply(this, arguments);}return _possibleConstructorReturn(this, result);};}function _possibleConstructorReturn(self, call) {if (call && (typeof call === "object" || typeof call === "function")) {return call;}return _assertThisInitialized(self);}function _assertThisInitialized(self) {if (self === void 0) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return self;}function _isNativeReflectConstruct() {if (typeof Reflect === "undefined" || !Reflect.construct) return false;if (Reflect.construct.sham) return false;if (typeof Proxy === "function") return true;try {Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));return true;} catch (e) {return false;}}function _getPrototypeOf(o) {_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {return o.__proto__ || Object.getPrototypeOf(o);};return _getPrototypeOf(o);}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var pattern = {
   email: /^\S+?@\S+?\.\S+?$/,
   idcard: /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/,
   url: new RegExp(
@@ -12850,7 +13262,7 @@ SchemaValidator;exports.default = _default;
 
 /***/ }),
 
-/***/ 64:
+/***/ 97:
 /*!********************************************************************************************************!*\
   !*** D:/wechatWorkSpace/uni_pro/ldar_uni/ldar_uni/uni_modules/uni-forms/components/uni-forms/utils.js ***!
   \********************************************************************************************************/

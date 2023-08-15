@@ -4,10 +4,12 @@ export default {
 	
 	// 模块的state数据
 	state: () => ({
-		// // 登录成功后获取token
+		// 登录成功后获取token
 		token: uni.getStorageSync('token'),
 		// 用户基本信息
 		userInfo: uni.getStorageSync('userInfo'),
+		// 是否登录
+		isLogin: false,
 		// 重定向的object对象 { openType, from }
 		redirectInfo: null
 	}),
@@ -23,6 +25,7 @@ export default {
 		saveUserInfoToStorage(state) { 
 			uni.setStorageSync('userInfo', state.userInfo)
 		},
+		// 更新token
 		updateToken(state, token) {
 			state.token = token
 			this.commit('mUser/saveTokenToStorage')
@@ -30,6 +33,10 @@ export default {
 		// 持久化存储token
 		saveTokenToStorage(state) { 
 			uni.setStorageSync('token', state.token)
+		},
+		// 更新登录状态
+		updateIsLogin(state, isLogin) {
+			state.isLogin = isLogin
 		},
 		// 更新重定向对象
 		updateRedirectInfo (state, info) {

@@ -1,5 +1,5 @@
 const requestConfig = {
-	baseUrl: 'http://175.178.8.213:3002',
+	baseUrl: 'https://175.178.8.213:3001',
 	timeout: 5 * 1000,
 	headers: {
 		'Accept-Language': 'zh-CN',

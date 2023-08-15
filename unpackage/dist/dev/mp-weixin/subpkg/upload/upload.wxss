@@ -1,0 +1,11 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+.upload.data-v-8406e1cc {
+  background-color: #CCCCCC;
+}
+.item.data-v-8406e1cc {
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
