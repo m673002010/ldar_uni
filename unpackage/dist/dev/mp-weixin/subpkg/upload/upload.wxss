@@ -2,10 +2,14 @@
 /* 水平间距 */
 /* 水平间距 */
 .upload.data-v-8406e1cc {
-  background-color: #CCCCCC;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  padding: 10px;
 }
-.item.data-v-8406e1cc {
-  margin-top: 20px;
-  margin-bottom: 5px;
+.upload .item.data-v-8406e1cc {
+  margin: 10px 0px;
 }
 

@@ -1,5 +1,7 @@
-
-.charts.data-v-57280228{
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+.charts.data-v-57280228 {
   width: 750rpx;
   height: 500rpx;
 }

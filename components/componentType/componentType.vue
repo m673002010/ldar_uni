@@ -14,7 +14,7 @@ export default {
 			cHeight: 500
 		}
 	},
-	onReady() {
+	onShow() {
 		//这里的 750 对应 css .charts 的 width
 		this.cWidth = uni.upx2px(750)
 		//这里的 500 对应 css .charts 的 height
@@ -32,9 +32,9 @@ export default {
 					}
 				]
 			}
-			this.drawCharts('hMKQlyfXlafbaRwXWOUJRIhkuhQOoNoQ', res)
+			this.drawComponentTypeCharts('hMKQlyfXlafbaRwXWOUJRIhkuhQOoNoQ', res)
 		},
-		drawCharts(id,data){
+		drawComponentTypeCharts(id,data){
 			const ctx = uni.createCanvasContext(id, this)
 			uChartsInstance[id] = new uCharts({
 				type: "pie",

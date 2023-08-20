@@ -2,8 +2,7 @@
   "navigationBarTitleText": "LDAR管理平台",
   "usingComponents": {
     "uni-section": "/uni_modules/uni-section/components/uni-section/uni-section",
-    "seal-point-type": "/components/sealPointType/sealPointType",
-    "component-type": "/components/componentType/componentType",
-    "emission": "/components/emission/emission"
+    "uni-list": "/uni_modules/uni-list/components/uni-list/uni-list",
+    "uni-list-item": "/uni_modules/uni-list/components/uni-list-item/uni-list-item"
   }
 }

@@ -2,15 +2,15 @@
 	<view>
 		<uni-list>
 			<uni-list-item title="总点数" :note="totalPoint"></uni-list-item>
-			<progress :percent="totalPercent" show-info stroke-width="7" />
+			<progress :percent="totalPercent" show-info stroke-width="7" border-radius="5" font-size="14" activeColor="#10AEFF"/>
 			<uni-list-item title="静密封点数" :note="staticPoint"></uni-list-item>
-			<progress :percent="staticPercent" show-info stroke-width="7" />
+			<progress :percent="staticPercent" show-info stroke-width="7" border-radius="5" font-size="14" activeColor="#10AEFF"/>
 			<uni-list-item title="动密封点数" :note="dynamicPoint"></uni-list-item>
-			<progress :percent="dynamicPercent" show-info stroke-width="7" />
+			<progress :percent="dynamicPercent" show-info stroke-width="7" border-radius="5" font-size="14" activeColor="#10AEFF"/>
 			<uni-list-item title="可达点数" :note="reachablePoint"></uni-list-item>
-			<progress :percent="reachablePercent" show-info stroke-width="7" />
+			<progress :percent="reachablePercent" show-info stroke-width="7" border-radius="5" font-size="14" activeColor="#10AEFF"/>
 			<uni-list-item title="不可达点数" :note="unreachablePoint"></uni-list-item>
-			<progress :percent="unreachablePercent" show-info stroke-width="7" />
+			<progress :percent="unreachablePercent" show-info stroke-width="7" border-radius="5" font-size="14" activeColor="#10AEFF"/>
 		</uni-list>
 	</view>
 </template>
@@ -31,7 +31,7 @@ export default {
 			unreachablePercent: 0
 		}
 	},
-	onReady() {
+	onShow() {
 		this.pointStatic()
 	},
 	methods: {

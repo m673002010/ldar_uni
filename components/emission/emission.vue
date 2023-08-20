@@ -14,7 +14,7 @@ export default {
 			cHeight: 500
 		}
 	},
-	onReady() {
+	onShow() {
 		//这里的 750 对应 css .charts 的 width
 		this.cWidth = uni.upx2px(750)
 		//这里的 500 对应 css .charts 的 height

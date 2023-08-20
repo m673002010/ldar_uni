@@ -5,7 +5,7 @@
 			<view class="item"><uni-icons type="shop" size="60"></uni-icons>公司简称：{{userInfo.shortName}}</view>
 			<view class="item"><uni-icons type="notification" size="60"></uni-icons>公司代号：{{userInfo.companyNum}}</view>
 		</view>
-		<!-- <button class="button" type="primary" @click="upload()">上传文件</button> -->
+		<button class="button" type="primary" @click="upload()">上传</button>
 		<button class="button" type="warn" @click="logout()">退出</button>
 	</view>
 </template>
